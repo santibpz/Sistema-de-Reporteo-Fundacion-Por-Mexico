@@ -1,0 +1,8 @@
+{
+    "id": 1,
+    "ubicacion": "Calle 1",
+    "salones": 2,
+    "administradores": [
+        1,2
+    ]
+}

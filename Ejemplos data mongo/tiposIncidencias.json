@@ -1,0 +1,41 @@
+{
+    "Infraestructura": [
+        "Mantenimiento",
+        "Servicios",
+        "Imagen",
+        "Seguridad",
+        "Daño"
+    ],
+    "Inmobiliario": [
+        "Mantenimiento",
+        "Robo",
+        "Imagen",
+        "Daño"
+    ],
+    "Equipo Tecnológico": [
+        "Mantenimiento",
+        "Robo",
+        "Solicitud de programa"
+    ],
+    "Trabajadores": [
+        "Negligencia",
+        "Acoso",
+        "Incidentes",
+        "Salud"
+    ],
+    "Beneficiarios": [
+        "Negligencia",
+        "Acoso",
+        "Incidentes",
+        "Salud",
+        "Solicitud académica"
+    ],
+    "Material Académico": [
+        "Robo",
+        "Daño",
+        "Solicitud de material"
+    ],
+    "Otros": [
+        "Otros"
+    ]
+}
