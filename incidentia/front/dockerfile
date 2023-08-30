@@ -1,0 +1,24 @@
+FROM node:latest AS build
+
+WORKDIR /build
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY tsconfig.json tsconfig.json
+COPY prettier.config.js prettier.config.js
+COPY vite.config.ts vite.config.ts
+COPY index.html index.html
+COPY .eslintrc.js .eslintrc.js
+COPY .env .env
+
+RUN npm ci
+
+COPY public/ public
+COPY src/ src
+
+RUN npm run build
+
+FROM httpd:alpine
+
+WORKDIR /var/www/html
+COPY --from=build /build/dist/ .
