@@ -1,0 +1,37 @@
+<mxfile host="Electron" modified="2023-08-31T00:39:33.721Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="kmQOhorW_waV-URZvNeu" version="21.3.7" type="device">
+  <diagram name="Page-1" id="f0bbOY-pkD7UT5uKzE2P">
+    <mxGraphModel dx="1434" dy="843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-1" value="MongoDB" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-2" value="Back end" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-3" value="Front" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="290" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-4" value=":8081" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="390" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-5" value=":8080" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-6" value=":27017" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="130" y="360" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-7" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="70" y="250" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-8" value="" style="sketch=0;html=1;dashed=0;whitespace=wrap;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];verticalLabelPosition=bottom;align=center;verticalAlign=top;shape=mxgraph.kubernetes.icon;prIcon=api" vertex="1" parent="1">
+          <mxGeometry x="340" y="262" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ntXZXoFs2wpmu8EQh7xP-9" value="" style="sketch=0;html=1;dashed=0;whitespace=wrap;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];verticalLabelPosition=bottom;align=center;verticalAlign=top;shape=mxgraph.kubernetes.icon;prIcon=user" vertex="1" parent="1">
+          <mxGeometry x="580" y="262" width="50" height="48" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
