@@ -14,7 +14,7 @@ async function connDB(){
     let client = new MongoCLient.MongoClient('mongodb://mongoadmin:bdung@localhost:27017/?authSource=admin&readPreference=primary&ssl=false&directConnection=true');
     await client.connect();
     
-    return client.db('Incidentia');
+    return {conn: client, db: client.db('Incidentia')};
 }
 
 Usuarios.addEndpoints(app, connDB);
