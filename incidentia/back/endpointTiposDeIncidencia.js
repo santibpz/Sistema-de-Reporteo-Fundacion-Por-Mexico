@@ -1,7 +1,7 @@
 import ObjectId from 'mongodb';
 
-const prefix = "/Usuarios";
-const dbCollection = "Usuarios";
+const prefix = "/TiposDeIncidencia";
+const dbCollection = "TiposDeIncidencia";
 
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}

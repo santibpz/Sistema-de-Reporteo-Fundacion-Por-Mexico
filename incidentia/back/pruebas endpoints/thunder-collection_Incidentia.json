@@ -1,0 +1,119 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Incidentia",
+    "dateExported": "2023-09-09T00:26:47.513Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "Usuarios",
+            "containerId": "",
+            "created": "2023-09-03T18:36:08.193Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "7657816a-9631-4610-9ea3-eabcfe9f9e36",
+            "colId": "cddf7560-6e46-458f-a565-a7789f313f21",
+            "containerId": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "getList",
+            "url": "Usuarios?sort=[\"username\",\"ASC\"]&range=[0, 24]&filter={}",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-09-03T18:36:20.720Z",
+            "modified": "2023-09-05T00:47:17.052Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "sort",
+                    "value": "[\"username\",\"ASC\"]",
+                    "isPath": false
+                },
+                {
+                    "name": "range",
+                    "value": "[0, 24]",
+                    "isPath": false
+                },
+                {
+                    "name": "filter",
+                    "value": "{}",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "bcbf33cc-8a0e-42a2-ac5e-de524f975014",
+            "colId": "cddf7560-6e46-458f-a565-a7789f313f21",
+            "containerId": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "getOne",
+            "url": "Usuarios/a",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-09-03T18:40:30.746Z",
+            "modified": "2023-09-03T18:54:04.970Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "57df1192-2c24-4004-9bab-af8e5ab9e928",
+            "colId": "cddf7560-6e46-458f-a565-a7789f313f21",
+            "containerId": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "create",
+            "url": "Usuarios",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-09-05T00:48:26.053Z",
+            "modified": "2023-09-08T23:28:16.666Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"username\": \"pepe\",\n    \"nombre\": \"juarez\",\n    \"apellido\": \"pepe\",\n    \"permisos\": [\n      \"user\"\n    ]\n  }",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "1d760a50-1032-4eee-a32e-c53816e151c1",
+            "colId": "cddf7560-6e46-458f-a565-a7789f313f21",
+            "containerId": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "update",
+            "url": "Usuarios/64fbafdc1b059175cb3ebd0d",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2023-09-08T23:37:40.455Z",
+            "modified": "2023-09-08T23:58:56.108Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"username\": \"uwu\",\n    \"nombre\": \"pancho\",\n    \"apellido\": \"perez\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "e30de01d-4172-413d-8194-5cbc5c9e0832",
+            "colId": "cddf7560-6e46-458f-a565-a7789f313f21",
+            "containerId": "a6b8cec8-a17a-4a48-babc-6f51f4b7b213",
+            "name": "delete",
+            "url": "Usuarios/64fbafdc1b059175cb3ebd0d",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2023-09-09T00:16:49.157Z",
+            "modified": "2023-09-09T00:17:53.360Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ],
+    "settings": {
+        "options": {
+            "baseUrl": "http://localhost:8081/"
+        },
+        "envId": "f31750a0-f8e1-4c69-bfee-0f761c4772b3"
+    }
+}
