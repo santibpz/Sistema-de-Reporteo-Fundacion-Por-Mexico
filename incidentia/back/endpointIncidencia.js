@@ -1,50 +1,81 @@
-import ObjectId from 'mongodb';
+import { ObjectId } from 'mongodb';
 
-const prefix = "/Incidencia";
-const dbCollection = "Incidencia";
+const prefix = "/reportes";
+const dbCollection = "reportes";
 
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
     app.get(prefix + "", async (req, res) => {
         // cosas de todos los endpoints
         try {
-            // conn con db
+            // conn con db   
             let dbFig = await conn();
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
 
-            // cosas del endpoint
-            // query params
-            const { range, filter, sort } = req.query;
-        
-            // Parse range parameter
-            const [start, end] = JSON.parse(range);
-            const limit = end - start + 1;
-            const skip = start;
 
             try {
-                const query = filter ? JSON.parse(filter) : {};
 
-                // Sorting
-                const sortQuery = sort ? JSON.parse(sort) : {};
+                const pipeline = [
+                    // stage 1: obtener las referencias a los objetos con valor "ObjectId" de categoria
+                    {$lookup: {
+                        from: 'categorias',
+                        localField: 'categoria',
+                        foreignField: '_id',
+                        as: 'categoria'
+                    }
+                    },
+                    // stage 2: obtener las referencias a los objetos con valor "ObjectId" de subcategoria
+                    {$lookup: {
+                        from: 'subcategorias',
+                        localField: 'subcategoria',
+                        foreignField: '_id',
+                        as: 'subcategoria'
+                    }
+                    },
+                    // stage 3: proyectar la información que se enviará al cliente
+                    {$project: {
+                        id: "$_id",
+                        _id: 0,
+                        titulo: 1,
+                        descripcion: 1,
+                        categoria: {
+                            $getField: {
+                              field: 'nombre',
+                              input: { $arrayElemAt: [ "$categoria", 0 ] }
+                            }
+                          } ,
+                        subcategoria:{
+                            $getField: {
+                              field: 'nombre',
+                              input: { $arrayElemAt: [ "$subcategoria", 0 ] }
+                            }
+                          },
+                        estatus: 1,
+                        prioridad: 1,
+                        fecha: 1
+                    }}
+                ]
 
-                const cursor = db.find(query).sort(sortQuery).skip(skip).limit(limit);
-                const totalCount = await db.countDocuments(query);
+                // el query a la base de datos que obtiene la informacion a enviar al cliente
+                const queryCursor = await db.aggregate(pipeline)
 
-                res.set('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.set('X-Total-Count', totalCount);
+                // convertimos el resultado del query a un arreglo con todos los objetos que representan cada reporte
+                let data = await queryCursor.toArray()
 
-                const result = await cursor.toArray();
-                res.json(result);
+                res.set('Access-Control-Expose-Headers', 'Content-Range');
+                res.set('Content-Range', data.length);
+                                                 
+                res.json(data);
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error:', error);    
                 res.status(500).json({ error: 'Internal server error' });
-            } finally {
+            } finally {      
                 dbConn.close();
             }
         } catch (error) {
-            console.error('Error:', error);
-            next(error); 
+            console.error('Error:', error);  
+            // next(error); 
         }
     });
 
@@ -117,33 +148,53 @@ export function addEndpoints(app, conn) {
 
     // getManyReference 	GET localhost/Prefix?filter={"author_id":345}
 
+    // app.post(prefix + "/", async (req, res) => {
+    //     try{
+    //         let dbFig = await conn();
+    //         let dbConn = dbFig.conn;
+    //         let db = dbFig.db.collection(dbCollection);
+    //         const data = req.body
+    //         let result = await db.insertOne(data)
+    //         console.log(result)
+    //     } catch(err) {
+    //         console.log(err)
+    //     }
+    // })
     
     // create 	            POST localhost/Prefix
     app.post(prefix + "", async (req, res, next) => {
         try {
             const dbFig = await conn();
-            const dbConn = dbFig.conn;
-            const db = dbFig.db.collection(dbCollection);
+            const dbConn = dbFig.conn; // client
+            const db = dbFig.db.collection(dbCollection); 
     
             try {
-                // Validate and sanitize req.body here
-                delete req.body._id;
-                delete req.body.id;
-        
-                const result = await db.insertOne(req.body);
-                dbConn.close();
-        
+    
+                const data = req.body
+
+                const reporte = {
+                    ...data,
+                    categoria: new ObjectId(data.categoria), 
+                    subcategoria: new ObjectId(data.subcategoria),
+                    estatus: "pendiente",
+                    fecha: new Date()   
+                }
+                const result = await db.insertOne(reporte);
+    
                 if (result.insertedId) {
-                    res.status(201).json({ID: result.insertedId}); // 201 Created
+                    res.status(201).json({id: result.insertedId}); // 201 Created
                 } else {
                     res.status(500).json({ error: 'Failed to create the resource' });
-                }
+                }      
             }
             catch (error) {
                 console.error('Error:', error);
                 res.status(500).json({ error: 'Internal server error' });
-            } finally {
-                dbFig.close();
+            } 
+            finally {
+                // dbFig.close();            
+                dbConn.close();
+
             }
         } catch (error) {
             console.error('Error:', error);
