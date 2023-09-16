@@ -2,6 +2,7 @@
 
 // declaracion de tipos de datos que conforman el reporte
 export interface ReporteProps {
+    id:string,
     titulo: string,
     descripcion: string,
     categoria: string,

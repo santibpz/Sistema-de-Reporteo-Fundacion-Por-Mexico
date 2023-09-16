@@ -40,7 +40,7 @@ export function addEndpoints(app, conn) {
                         titulo: 1,
                         descripcion: 1,
                         categoria: {
-                            $getField: {
+                            $getField: {                         
                               field: 'nombre',
                               input: { $arrayElemAt: [ "$categoria", 0 ] }
                             }
@@ -189,12 +189,10 @@ export function addEndpoints(app, conn) {
             }
             catch (error) {
                 console.error('Error:', error);
-                res.status(500).json({ error: 'Internal server error' });
+                res.status(500).json({ error: 'No se pudo crear el Reporte' });
             } 
             finally {
-                // dbFig.close();            
                 dbConn.close();
-
             }
         } catch (error) {
             console.error('Error:', error);
@@ -203,36 +201,27 @@ export function addEndpoints(app, conn) {
     });
 
     // update 	            PUT localhost/Prefix/123
-    app.put(prefix + "/:_id", async (req, res) => {
+    app.put(prefix + "/:id", async (req, res) => {
         try {
+            // conexión con la base de datos
             const dbFig = await conn();
-            const db = dbFig.db.collection(dbCollection);
-    
-            // Validate the _id parameter
-    
-            // Validate and sanitize req.body here
-    
-            try {
-                const result = await db.findOneAndUpdate(
-                    { _id: new ObjectId.ObjectId(req.params._id) }, // Use _id for MongoDB document lookup
-                    { $set: req.body }
-                );
-    
-                if (result) {
-                    res.json(result);
-                } else {
-                    res.status(404).json({ error: 'Resource not found' });
-                }
-            }
-            catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal server error' });
-            } finally {
-                dbFig.close();
-            }
+            const dbConn = dbFig.conn; // client
+            const db = dbFig.db.collection(dbCollection)
+
+            // obtener la informacion del cuerpo de la solicitud
+            const { estatus } = req.body
+            const result = await db.updateOne({_id: new ObjectId(req.params.id)}, { $set: { estatus } })
+            console.log(result)  
+
+            result.modifiedCount === 1 ?
+            res.status(200).json({id: req.params.id}) :
+            res.status(500).json({ error: 'Ocurrió un problema al modificar el estatus de. Reporte. Intentar más tarde' });
+
+            dbConn.close();
+        
         } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal server error' });
+            console.error('Errorr:', error);          
+            res.status(500).json({ error: 'Ocurrió un problema. Intentar más tarde' });
         }
     });
 
