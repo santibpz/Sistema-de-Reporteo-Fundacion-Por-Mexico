@@ -11,7 +11,7 @@ export function addEndpoints(app, conn) {
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
 
-
+  
             try {
                 // query a la base de datos apra obtener la informacion de las categorias
                 const data = await db.find({}).project({_id: 0, id: "$_id", nombre: 1}).toArray()

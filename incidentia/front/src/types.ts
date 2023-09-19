@@ -2,6 +2,7 @@
 
 // declaracion de tipos de datos que conforman el reporte
 export interface ReporteProps {
+    id:string,
     titulo: string,
     descripcion: string,
     categoria: string,
@@ -24,3 +25,9 @@ export interface Subcategoria {
     nombre: string
 }
 
+// declaracion de tipos de datos que conforman la Ventana para actualzar el estatus del reporte
+export interface ModalProps {
+    titulo:string,
+    estatus:string,
+    id:string
+  }
