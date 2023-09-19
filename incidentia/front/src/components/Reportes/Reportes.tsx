@@ -1,8 +1,10 @@
 import React from "react"
 import { useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
-import { ReporteProps } from "../../types"
+import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Paper, Typography, Button, Box, Modal} from "@mui/material"
 import { useState } from "react"
+
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 
@@ -12,7 +14,13 @@ const Reportes = () => {
     if (isLoading) return null
     return(
         // regresar todos los reportes que se representan como un componente ReporteCard
-        <div>
+        <Grid 
+         container 
+         spacing={1} 
+         columnSpacing={2}
+         rowSpacing={2}
+         style={{padding: 15}}
+         >
             {data.map(reporte => <ReporteCard 
                                   key = {reporte.id}
                                   id = {reporte.id}
@@ -23,7 +31,7 @@ const Reportes = () => {
                                   prioridad = {reporte.prioridad}
                                   estatus = {reporte.estatus}
                                   fecha = {reporte.fecha} />)}
-        </div>
+        </Grid>
     )
 
 }
@@ -34,67 +42,77 @@ const ReporteCard = (props:ReporteProps) => {
    
    
     return (
+      <Grid container item sm lg = 'auto' alignItems="center" justifyContent="center" >
+        <Grid item>
         <Paper
             sx={{
-            p: 2,
-            margin: '15px',
-            // maxWidth: 350,
-            width: 400,
+            width: 300,
             height: 300,
-            flexGrow: 1,
-            backgroundColor: '#E6E6FA',
+            // backgroundColor: '#E6E6FA',
             }}
             elevation={10}
-            
         >
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm container>
-                    <Grid item xs container direction="column" spacing={1}>
-                        <Grid item xs>
-                            <Typography gutterBottom variant="h6" component="div" display='block'>
-                                Título: {props.titulo}
-                            </Typography>
-                            <Typography variant="body2" gutterBottom>
-                                Descripción: {props.descripcion}
-                            </Typography>
-                            <Typography variant="body2" gutterBottom>
-                                Categoria: {props.categoria}
-                            </Typography>
-                            <Typography variant="body2" gutterBottom>
-                                Subcategoria: {props.subcategoria}
-                            </Typography>
-                        </Grid>
-                    {/* <Grid item>
-                    </Grid> */}
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle2" component="div">
-                            {props.fecha}
-                        </Typography>
+            <Grid 
+             style={{width: '100%', height: '100%', margin: 'auto'}}
+             container 
+             direction="column"
+             justifyContent="center"
+             alignItems="stretch"
+            >
+               {/* contenedor para el título y creador del usuario */}
+               <Grid container item style = {{backgroundColor: '#F8F8F8'}} xs>
+                  <Grid container justifyContent='center' alignContent='center' item xs={4}>
+                    <AssignmentIcon fontSize="large"/>
+                  </Grid>
+                  <Grid sx={{p:1}} container direction='column' justifyContent='center' alignItems='flex-start' item xs={8} >
+                    <Typography mt={1} variant="body2" ><strong>{props.titulo}</strong></Typography>
+                    <Typography mb={1} variant="body2" style={{color:'darkgrey'}}>Creado por usuario</Typography>
+                  </Grid>
+               </Grid>  
 
-                        <Typography variant="subtitle2" color="text.secondary">
-                            {(props.prioridad == "alta") ? (<p style={{color: 'red'}}>Prioridad {props.prioridad}</p>) : 
-                            (props.prioridad == "media") ? (<p style={{color: 'orange'}}>Prioridad {props.prioridad}</p>) : 
-                            (<p style={{color: 'green'}}>Prioridad {props.prioridad}</p>)}
+               {/* contenedor para la categoria, subcategoria, estatus y prioridad */}
+               <Grid style = {{ margin: '1px'}} xs={6} container item >
+                   {/* container de categoria y subcategoria */}
+                  <Grid container direction="column" justifyContent='center' alignItems='flex-start' item xs={7} style={{padding: 10}}>
+                    <Typography variant="body2" style={{color:'darkgrey'}}>categoria</Typography>
+                    <Typography variant="body1" >{props.categoria}</Typography>
+                    <Typography mt = {1} variant="body2" style={{color:'darkgrey'}}>subcategoria</Typography>
+                    <Typography variant="body1" >{props.subcategoria}</Typography>
+                  </Grid>
 
-                        </Typography>
-                        <Typography sx={{ cursor: 'pointer' }} variant="subtitle2">
-                        Estado: {props.estatus}
-                        </Typography>
-                        <ModalWindow id ={props.id}  titulo = {props.titulo} estatus={props.estatus} />
-                    </Grid>
-                </Grid>
+                    {/* container de prioridad y estatus */}
+                  <Grid container direction="column" justifyContent='space-around' alignItems='flex-start' style = {{ padding: 12}} item xs={5}>
+                    <Typography variant="body2" >
+                     { (props.prioridad == "alta") ? 
+                       (<p style={{color: 'red'}}>Prioridad {props.prioridad}</p>) : 
+                       (props.prioridad == "media") ? (<p style={{color: 'orange'}}>Prioridad {props.prioridad}</p>) : 
+                       (<p style={{color: 'green'}}>Prioridad {props.prioridad}</p>)}
+                    </Typography>
+                    
+                    <Typography mb={1} variant="body2" style={{color:'darkgrey'}}>Estatus {props.estatus}</Typography>
+
+                    <hr
+                    style={{
+                      backgroundColor: 'grey',
+                      height: '5px',
+                      width: '100%'
+                    }}
+                  />
+                  </Grid>
+               </Grid>          
+    
+               <Grid container justifyContent="center" alignItems="center" style = {{ backgroundColor: '#003366'}} xs item >
+                <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
+               </Grid>
+                
             </Grid>
         </Paper>
+        </Grid>
+      </Grid> 
         );
    
 }
 
-interface ModalProps {
-  titulo:string,
-  estatus:string,
-  id:string
-}
 
 const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   const [update, { isLoading, error }] = useUpdate();
@@ -140,7 +158,8 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                 notify("El reporte ha sido actualizado con éxito");
             },
             onError: (error) => {
-                notify("Ha ocurrido un error al actualizar el estatus del Reporte. Intente más tarde.", { type: 'error' });
+                console.log(error)
+                notify("Ha ocurrido un error al actualizar el estatus del Reporte. Intente más tarde.");
             }
           })
       }
@@ -150,20 +169,23 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
 
       setOpen(false)
     } 
-    
+  
+  if(error) notify("Ha ocurrido un error, Intente más tarde.")
   return (
     <div>
       <Button 
+       size="small"
        onClick={handleOpen}
-       variant="contained" 
-       color="primary" 
-       sx={{ mt: 2, ml: 1 }}>
+       disabled={isLoading}
+       sx={{ padding: '7px', color: 'black',  backgroundColor: '#F0FFF0', '&:hover': {
+        transform: 'scale(1.1)',
+        backgroundColor: '#F0FFF0'
+    }}}>
         Actualizar Estatus
       </Button>
 
       <Modal
         open={open}
-        // onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -171,12 +193,7 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
           <Typography id="modal-modal-title" variant="h4" component="h2">
             {titulo}
           </Typography>
-          {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-            Selecciona la prioridad
-          </Typography> */}
-          {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography> */}
+
           <FormControl>
             <FormLabel id="controlled-radio-buttons-group">Selecciona el estatus</FormLabel>
             <RadioGroup
@@ -191,21 +208,22 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
           </FormControl>
 
           <Button 
-            onClick={handleClick}
-            variant="contained" 
-            color="secondary" 
-            >
-              Guardar
+          onClick={handleClick}
+          variant="contained" 
+          color="secondary" 
+          >
+            Guardar
           </Button>
           
 
           <Button 
-            onClick={handleClose}
-            variant="contained" 
-            color="secondary" 
-            >
-              Cerrar
+          onClick={handleClose}
+          variant="contained" 
+          color="secondary" 
+          >
+            Cerrar
           </Button>
+
         </Box>
       </Modal>
     </div>
@@ -213,3 +231,43 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
 }
 
 export default Reportes
+
+
+// <Grid item xs={12} sm container>
+//                     <Grid item xs container direction="column" spacing={1}>
+//                         <Grid item xs>
+//                             <Typography gutterBottom variant="h6" component="div" display='block'>
+//                                 Título: {props.titulo}
+//                             </Typography>
+//                             <Typography variant="body2" gutterBottom>
+//                                 Descripción: {props.descripcion}
+//                             </Typography>
+//                             <Typography variant="body2" gutterBottom>
+//                                 Categoria: {props.categoria}
+//                             </Typography>
+//                             <Typography variant="body2" gutterBottom>
+//                                 Subcategoria: {props.subcategoria}
+//                             </Typography>
+//                         </Grid>
+//                     {/* <Grid item>
+//                     </Grid> */}
+//                     </Grid>
+//                     <Grid item>
+//                         <Typography variant="subtitle2" component="div">
+//                             {props.fecha}
+//                         </Typography>
+
+//                         <Typography variant="subtitle2" color="text.secondary">
+//                             {(props.prioridad == "alta") ? (<p style={{color: 'red'}}>Prioridad {props.prioridad}</p>) : 
+//                             (props.prioridad == "media") ? (<p style={{color: 'orange'}}>Prioridad {props.prioridad}</p>) : 
+//                             (<p style={{color: 'green'}}>Prioridad {props.prioridad}</p>)}
+
+//                         </Typography>
+
+//                         <Typography sx={{ cursor: 'pointer' }} variant="subtitle2">
+//                         Estado: {props.estatus}
+//                         </Typography>
+
+//                         <ModalWindow id ={props.id}  titulo = {props.titulo} estatus={props.estatus} />
+//                     </Grid>
+//                 </Grid>

@@ -218,11 +218,11 @@ export function addEndpoints(app, conn) {
             res.status(500).json({ error: 'Ocurrió un problema al modificar el estatus de. Reporte. Intentar más tarde' });
 
             dbConn.close();
-        
+           
         } catch (error) {
             console.error('Errorr:', error);          
             res.status(500).json({ error: 'Ocurrió un problema. Intentar más tarde' });
-        }
+        } 
     });
 
     // delete 	            DELETE localhost/Prefix/123
@@ -251,5 +251,5 @@ export function addEndpoints(app, conn) {
             return;
         }
     });
-
+  
 };

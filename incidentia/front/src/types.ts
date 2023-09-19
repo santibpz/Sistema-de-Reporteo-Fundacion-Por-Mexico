@@ -25,3 +25,9 @@ export interface Subcategoria {
     nombre: string
 }
 
+// declaracion de tipos de datos que conforman la Ventana para actualzar el estatus del reporte
+export interface ModalProps {
+    titulo:string,
+    estatus:string,
+    id:string
+  }

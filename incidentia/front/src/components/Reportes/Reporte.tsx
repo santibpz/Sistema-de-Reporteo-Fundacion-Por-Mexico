@@ -1,4 +1,4 @@
-import { Create, List } from 'react-admin';
+import { Create, List, Show } from 'react-admin';
 import Reportes from './Reportes';
 import ReporteForm from '../ReporteForm';
 
@@ -18,7 +18,17 @@ const ReporteCreate = () => {
     )
 }
 
+// componente para mostrar los reportes completos reportes
+const ReporteShow = () => {
+    return(
+        <Show>
+            
+        </Show>
+    )
+}
+
 export default {
     ReporteList,
-    ReporteCreate
+    ReporteCreate,
+    ReporteShow
 }
