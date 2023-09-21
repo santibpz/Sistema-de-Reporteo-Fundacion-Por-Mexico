@@ -10,7 +10,7 @@ import { dataProvider } from "./dataProvider";
 import { authProvider } from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte from "./components/Reportes/Reporte";
-
+//hola
 export const App = () => {
   return(
     <Admin 
