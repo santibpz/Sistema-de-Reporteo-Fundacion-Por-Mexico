@@ -30,6 +30,7 @@ const LoginPage = () => {
                           
             <Paper  style = {paperStyle}>
                 <Grid 
+                className = 'login'
                 container
                 spacing = {2}
                 style = {{padding: 20}}

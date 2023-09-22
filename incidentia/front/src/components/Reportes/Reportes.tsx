@@ -1,5 +1,5 @@
 import React from "react"
-import { useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
+import { Link, useCreate, useCreatePath, useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Paper, Typography, Button, Box, Modal} from "@mui/material"
 import { useState } from "react"
@@ -7,6 +7,8 @@ import { useState } from "react"
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
+
+import { ReporteShow } from "./Reporte"
 
 const Reportes = () => {
     // obtener los datos de la lista de reportes
@@ -38,11 +40,10 @@ const Reportes = () => {
 
 
 // declaracion del componente que representa un reporte
-const ReporteCard = (props:ReporteProps) => {
-   
+export const ReporteCard = (props:ReporteProps) => {
    
     return (
-      <Grid container item sm lg = 'auto' alignItems="center" justifyContent="center" >
+      <Grid className="reporte" container item sm lg = 'auto' alignItems="center" justifyContent="center" >
         <Grid item>
         <Paper
             sx={{
@@ -103,6 +104,7 @@ const ReporteCard = (props:ReporteProps) => {
     
                <Grid container justifyContent="center" alignItems="center" style = {{ backgroundColor: '#003366'}} xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
+                <Link to={`/reportes/show/${props.id}`}>Ver Reporte</Link>
                </Grid>
                 
             </Grid>
@@ -114,14 +116,13 @@ const ReporteCard = (props:ReporteProps) => {
 }
 
 
-const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
+export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   const [update, { isLoading, error }] = useUpdate();
   const notify = useNotify();
   const refresh = useRefresh();
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(estatus)
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => { 
     setOpen(false)
@@ -174,6 +175,7 @@ const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   return (
     <div>
       <Button 
+       className = "actualizarBtn"
        size="small"
        onClick={handleOpen}
        disabled={isLoading}
