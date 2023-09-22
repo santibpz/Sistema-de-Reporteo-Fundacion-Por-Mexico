@@ -39,45 +39,40 @@ test('El componente ReporteCard despliega la información del reporte', async ()
 
 
 
-// test('el botón \'actualizar estatus\' se encuentra definido en el componente ReporteCard', async () => {
+test('el botón \'actualizar estatus\' se encuentra definido en el componente ReporteCard', async () => {
   
-//     const {container } = render(
-//       <AdminContext>
-//             <ReporteCard 
-//              titulo = {reporte.titulo}
-//              categoria={reporte.categoria}
-//              subcategoria={reporte.subcategoria}
-//              prioridad = {reporte.prioridad}
-//              estatus = {reporte.estatus}
-//              fecha = {reporte.fecha}
-//             />
-//       </AdminContext>
-//     )
+    const {container } = render(
+      <AdminContext>
+            <ReporteCard 
+             titulo = {reporte.titulo}
+             categoria={reporte.categoria}
+             subcategoria={reporte.subcategoria}
+             prioridad = {reporte.prioridad}
+             estatus = {reporte.estatus}
+             fecha = {reporte.fecha}
+            />
+      </AdminContext>
+    )
 
-//     screen.debug()
+    const button = container.querySelector('.actualizarBtn')
+    expect(button).toBeDefined()
+  })
+
+
+
+
+
+  test('La pagina Login esta definida', async () => {
+
+    const {container } = render(
+      <AdminContext>
+            <LoginPage />
+      </AdminContext>
+    )
+
+    screen.debug()
   
-//     const button = container.querySelector('.actualizarBtn')
+    const loginPage = container.querySelector('.login')
   
-//     expect(button).toBeDefined()
-//   })
-
-
-
-
-
-//   test('La pagina Login esta definida', async () => {
-  
-
-
-//     const {container } = render(
-//       <AdminContext>
-//             <LoginPage />
-//       </AdminContext>
-//     )
-
-//     screen.debug()
-  
-//     const loginPage = container.querySelector('.login')
-  
-//     expect(loginPage).toBeDefined()
-//   })
+    expect(loginPage).toBeDefined()
+  })
