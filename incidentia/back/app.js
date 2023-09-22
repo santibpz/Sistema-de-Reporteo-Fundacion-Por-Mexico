@@ -8,6 +8,8 @@ import * as Incidentes from './endpointIncidencia.js';
 import * as TiposDeIncidentes from './endpointTiposDeIncidencia.js';
 import * as Categorias from './endpointCategorias.js';
 import * as Subcategorias from './endpointSubcategorias.js';
+import * as ReporteSemanal from './endpointReporteSemanal.js';
+import * as Auth from './endpointAuth.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongo from 'mongodb';
@@ -36,6 +38,8 @@ Incidentes.addEndpoints(app, connDB);
 TiposDeIncidentes.addEndpoints(app, connDB);
 Categorias.addEndpoints(app, connDB);
 Subcategorias.addEndpoints(app, connDB);
+ReporteSemanal.addEndpoints(app, connDB);
+Auth.addEndpoints(app, connDB);
 
 // middleware para manejar endpoints inexistentes y errores
 app.use(middleware.unknownEndpoint)

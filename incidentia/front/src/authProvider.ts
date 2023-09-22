@@ -1,31 +1,54 @@
-import { AuthProvider } from "react-admin";
+import axios from 'axios';
 
-export const authProvider: AuthProvider = {
-    // called when the user attempts to log in
-    login: ({ username }) => {
-        localStorage.setItem("username", username);
-        // accept all username/password combinations
-        return Promise.resolve();
+async function hashPasswordWithSalt(password: string, salt: string) {
+    const combined = password + salt;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(combined);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashedPassword;
+  }
+
+const authProvider = {
+    login: ({ matricula, password }: { matricula: string; password: string }) => {
+        
+        return hashPasswordWithSalt(password,'Sal' )
+        .then(hashedPassword => {
+            return axios.post('http://localhost:8081/login', { matricula, hashedPassword })
+            .then(response => {
+                localStorage.setItem('username', matricula);
+                return Promise.resolve();
+            })
+            .catch(error => {
+                return Promise.reject();
+            });
+        })
+        .catch(error => {
+          console.error('Error al hashear la contraseña:', error);
+        });         
     },
-    // called when the user clicks on the logout button
+
     logout: () => {
-        localStorage.removeItem("username");
+        localStorage.removeItem('username');
         return Promise.resolve();
     },
-    // called when the API returns an error
-    checkError: ({ status }: { status: number }) => {
+        checkAuth: () =>
+        localStorage.getItem('username') ? Promise.resolve() : Promise.reject(),
+    checkError:  (error) => {
+        const status = error.status;
         if (status === 401 || status === 403) {
-            localStorage.removeItem("username");
+            localStorage.removeItem('username');
             return Promise.reject();
         }
+        // other error code (404, 500, etc): no need to log out
         return Promise.resolve();
     },
-    // called when the user navigates to a new location, to check for authentication
-    checkAuth: () => {
-        return localStorage.getItem("username")
-            ? Promise.resolve()
-            : Promise.reject();
-    },
-    // called when the user navigates to a new location, to check for permissions / roles
-    getPermissions: () => Promise.resolve(),
+    getIdentity: () =>
+        Promise.resolve({
+            id: localStorage.getItem('username'),
+            fullName: localStorage.getItem('username'),
+        }),
+    getPermissions: () => Promise.resolve(''),
 };
+export default authProvider;

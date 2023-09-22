@@ -21,7 +21,7 @@ const LoginPage = () => {
     const handleSubmit = (e: Event) => {
         e.preventDefault();
 
-        login({matricula})
+        login({matricula, password })
         .catch(() => notify('Matrícula o Contraseña equivocada'))
 
 
