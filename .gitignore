@@ -42,6 +42,13 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Package-lock.json
+package-lock.json
+
+#.env
+incidentia/front/.env
+incidentia/back/.env
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -127,4 +134,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-incidentia/back/.env
