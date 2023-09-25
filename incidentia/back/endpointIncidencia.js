@@ -1,13 +1,14 @@
 import { ObjectId } from 'mongodb';
+import { mainPipeline, findOnePipeline } from './utils/pipelines.js';
 
 const prefix = "/reportes";
-const dbCollection = "reportes";
-
-export function addEndpoints(app, conn) {
+const dbCollection = "reportes";   
+        
+export function addEndpoints(app, conn) {   
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
-    app.get(prefix + "", async (req, res) => {
+    app.get(prefix + "", async (req, res) => {  
         // cosas de todos los endpoints
-        try {
+        try { 
             // conn con db   
             let dbFig = await conn();
             let dbConn = dbFig.conn;
@@ -16,49 +17,9 @@ export function addEndpoints(app, conn) {
 
             try {
 
-                const pipeline = [
-                    // stage 1: obtener las referencias a los objetos con valor "ObjectId" de categoria
-                    {$lookup: {
-                        from: 'categorias',
-                        localField: 'categoria',
-                        foreignField: '_id',
-                        as: 'categoria'
-                    }
-                    },
-                    // stage 2: obtener las referencias a los objetos con valor "ObjectId" de subcategoria
-                    {$lookup: {
-                        from: 'subcategorias',
-                        localField: 'subcategoria',
-                        foreignField: '_id',
-                        as: 'subcategoria'
-                    }
-                    },
-                    // stage 3: proyectar la información que se enviará al cliente
-                    {$project: {
-                        id: "$_id",
-                        _id: 0,
-                        titulo: 1,
-                        descripcion: 1,
-                        categoria: {
-                            $getField: {                         
-                              field: 'nombre',
-                              input: { $arrayElemAt: [ "$categoria", 0 ] }
-                            }
-                          } ,
-                        subcategoria:{
-                            $getField: {
-                              field: 'nombre',
-                              input: { $arrayElemAt: [ "$subcategoria", 0 ] }
-                            }
-                          },
-                        estatus: 1,
-                        prioridad: 1,
-                        fecha: 1
-                    }}
-                ]
 
                 // el query a la base de datos que obtiene la informacion a enviar al cliente
-                const queryCursor = await db.aggregate(pipeline)
+                const queryCursor = await db.aggregate(mainPipeline)
 
                 // convertimos el resultado del query a un arreglo con todos los objetos que representan cada reporte
                 let data = await queryCursor.toArray()
@@ -66,7 +27,7 @@ export function addEndpoints(app, conn) {
                 res.set('Access-Control-Expose-Headers', 'Content-Range');
                 res.set('Content-Range', data.length);
                                                  
-                res.json(data);
+                res.status(200).json(data);
             } catch (error) {
                 console.error('Error:', error);    
                 res.status(500).json({ error: 'Internal server error' });
@@ -80,7 +41,7 @@ export function addEndpoints(app, conn) {
     });
 
     // getOne 	            GET localhost/Prefix/123
-    app.get(prefix + "/:_id", async (req, res) => {
+    app.get(prefix + "/:id", async (req, res) => {
         // cosas de todos los endpoints
         try {
             // conn con db
@@ -89,17 +50,23 @@ export function addEndpoints(app, conn) {
             let db = dbFig.db.collection(dbCollection);
 
             // cosas del endpoint
-            try {
-                const query = {id: parseInt(req.params._id)};
+            try {  
+                console.log(req.params.id)
 
-                const result = await db.findOne(query);
+                const pipeline = findOnePipeline(new ObjectId(req.params.id))
 
-                if (!result) {
-                    res.status(404).json({ error: 'Resource not found' });
-                    return;
-                }
+                const queryCursor = await db.aggregate(pipeline)
+                let data = await queryCursor.toArray()
 
-                res.json(result);
+                // if (!result) {
+                //     res.status(404).json({ error: 'Resource not found' });
+                //     return; 
+                // }
+
+                data.length > 1 ?   
+                res.status(404).json({ error: 'Hubo un problema encontrando con la visualización de reporte' }) :
+                res.json(data[0]);
+
             } catch (error) {
                 console.error('Error:', error);
                 res.status(500).json({ error: 'Internal server error' });
