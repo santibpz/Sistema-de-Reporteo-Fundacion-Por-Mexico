@@ -1,12 +1,18 @@
+import React from "react";
 import {
   Admin,
   Resource,
+  Menu,
+  MenuItemLink,
+  Layout,
+  Sidebar,
   CustomRoutes
 } from "react-admin";
 import { i18nProvider } from "./i18nProvider";
 import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
+
 import Reporte from "./components/Reportes/Reporte";
 
 import { Route } from 'react-router-dom';
@@ -35,4 +41,3 @@ export const App = () => {
     </Admin>  
   )
 }
-
