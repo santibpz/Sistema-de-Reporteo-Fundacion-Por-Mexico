@@ -6,9 +6,9 @@ const dbCollection = "comentarios";
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
     app.get(prefix + "", async (req, res) => {
-        try {
+        try {    
             // conexion con db
-            let dbFig = await conn();
+            let dbFig = await conn();   
             let dbConn = dbFig.conn; // cliente
             let db = dbFig.db.collection(dbCollection);
 

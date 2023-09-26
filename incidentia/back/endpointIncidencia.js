@@ -13,7 +13,7 @@ export function addEndpoints(app, conn) {
             let dbFig = await conn();
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
-
+  
 
             try {
 
