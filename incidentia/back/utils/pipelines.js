@@ -15,6 +15,12 @@ export const mainPipeline = [
         as: 'subcategoria'
     }
     },
+    {$lookup: {
+      from: 'comentarios',
+      localField: 'comentarios',
+      foreignField: '_id',
+      as: 'comentarios'
+    }},
     // stage 3: proyectar la información que se enviará al cliente
     {$project: {
         id: "$_id",
@@ -35,6 +41,7 @@ export const mainPipeline = [
           },
         estatus: 1,
         prioridad: 1,
+        comentarios: 1,
         fecha: 1
     }}
 ]
