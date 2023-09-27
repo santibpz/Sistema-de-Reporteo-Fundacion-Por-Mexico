@@ -16,15 +16,13 @@ export function addEndpoints(app, conn) {
         const dbFig = await conn();
         const db = dbFig.db.collection(dbCollection);
 
-        const { matricula, password } = request.body;
+        const { Fname, matricula, password, rol } = request.body;
         try {      
-            console.log(matricula)
-            console.log(password)
-            const result = await db.find({ nombre: matricula }).toArray();
+            const result = await db.find({ matricula: matricula }).toArray();
             if (result.length == 0) {
                 bcrypt.genSalt(10, (error, salt)=>{
                     bcrypt.hash(password, salt, async(error, hash)=>{
-                        let usuarioAgregar={"nombre": matricula, "contra": hash};
+                        let usuarioAgregar={"nombreC": Fname,"matricula": matricula, "contra": hash, "rol": rol};
                         const data = await db.insertOne(usuarioAgregar);
                         response.sendStatus(200)
                     })
@@ -45,7 +43,7 @@ export function addEndpoints(app, conn) {
         const db = dbFig.db.collection(dbCollection);
         const { matricula, password } = request.body;
         try {      
-            let result = await db.findOne({ nombre: matricula });
+            let result = await db.findOne({ matricula: matricula });
             if (result.length == 0) {
                 response.sendStatus(401)
             } else {
@@ -53,7 +51,7 @@ export function addEndpoints(app, conn) {
                     console.log(password)
                     if(resultB){
                         let token=jwt.sign({usuario: result.matricula}, "secretKey", {expiresIn: 600});
-                        response.json({"token": token, "matricula": matricula})
+                        response.json({"token": token, "matricula": result.matricula, "nombreC": result.nombreC, "rol": result.rol})
                     }else{
                         response.sendStatus(401)
                     }
