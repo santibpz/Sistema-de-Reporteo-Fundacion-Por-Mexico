@@ -8,6 +8,7 @@ import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte from "./components/Reportes/Reporte";
+import Registrarse from "./registrarse";
 
 import { Route } from 'react-router-dom';
 
@@ -31,6 +32,7 @@ export const App = () => {
         />  
       <CustomRoutes>
             <Route path="reportes/show/:id" element={<ReporteShow />} />
+            <Route path="/registrarse"  element={<Registrarse />}/>
       </CustomRoutes>
     </Admin>  
   )

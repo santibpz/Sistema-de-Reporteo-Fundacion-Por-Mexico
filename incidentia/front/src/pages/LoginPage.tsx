@@ -68,6 +68,11 @@ const LoginPage = () => {
                             Olvidé mi contraseña
                         </Link>
                     </Typography>
+                    <Typography style = {{paddingTop: 5, margin: 'auto'}}>
+                        <Link href="/registrarse" sx = {{textDecoration: 'none'}}>
+                            Registrarse
+                        </Link>
+                    </Typography>
                     </Grid>
 
                 </Grid>
