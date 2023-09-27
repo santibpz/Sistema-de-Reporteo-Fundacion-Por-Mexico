@@ -8,6 +8,12 @@ const authProvider = {
                 alert(JSON.stringify(response.data.matricula))
                 localStorage.setItem('username', JSON.stringify(response.data.matricula));
                 localStorage.setItem('auth', JSON.stringify(response.data.token));
+                localStorage.setItem('nombreC', JSON.stringify(response.data.nombreC));
+                localStorage.setItem('rol', JSON.stringify(response.data.rol));
+                alert(JSON.stringify(response.data.matricula))
+                alert(JSON.stringify(response.data.token))
+                alert(JSON.stringify(response.data.nombreC))
+                alert(JSON.stringify(response.data.rol))
                // localStorage.setItem('identity', JSON.stringify({"id": auth.id, "fullName": auth.fullName}));
                 return Promise.resolve();
             })
@@ -22,6 +28,8 @@ const authProvider = {
     logout: () => {
         localStorage.removeItem('username');
         localStorage.removeItem('auth');
+        localStorage.removeItem('nombreC');
+        localStorage.removeItem('rol');
         return Promise.resolve();
     },
     checkAuth: ()=>{
@@ -37,6 +45,8 @@ const authProvider = {
         if(status===401|| status===403){
             localStorage.removeItem("auth");
             localStorage.removeItem("username");
+            localStorage.removeItem('nombreC');
+            localStorage.removeItem('rol');
             return Promise.reject();
         }
         return Promise.resolve();
@@ -44,7 +54,8 @@ const authProvider = {
     getIdentity: () =>
         Promise.resolve({
             id: localStorage.getItem('username'),
-            fullName: localStorage.getItem('username'),
+            fullName: localStorage.getItem('nombreC'),
+            rol: localStorage.getItem('rol')
         }),
     getPermissions: ()=>{return Promise.resolve()},
 };
