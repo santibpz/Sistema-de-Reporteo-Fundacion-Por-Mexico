@@ -1,47 +1,44 @@
 import axios from 'axios';
 
-async function hashPasswordWithSalt(password: string, salt: string) {
-    const combined = password + salt;
-    const encoder = new TextEncoder();
-    const data = encoder.encode(combined);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashedPassword;
-  }
-
 const authProvider = {
-    login: ({ matricula, password }: { matricula: string; password: string }) => {
-        
-        return hashPasswordWithSalt(password,'Sal' )
-        .then(hashedPassword => {
-            return axios.post('http://localhost:8081/login', { matricula, hashedPassword })
+    login: async ({ matricula, password }: { matricula: string; password: string }) => {
+        try {
+            return await axios.post('http://localhost:8081/login', { matricula, password })
             .then(response => {
-                localStorage.setItem('username', matricula);
+                alert(JSON.stringify(response.data.matricula))
+                localStorage.setItem('username', JSON.stringify(response.data.matricula));
+                localStorage.setItem('auth', JSON.stringify(response.data.token));
+               // localStorage.setItem('identity', JSON.stringify({"id": auth.id, "fullName": auth.fullName}));
                 return Promise.resolve();
             })
             .catch(error => {
-                return Promise.reject();
+                return Promise.reject();    
             });
-        })
-        .catch(error => {
-          console.error('Error al hashear la contraseña:', error);
-        });         
+        } catch (error) {
+            return Promise.reject();
+        }
     },
 
     logout: () => {
         localStorage.removeItem('username');
+        localStorage.removeItem('auth');
         return Promise.resolve();
     },
-        checkAuth: () =>
-        localStorage.getItem('username') ? Promise.resolve() : Promise.reject(),
-    checkError:  (error) => {
-        const status = error.status;
-        if (status === 401 || status === 403) {
-            localStorage.removeItem('username');
+    checkAuth: ()=>{
+        const currentPath = window.location.pathname;
+    if (currentPath === '/registrarse') {
+        return Promise.resolve();
+    }else{
+        return localStorage.getItem("auth")? Promise.resolve(): Promise.reject();
+    }
+    },
+    checkError: (error) =>{
+        const status=error.status;
+        if(status===401|| status===403){
+            localStorage.removeItem("auth");
+            localStorage.removeItem("username");
             return Promise.reject();
         }
-        // other error code (404, 500, etc): no need to log out
         return Promise.resolve();
     },
     getIdentity: () =>
@@ -49,6 +46,6 @@ const authProvider = {
             id: localStorage.getItem('username'),
             fullName: localStorage.getItem('username'),
         }),
-    getPermissions: () => Promise.resolve(''),
+    getPermissions: ()=>{return Promise.resolve()},
 };
 export default authProvider;

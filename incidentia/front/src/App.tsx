@@ -14,6 +14,7 @@ import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import ChartPage from "./pages/ChartPage";
 import Reporte from "./components/Reportes/Reporte";
+import Registrarse from "./registrarse";
 import { Route } from 'react-router-dom';
 import { ReporteShow } from "./components/Reportes/Reporte"
 const CRoutes = [
@@ -43,6 +44,7 @@ export const App = () => {
       />
 
       <CustomRoutes>
+         <Route path="/registrarse"  element={<Registrarse />}/>
          < Route path="reportes/show/:id" Component={ReporteShow} />,
          < Route path="chart" Component={ChartPage} />
       </CustomRoutes>
