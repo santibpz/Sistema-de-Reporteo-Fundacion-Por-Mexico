@@ -13,7 +13,7 @@ export function addEndpoints(app, conn) {
             let dbFig = await conn();
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
-
+  
 
             try {
 
@@ -144,6 +144,7 @@ export function addEndpoints(app, conn) {
                     categoria: new ObjectId(data.categoria), 
                     subcategoria: new ObjectId(data.subcategoria),
                     estatus: "pendiente",
+                    comentarios: [],
                     fecha: new Date()   
                 }
                 const result = await db.insertOne(reporte);
@@ -152,7 +153,7 @@ export function addEndpoints(app, conn) {
                     res.status(201).json({id: result.insertedId}); // 201 Created
                 } else {
                     res.status(500).json({ error: 'Failed to create the resource' });
-                }      
+                }          
             }
             catch (error) {
                 console.error('Error:', error);

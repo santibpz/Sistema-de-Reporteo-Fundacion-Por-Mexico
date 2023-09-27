@@ -3,43 +3,62 @@ import { Link, useCreate, useCreatePath, useListContext, useNotify, useRefresh, 
 import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Paper, Typography, Button, Box, Modal} from "@mui/material"
 import { useState } from "react"
-
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
-
 import { ReporteShow } from "./Reporte"
+import TextField from '@mui/material/TextField';
 
 const Reportes = () => {
-    // obtener los datos de la lista de reportes
-    const {data, isLoading} = useListContext()
-    if (isLoading) return null
-    return(
-        // regresar todos los reportes que se representan como un componente ReporteCard
-        <Grid 
-         container 
-         spacing={1} 
-         columnSpacing={2}
-         rowSpacing={2}
-         style={{padding: 15}}
-         >
-            {data.map(reporte => <ReporteCard 
-                                  key = {reporte.id}
-                                  id = {reporte.id}
-                                  titulo = {reporte.titulo}
-                                  descripcion = {reporte.descripcion}
-                                  categoria={reporte.categoria}
-                                  subcategoria={reporte.subcategoria}
-                                  prioridad = {reporte.prioridad}
-                                  estatus = {reporte.estatus}
-                                  fecha = {reporte.fecha} />)}
-        </Grid>
-    )
+  //Obtener los datos de la lista de reportes
+  const { data, isLoading } = useListContext();
+  const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
+  if (isLoading) return null;
 
-}
+  // Filtrar los reportes por nombre o categoría
+  const filteredData = data.filter((reporte) => {
+    const titulo = reporte.titulo || ""; //Se inicializa la variable que almacena el título del reporte, si no existe se declara vacía
+    const categoria = reporte.categoria || ""; //Se inicializa la variable que almacena la categoría del reporte, si no existe se declara vacía
 
+    return (
+      titulo.toLowerCase().includes(searchTerm.toLowerCase()) || categoria.toLowerCase().includes(searchTerm.toLowerCase()) //Se convierten a minúsculas los valores de búsqueda y los valores de los reportes para que no haya distinción entre mayúsculas y minúsculas
+    );
+  });
 
-// declaracion del componente que representa un reporte
+  return ( //Se muestra el input de búsqueda y los reportes filtrados
+    <div>
+      <TextField
+        label="Buscar por nombre o categoría"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <Grid
+        container
+        spacing={1}
+        columnSpacing={2}
+        rowSpacing={2}
+        style={{ padding: 15 }}
+      >
+        {filteredData.map((reporte) => (
+          <ReporteCard
+            key={reporte.id}
+            id={reporte.id}
+            titulo={reporte.titulo}
+            descripcion={reporte.descripcion}
+            categoria={reporte.categoria}
+            subcategoria={reporte.subcategoria}
+            prioridad={reporte.prioridad}
+            estatus={reporte.estatus}
+            fecha={reporte.fecha}
+          /> //Se mapean los reportes filtrados
+        ))}
+      </Grid>
+    </div>
+  );
+};
+
+//Declaracion del componente que representa un reporte
 export const ReporteCard = (props:ReporteProps) => {
    
     return (
