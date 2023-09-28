@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PollIcon from '@mui/icons-material/Poll';
 import { useParams } from 'react-router-dom'
 
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 import img from "../../images/logo-fundacion-por-mexico.png"
 
@@ -28,21 +28,20 @@ const ReporteCreate = () => {
         </Create>
     )
 }
-     
+
 // componente para mostrar los reportes completos reportes
 export const ReporteShow = () => {
     const [record, setRecord] = useState<Object>()
     const params = useParams()
-
-    console.log("this is params, ", params)
-    
     const { data, isLoading } = useGetOne('reportes', { id:params.id }, {
         onSuccess: (response) => setRecord(response)
     });
-    console.log('daaaaaaaataaaaaa', data)
+
+    
     if (isLoading) return <span>Loading</span>
     return (
-        <RecordContextProvider value={data}>
+        <RecordContextProvider value={record}>
+
             {/* contenedor raiz de la vista del reporte */}
             <Grid container style={{backgroundColor:'', padding: 1}}>
                 
@@ -129,7 +128,7 @@ export const ReporteShow = () => {
 
                             {/* botón para agregar seguimiento/comentario al reporte */}
                             <Grid container item justifyContent='center' xs = {3} style = {{backgroundColor:'', padding: 8}}>
-                                <Button variant = 'contained' sx={{backgroundColor:'#002D62'}}>Agregar Seguimiento</Button>
+                                <Button onClick={addFollowUp} variant = 'contained' sx={{backgroundColor:'#002D62'}}>Agregar Seguimiento</Button>
                             </Grid>
                         </Grid>
                       </Grid>

@@ -139,6 +139,8 @@ export function addEndpoints(app, conn) {
     
                 const data = req.body
 
+                console.log(data)
+
                 const reporte = {
                     ...data,
                     categoria: new ObjectId(data.categoria), 
@@ -198,7 +200,7 @@ export function addEndpoints(app, conn) {
         // cosas de todos los endpoints
         try {
             // conn con db
-            let dbFig = await conn();
+            let dbFig = await conn();   
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
 
