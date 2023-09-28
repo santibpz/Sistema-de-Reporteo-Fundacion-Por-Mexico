@@ -10,10 +10,6 @@ const authProvider = {
                 localStorage.setItem('auth', JSON.stringify(response.data.token));
                 localStorage.setItem('nombreC', JSON.stringify(response.data.nombreC));
                 localStorage.setItem('rol', JSON.stringify(response.data.rol));
-                alert(JSON.stringify(response.data.matricula))
-                alert(JSON.stringify(response.data.token))
-                alert(JSON.stringify(response.data.nombreC))
-                alert(JSON.stringify(response.data.rol))
                // localStorage.setItem('identity', JSON.stringify({"id": auth.id, "fullName": auth.fullName}));
                 return Promise.resolve();
             })

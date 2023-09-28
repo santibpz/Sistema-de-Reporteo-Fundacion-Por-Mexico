@@ -9,6 +9,7 @@ import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte from "./components/Reportes/Reporte";
 import Registrarse from "./registrarse";
+import ChartPage from "./pages/ChartPage";
 
 import { Route } from 'react-router-dom';
 
@@ -30,9 +31,14 @@ export const App = () => {
        list={Reporte.ReporteList} 
        create = {Reporte.ReporteCreate} 
         />  
+      <Resource 
+       name="ChartPage" 
+       list={ChartPage} 
+        />  
+
       <CustomRoutes>
             <Route path="reportes/show/:id" element={<ReporteShow />} />
-            <Route path="/registrarse"  element={<Registrarse />}/>
+            <Route path="/chart" element={<ChartPage />} />
       </CustomRoutes>
       <CustomRoutes noLayout>
         <Route path="/registrarse"  element={<Registrarse />}/>
