@@ -2,9 +2,10 @@ import React, {useState} from "react";
 import axios from 'axios';
 import { Grid, Paper, Avatar, TextField, Button, Typography, 
         Link, FormControl, InputLabel, Select, MenuItem} from "@mui/material"
+        import { useNotify } from 'react-admin';
 
 const Registrarse = () =>{
-
+    const notify = useNotify()
     const roles = ['Aula', 'Nacional', 'Ejecutivo'];
 
     const paperStyle={
@@ -32,9 +33,12 @@ const Registrarse = () =>{
         // Convert the form data to JSON
         return axios.post('http://localhost:8081/registrarse', {Fname: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
         .then(response => {
+            console.log(response)
+            notify(response.data.message)
             return Promise.resolve();
         })
         .catch(error => {
+            notify('Error creando usuario')
             return Promise.reject();
         });       
     };
@@ -101,7 +105,7 @@ const Registrarse = () =>{
                         variant = 'contained' 
                         fullWidth>Entrar</Button>
                         <Typography style = {{paddingTop: 5, margin: 'auto'}}>
-                        <Link href="#" sx = {{textDecoration: 'none'}}>
+                        <Link href="#/login" sx = {{textDecoration: 'none'}}>
                             Iniciar sesión
                         </Link>
                     </Typography>

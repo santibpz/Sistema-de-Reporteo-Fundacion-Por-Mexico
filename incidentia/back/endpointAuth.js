@@ -24,16 +24,17 @@ export function addEndpoints(app, conn) {
                     bcrypt.hash(password, salt, async(error, hash)=>{
                         let usuarioAgregar={"nombreC": Fname,"matricula": matricula, "contra": hash, "rol": rol};
                         const data = await db.insertOne(usuarioAgregar);
-                        response.sendStatus(200)
+                        response.status(200).json({ message: 'Credenciales guardadas con éxito' });
                     })
                 })
             } else {
-                response.sendStatus(401)
+                console.log("error1")
+                throw new Error('Usuario existente');
             }
 
         } catch(err) {
-            console.error(err);
-            response.sendStatus(500)
+            console.log("error2")
+            response.status(401).json({ message: 'Error creando usuario' });
         }
     });
 
@@ -45,21 +46,22 @@ export function addEndpoints(app, conn) {
         try {      
             let result = await db.findOne({ matricula: matricula });
             if (result.length == 0) {
-                response.sendStatus(401)
+                response.status(401).json({ message: 'Usuario inexistente' });
             } else {
                 bcrypt.compare(password, result.contra, (error, resultB)=>{
-                    console.log(password)
                     if(resultB){
                         let token=jwt.sign({usuario: result.matricula}, "secretKey", {expiresIn: 600});
                         response.json({"token": token, "matricula": result.matricula, "nombreC": result.nombreC, "rol": result.rol})
                     }else{
-                        response.sendStatus(401)
+                        console.log("error1")
+                        throw new Error('Credenciales erroneas');
                     }
                 })
             }
 
         } catch(err) {
-            response.sendStatus(401)
+            console.log("error2")
+            response.status(401).json({ message: 'Error al iniciar sesión' });
         }
     });
 };

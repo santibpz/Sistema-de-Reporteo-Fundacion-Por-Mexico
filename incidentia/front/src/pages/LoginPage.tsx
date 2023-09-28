@@ -69,7 +69,7 @@ const LoginPage = () => {
                         </Link>
                     </Typography>
                     <Typography style = {{paddingTop: 5, margin: 'auto'}}>
-                        <Link href="/registrarse" sx = {{textDecoration: 'none'}}>
+                        <Link href="#/registrarse" sx = {{textDecoration: 'none'}}>
                             Registrarse
                         </Link>
                     </Typography>
