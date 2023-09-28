@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest --watchAll --verbose",
-    "start": "nodemon app.js -L"
+    "start": "node app.js",
+    "debug": "nodemon app.js -L"
   },
   "author": "Dr Hax",
   "license": "ISC",
