@@ -20,9 +20,9 @@ export const App = () => {
   
   return(
     <Admin 
-      // loginPage = {LoginPage} 
+      loginPage = {LoginPage} 
       dataProvider={dataProvider} 
-      // authProvider = {authProvider} 
+      authProvider = {authProvider} 
       i18nProvider={i18nProvider}
       >
 
