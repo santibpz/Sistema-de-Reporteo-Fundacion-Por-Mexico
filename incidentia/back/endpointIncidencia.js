@@ -41,7 +41,7 @@ export function addEndpoints(app, conn) {
     });
 
     // getOne 	            GET localhost/Prefix/123
-    app.get(prefix + "/:id", async (req, res) => {
+    app.get(prefix + "/:id", async (req, res, next) => {
         // cosas de todos los endpoints
         try {
             // conn con db
@@ -58,13 +58,8 @@ export function addEndpoints(app, conn) {
                 const queryCursor = await db.aggregate(pipeline)
                 let data = await queryCursor.toArray()
 
-                // if (!result) {
-                //     res.status(404).json({ error: 'Resource not found' });
-                //     return; 
-                // }
-
                 data.length > 1 ?   
-                res.status(404).json({ error: 'Hubo un problema encontrando con la visualización de reporte' }) :
+                res.status(404).json({ error: 'Hubo un problema con la visualización del reporte' }) :
                 res.json(data[0]);
 
             } catch (error) {

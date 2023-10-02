@@ -13,6 +13,15 @@ export interface ReporteProps {
 
 }
 
+// declaracion de tipos de datos que conforman el Comentario
+export interface ComentarioProps {
+    id:string,
+    comentario: string,
+    fecha: string,
+    refetchComentarios: () => void
+}
+    
+
 // declaracion de tipos de datos que conforman la Categoria del reporte
 export interface Categoria {
     id: string
