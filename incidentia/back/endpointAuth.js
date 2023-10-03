@@ -18,6 +18,7 @@ export function addEndpoints(app, conn) {
         try {
             // Consulta coordinador
             let result = await db.findOne({ matricula: matricula });
+            console.log(result)
             if (result.length == 0) {
                 response.sendStatus(401)
             } else {
@@ -25,9 +26,10 @@ export function addEndpoints(app, conn) {
                 
                 bcrypt.compare(password, result.contra, (error, resultB)=>{
                     if(resultB){
-                        let token= makeNewToken(result.matricula);
+                        let token= makeNewToken({id: result._id, nombre: result.nombreC}); // considerar si mandar matricula o nombreC
+                        const {matricula, nombreC, rol} = result
                         //retorna data de usuario para AAA
-                        response.json({"token": token, "matricula": result.matricula, "nombreCompleto": result.nombreCompleto, "rol": result.rol, "message": "Credenciales verificadas"})
+                        response.json({token, matricula, nombreC, rol})
                     }else{
                         response.sendStatus(401)
                     }
@@ -45,6 +47,8 @@ export function addEndpoints(app, conn) {
         const db = dbFig.db.collection(dbCollection);
 
         const { nombreCompleto, matricula, password, rol } = request.body;
+
+        console.log(request.body);
 
         // Checks para la generación del nuevo usuario
 
@@ -91,6 +95,7 @@ export function addEndpoints(app, conn) {
             }
 
         } catch(err) {
+
             response.status(401).json({ message: 'Error creando usuario' });
         }
     });

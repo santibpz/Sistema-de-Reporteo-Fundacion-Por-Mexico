@@ -4,9 +4,11 @@ let password = "PasswordMUYSEGURO123!";
 
 // creation
 
-export function makeNewToken(user) {
+export function makeNewToken(userData) {
+    const { id, nombre } = userData;
     const payload = {
-        name: user,
+        id,
+        nombre,
         iat: Date.now(),
         // expire in 60 minutes
         exp: Date.now() + 1000 * 60 * 60,
@@ -24,9 +26,10 @@ export function verifyToken(token) {
 }
 
 export function verifyTokenFromReq(req) {
-    let token = req.headers.authorization.split(" ")[1];
+    const { authorization:token } = req.headers
     let decoded = verifyToken(token);
-    return decoded;
+    console.log("this is decoded ", decoded)
+    return decoded
 }
 
 export function getUsernameFromJWT(req) {

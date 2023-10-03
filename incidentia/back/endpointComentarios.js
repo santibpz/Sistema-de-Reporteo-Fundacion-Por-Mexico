@@ -1,28 +1,26 @@
 // endpoints para comentarios
 import { ObjectId } from 'mongodb';
+import { verifyTokenFromReq } from './utils/JWTUtils.js';
+import { comentariosPipeline } from './utils/pipelines.js';
 const prefix = "/comentarios";
 const dbCollection = "comentarios";
 
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
     app.get(`${prefix}/:id`, async (req, res) => {
-        try {    
-            // conexion con db     
-            let dbFig = await conn();   
-            let db = dbFig.db.collection(dbCollection);
+        try {
 
-            // extraemos id 
+            // conexion con db     
+            let dbFig = await conn()   
+            let db = dbFig.db.collection(dbCollection)
+
+            // extraemos id
             const { id } = req.params
 
-            const dataProjection = {
-                id: "$_id",
-                _id: 0,
-                comentario: 1,
-                fecha:1
-            }
-
             // consultamos los comentarios del reporte con el id enviada en la solicitud
-            const result = await db.find({reporte: new ObjectId(id)}).project(dataProjection).toArray()
+            const cursor = await db.aggregate(comentariosPipeline( new ObjectId(id)))
+
+            const result = await cursor.toArray()
             
             // regresamos el resultado del query
             res.json(result) 
@@ -41,15 +39,11 @@ export function addEndpoints(app, conn) {
             let dbFig = await conn();    
             let db = dbFig.db.collection(dbCollection);
            
+            // obtenemos el token de la solicitud para saber quien está publicando el comentario
+            const decodedToken = verifyTokenFromReq(req)
 
             // recibimos el id del reporte al que se le agrega el comentario y el contenido del comentario
             const {reporteId, comentario} = req.body
-
-            console.log(req.body)
-
-
-            console.log("CHECARRR: ", reporteId)
-
 
             // checar que el id del reporte al que se añadirá comentario sea valido
             if(new ObjectId(reporteId)) {
@@ -58,6 +52,7 @@ export function addEndpoints(app, conn) {
                 const comentarioData = {
                     comentario,
                     reporte: new ObjectId(reporteId),
+                    publicadoPor: new ObjectId(decodedToken.id),
                     fecha: new Date()    
                 }
 

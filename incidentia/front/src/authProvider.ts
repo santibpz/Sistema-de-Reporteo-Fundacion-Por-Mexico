@@ -9,6 +9,7 @@ const authProvider = {
             // Solicitud http post de ruta login
             return await axios.post('http://localhost:8081/login', { matricula, password })
             .then(response => {
+
                 // Se guarda response en almacenamiento de navegador cuando status positivo
                 localStorage.setItem('username', response.data.matricula);
                 localStorage.setItem('auth', response.data.token);
@@ -44,7 +45,7 @@ const authProvider = {
     if (currentPath === '/registrarse') {
         return Promise.resolve();
     }else{
-        return localStorage.getItem("auth")? Promise.resolve(): Promise.reject();
+        return localStorage.getItem("auth") ? Promise.resolve(): Promise.reject();
     }
     },
     checkError: (error: any) =>{

@@ -21,7 +21,8 @@ const LoginPage = () => {
     const handleSubmit = (e: Event) => {
         e.preventDefault();
         login({matricula, password })
-        .catch((error) => notify(error.response.data.message))
+         .then(() => notify('Acceso Autorizado', {type: 'success'}))
+         .catch((error) => notify(error.response.data.message, {type: 'error'}))
     }
     return(
                           
