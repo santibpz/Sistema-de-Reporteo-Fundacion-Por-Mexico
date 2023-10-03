@@ -44,6 +44,8 @@ export function addEndpoints(app, conn) {
 
         const { Fname, matricula, password, rol } = request.body;
 
+        console.log(request.body);
+
         // Checks para la generación del nuevo usuario
 
         // Checar si hay datos
@@ -86,7 +88,7 @@ export function addEndpoints(app, conn) {
             }
 
         } catch(err) {
-            console.log("error2")
+            console.log(err)
             response.status(401).json({ message: 'Error creando usuario' });
         }
     });

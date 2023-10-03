@@ -36,10 +36,11 @@ const Comentarios = ({ comentarios, refetchComentarios }: ComentariosType) => {
             <Grid container item justifyContent='center' alignItems='center' xs = {12} sx = {{backgroundColor: '', height:'90%', p: 1}}>
                 {
                     // iteramos por todos los comentarios que se reciben como props y por cada uno desplegamos un componente que se encarga de darle estilo y mostrar la informacion
-                    comentarios.map(({id, comentario, fecha}) => (
+                    comentarios.map(({id, publicadoPor, comentario, fecha}) => (
                                                 <ComentarioBox
                                                 key = {id}
                                                 id= {id}
+                                                publicadoPor={publicadoPor}
                                                 comentario= {comentario}
                                                 fecha = {fecha}
                                                 refetchComentarios = {refetchComentarios}
@@ -52,7 +53,7 @@ const Comentarios = ({ comentarios, refetchComentarios }: ComentariosType) => {
 
 
 // componente que muestra la información de un comentario
-const ComentarioBox = ({id, comentario, fecha, refetchComentarios}:ComentarioProps) => {
+const ComentarioBox = ({id, publicadoPor, comentario, fecha, refetchComentarios}:ComentarioProps) => {
     const notify = useNotify()
     const [deleteOne, { isLoading }] = useDelete()
 
@@ -92,7 +93,7 @@ const ComentarioBox = ({id, comentario, fecha, refetchComentarios}:ComentarioPro
                         sx={{ width: 24, height: 24, ml: 1.5}}
                         />
                         <Typography sx = {{color: 'white', ml:1}}>
-                            user
+                            {publicadoPor}
                         </Typography>
                     </Grid>
                  
