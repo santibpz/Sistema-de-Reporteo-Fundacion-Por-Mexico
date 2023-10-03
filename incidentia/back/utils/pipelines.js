@@ -75,6 +75,6 @@ export const comentariosPipeline = objectId => [
       _id: 0,
       comentario: 1,
       fecha: 1,
-      publicadoPor:"$publicadoPor.nombreC"
+      publicadoPor:"$publicadoPor.nombreCompleto"
   }}
 ]

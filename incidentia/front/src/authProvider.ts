@@ -4,7 +4,6 @@ import axios from 'axios';
 const authProvider = {
     // Login de authProvider
     login: async ({ matricula, password }: { matricula: string; password: string }) => {
-        //const notify = useNotify()
         try {
             // Solicitud http post de ruta login
             return await axios.post('http://localhost:8081/login', { matricula, password })
@@ -16,16 +15,13 @@ const authProvider = {
                 localStorage.setItem('nombreCompleto', response.data.nombreCompleto);
                 localStorage.setItem('rol', response.data.rol);
                // localStorage.setItem('identity', JSON.stringify({"id": auth.id, "fullName": auth.fullName}));
-               alert(JSON.stringify(response.data.message)) 
                return Promise.resolve();
             })
             .catch(error => {
                 // Notificación de error cuando status negativo
-                alert(JSON.stringify(error.response.data.message))
                 return Promise.reject();    
             });
         } catch (error) {
-            alert("Error en login")
             return Promise.reject();
         }
     },
