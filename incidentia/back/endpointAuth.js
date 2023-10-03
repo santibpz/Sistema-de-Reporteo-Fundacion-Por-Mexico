@@ -17,13 +17,15 @@ export function addEndpoints(app, conn) {
         const { matricula, password } = request.body;
         try {
             let result = await db.findOne({ matricula: matricula });
+            console.log(result)
             if (result.length == 0) {
                 response.sendStatus(401)
             } else {
                 bcrypt.compare(password, result.contra, (error, resultB)=>{
                     if(resultB){
-                        let token= makeNewToken(result.matricula);
-                        response.json({"token": token, "matricula": result.matricula, "nombreC": result.nombreC, "rol": result.rol})
+                        let token= makeNewToken({id: result._id, nombre: result.nombreC}); // considerar si mandar matricula o nombreC
+                        const {matricula, nombreC, rol} = result
+                        response.json({token, matricula, nombreC, rol})
                     }else{
                         response.sendStatus(401)
                     }

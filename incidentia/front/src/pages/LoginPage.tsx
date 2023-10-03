@@ -22,7 +22,8 @@ const LoginPage = () => {
         e.preventDefault();
 
         login({matricula, password })
-        .catch(() => notify('Matrícula o Contraseña equivocada'))
+         .then(() => notify('Acceso Autorizado', {type: 'success'}))
+         .catch(() => notify('Matrícula o Contraseña equivocada', {type: 'error'}))
 
 
     }

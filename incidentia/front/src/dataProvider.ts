@@ -6,12 +6,21 @@ const httpClient = fetchUtils.fetchJson
 const apiUrl = import.meta.env.VITE_SIMPLE_REST_URL 
 
 
-const baseDataProvider = simpleRestProvider(apiUrl);  
+
+const fetchJsonUtil = (url: any, options:any={}) => {
+  if (!options.headers) { 
+      options.headers = new Headers({ Accept: 'application/json' });
+  }
+  // add your own headers here
+  options.headers.set('Authorization', localStorage.getItem('auth'));
+  return fetchUtils.fetchJson(url, options);
+}
+
+const baseDataProvider = simpleRestProvider(apiUrl, fetchJsonUtil);  
 
 export const dataProvider = {
   ...baseDataProvider,
-  getComentarios: (resource:string, params:{id:string}) => httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
+  getComentarios: (resource:string, params:{id:string}) => fetchJsonUtil(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
       data: json
   })),
-  
 }

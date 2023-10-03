@@ -5,11 +5,10 @@ const authProvider = {
         try {
             return await axios.post('http://localhost:8081/login', { matricula, password })
             .then(response => {
-                alert(JSON.stringify(response.data.matricula))
-                localStorage.setItem('username', JSON.stringify(response.data.matricula));
-                localStorage.setItem('auth', JSON.stringify(response.data.token));
-                localStorage.setItem('nombreC', JSON.stringify(response.data.nombreC));
-                localStorage.setItem('rol', JSON.stringify(response.data.rol));
+                localStorage.setItem('username', response.data.matricula);
+                localStorage.setItem('auth', response.data.token);
+                localStorage.setItem('nombreC', response.data.nombreC);
+                localStorage.setItem('rol', response.data.rol);
                // localStorage.setItem('identity', JSON.stringify({"id": auth.id, "fullName": auth.fullName}));
                 return Promise.resolve();
             })
@@ -33,7 +32,7 @@ const authProvider = {
     if (currentPath === '/registrarse') {
         return Promise.resolve();
     }else{
-        return localStorage.getItem("auth")? Promise.resolve(): Promise.reject();
+        return localStorage.getItem("auth") ? Promise.resolve(): Promise.reject();
     }
     },
     checkError: (error: any) =>{

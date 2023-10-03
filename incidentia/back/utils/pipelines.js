@@ -46,9 +46,35 @@ export const mainPipeline = [
     }}
 ]
 
-// function that specifies the pipelien
+// función para obtener la información de un reporte con id igual a objectId
 export const findOnePipeline = objectId => [
-        // stage 1: match the document whose id is the argument 'id'
+        // stage 1: hacemos match del documento con id igual a objectId
         {$match: {_id: objectId}},
         ...mainPipeline
     ]
+
+// función para obtener los comentarios tiene relacionados el id del reporte que se pasa como parámetro
+export const comentariosPipeline = objectId => [
+  // stage 1: hacemos match de los comentarios que corresponden al id del reporte que se recibe de los parámetros de la solicitud
+  {$match: {reporte: objectId}},
+
+  // stage 2: hacemos el lookup para obtener información del usuario que publicó el comentario
+  {$lookup:  {
+      from: 'coordinadores',
+      localField: 'publicadoPor',
+      foreignField: '_id',
+      as: 'publicadoPor'
+    }}, 
+
+  // stage 3: deconstruimos el arreglo del field 'publicadoPor'
+  {$unwind: "$publicadoPor"},
+
+  // stage 4: proyectamos la información a enviar al cliente
+  {$project: {
+      id: "$_id",
+      _id: 0,
+      comentario: 1,
+      fecha: 1,
+      publicadoPor:"$publicadoPor.nombreC"
+  }}
+]
