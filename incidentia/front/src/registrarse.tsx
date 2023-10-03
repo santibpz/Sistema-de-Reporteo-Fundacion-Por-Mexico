@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import axios from 'axios';
 import { Grid, Paper, Avatar, TextField, Button, Typography, 
         Link, FormControl, InputLabel, Select, MenuItem} from "@mui/material"
-        import { useNotify } from 'react-admin';
+import { useNotify, useRedirect } from 'react-admin';
 
 const Registrarse = () =>{
     const notify = useNotify()
+    const redirect = useRedirect()
     const roles = ['Aula', 'Nacional', 'Ejecutivo'];
 
     const paperStyle={
@@ -33,11 +34,15 @@ const Registrarse = () =>{
         // Convert the form data to JSON
         return axios.post('http://localhost:8081/registrarse', {nombreCompleto: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
         .then(response => {
-            notify(response.data.message)
+            notify(response.data.message, {type:'success'})
+            setTimeout(() => {
+                redirect('/login')
+                notify("Favor de Iniciar sesión", {type:'info'})
+            }, 3000)
             return Promise.resolve();
         })
         .catch(error => {
-            notify(error.response.data.message)
+            notify(error.response.data.error, {type: 'error'})
             return Promise.reject();
         });       
     };

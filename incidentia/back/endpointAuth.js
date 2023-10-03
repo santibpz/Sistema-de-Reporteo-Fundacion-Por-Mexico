@@ -26,10 +26,10 @@ export function addEndpoints(app, conn) {
                 
                 bcrypt.compare(password, result.contra, (error, resultB)=>{
                     if(resultB){
-                        let token= makeNewToken({id: result._id, nombre: result.nombreC}); // considerar si mandar matricula o nombreC
-                        const {matricula, nombreC, rol} = result
+                        let token= makeNewToken({id: result._id, nombre: result.nombreCompleto}); 
+                        const {matricula, nombreCompleto, rol} = result
                         //retorna data de usuario para AAA
-                        response.json({token, matricula, nombreC, rol})
+                        response.json({token, matricula, nombreCompleto, rol})
                     }else{
                         response.sendStatus(401)
                     }
@@ -54,20 +54,20 @@ export function addEndpoints(app, conn) {
 
         // Checar si hay datos
         if (!nombreCompleto || !matricula || !password || !rol) {
-            response.sendStatus(400, "Faltan datos");
+            response.status(400).json({error: "Todos los campos deben de llenarse."})
+
             return;
         }
 
         // Checar si el usuario tiene mas de 4 caracteres
         if (matricula.length < 4) {
-            response.sendStatus(400, "El nombre debe tener al menos 4 caracteres");
-            return;
+            return response.status(400).json({error: "La matricula debe tener al menos 4 caracteres"})
+            
         }
 
         // Checar si el password tiene mas de 8 caracteres, tiene al menos una mayuscula, un numero y un caracter especial
         if (password.length < 8 || !password.match(/[A-Z]/) || !password.match(/[0-9]/) || !password.match(/[!@#$%^&*.]/)) {
-            response.sendStatus(400, "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial");
-            return;
+            return response.status(400).json({error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial"})
         }
 
         try {      
