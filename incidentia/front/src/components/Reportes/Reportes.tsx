@@ -1,45 +1,140 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link, useCreate, useCreatePath, useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
-import { Grid, Paper, Typography, Button, Box, Modal} from "@mui/material"
-import { useState } from "react"
+import { Grid, Select, InputField, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal} from "@mui/material"
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 import { ReporteShow } from "./Reporte"
 import TextField from '@mui/material/TextField';
 
+const categorias = [
+  { value: "trabajadores de aula", label: "Trabajadores de Aula" },
+  { value: "inmobiliario", label: "Inmobiliario" },
+  { value: "equipo tecnológico", label: "Equipo Tecnológico" },
+  { value: "infraestructura", label: "Infraestructura" },
+  { value: "material académico", label: "Material Académico" },
+  { value: "beneficiarios", label: "Beneficiarios"},
+  { value: "otros", label: "Otros" }
+
+];
+
+const prioridades = [
+  { value: "alta", label: "Alta" },
+  { value: "media", label: "Media" },
+  { value: "baja", label: "Baja" },
+];
+
 const Reportes = () => {
   //Obtener los datos de la lista de reportes
   const { data, isLoading } = useListContext();
   const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
+  const [searchType, setSearchType] = useState("titulo");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+
+  const handleSearchTypeChange = (event) => {
+    setSearchType(event.target.value);
+    setSearchTerm(""); // Limpia el término de búsqueda al cambiar el tipo de búsqueda
+  };
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setSearchTerm(""); // Limpia el término de búsqueda al cambiar la categoría
+  };
+
+  const handlePriorityChange = (event) => {
+    setSelectedPriority(event.target.value);
+    setSearchTerm(""); // Limpia el término de búsqueda al cambiar la prioridad
+  };
+
   if (isLoading) return null;
 
-  // Filtrar los reportes por nombre o categoría
-  const filteredData = data.filter((reporte) => {
-    const titulo = reporte.titulo || ""; //Se inicializa la variable que almacena el título del reporte, si no existe se declara vacía
-    const categoria = reporte.categoria || ""; //Se inicializa la variable que almacena la categoría del reporte, si no existe se declara vacía
+  let searchInput = null;
 
-    return (
-      titulo.toLowerCase().includes(searchTerm.toLowerCase()) || categoria.toLowerCase().includes(searchTerm.toLowerCase()) //Se convierten a minúsculas los valores de búsqueda y los valores de los reportes para que no haya distinción entre mayúsculas y minúsculas
-    );
-  });
-
-  return ( //Se muestra el input de búsqueda y los reportes filtrados
-    <div>
+  if (searchType === "titulo") {
+    searchInput = (
       <TextField
-        label="Buscar por nombre o categoría"
+        label={`Buscar por ${searchType}`}
         variant="outlined"
         fullWidth
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={handleSearchTermChange}
       />
-      <Grid
-        container
-        spacing={1}
-        columnSpacing={2}
-        rowSpacing={2}
-        style={{ padding: 15 }}
+    );
+  } else if (searchType === "categoria") {
+    searchInput = (
+      <Select
+        label="Seleccionar Categoría"
+        variant="outlined"
+        fullWidth
+        value={selectedCategory}
+        onChange={handleCategoryChange}
       >
+        <MenuItem value="">
+          <em>Seleccionar Categoría</em>
+        </MenuItem>
+        {categorias.map((categoria) => (
+          <MenuItem key={categoria.value} value={categoria.value}>
+            {categoria.label}
+          </MenuItem>
+        ))}
+      </Select>
+    );
+  } else if (searchType === "prioridad") {
+    searchInput = (
+      <Select
+        label="Seleccionar Prioridad"
+        variant="outlined"
+        fullWidth
+        value={selectedPriority}
+        onChange={handlePriorityChange}
+      >
+        <MenuItem value="">
+          <em>Seleccionar Prioridad</em>
+        </MenuItem>
+        {prioridades.map((prioridad) => (
+          <MenuItem key={prioridad.value} value={prioridad.value}>
+            {prioridad.label}
+          </MenuItem>
+        ))}
+      </Select>
+    );
+  }
+
+  // Filtrar los reportes por nombre o categoría
+  const filteredData = data.filter((reporte) => {
+    const searchValue =
+      searchType === "categoria"
+        ? reporte.categoria || ""
+        : searchType === "prioridad"
+        ? reporte.prioridad || ""
+        : reporte.titulo || "";
+
+    return searchValue.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  return (
+    <div>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item style={{ width: 'auto', padding: 15}}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Tipo de Búsqueda</InputLabel>
+            <Select value={searchType} onChange={handleSearchTypeChange}>
+              <MenuItem value="titulo">Nombre de Incidente</MenuItem>
+              <MenuItem value="categoria">Categoría</MenuItem>
+              <MenuItem value="prioridad">Prioridad</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs style={{ width: 'auto', padding: 15}}>
+          {searchInput}
+        </Grid>
+      </Grid>
+      <Grid container spacing={1} columnSpacing={2} rowSpacing={2} style={{ padding: 15 }}>
         {filteredData.map((reporte) => (
           <ReporteCard
             key={reporte.id}
@@ -51,7 +146,7 @@ const Reportes = () => {
             prioridad={reporte.prioridad}
             estatus={reporte.estatus}
             fecha={reporte.fecha}
-          /> //Se mapean los reportes filtrados
+          />
         ))}
       </Grid>
     </div>
