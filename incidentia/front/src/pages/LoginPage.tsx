@@ -20,11 +20,8 @@ const LoginPage = () => {
 
     const handleSubmit = (e: Event) => {
         e.preventDefault();
-
         login({matricula, password })
-        .catch(() => notify('Matrícula o Contraseña equivocada'))
-
-
+        .catch((error) => notify(error.response.data.message))
     }
     return(
                           

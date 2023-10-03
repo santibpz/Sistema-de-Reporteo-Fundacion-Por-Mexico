@@ -31,14 +31,13 @@ const Registrarse = () =>{
 
     const handleSendData = async() => {
         // Convert the form data to JSON
-        return axios.post('http://localhost:8081/registrarse', {Fname: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
+        return axios.post('http://localhost:8081/registrarse', {nombreCompleto: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
         .then(response => {
-            console.log(response)
             notify(response.data.message)
             return Promise.resolve();
         })
         .catch(error => {
-            notify('Error creando usuario')
+            notify(error.response.data.message)
             return Promise.reject();
         });       
     };
@@ -103,7 +102,7 @@ const Registrarse = () =>{
                         onClick={handleSendData}
                         sx = {{backgroundColor: 'blue'}} 
                         variant = 'contained' 
-                        fullWidth>Entrar</Button>
+                        fullWidth>Registrarse</Button>
                         <Typography style = {{paddingTop: 5, margin: 'auto'}}>
                         <Link href="#/login" sx = {{textDecoration: 'none'}}>
                             Iniciar sesión
