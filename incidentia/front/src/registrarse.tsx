@@ -36,12 +36,13 @@ const Registrarse = () =>{
         .then(response => {
             notify(response.data.message, {type:'success'})
             setTimeout(() => {
-                redirect('/login')
-                notify("Favor de Iniciar sesión", {type:'info'})
-            }, 3000)
+            redirect('/login')
+            notify("Favor de Iniciar sesión", {type:'info'})
+            }, 1500)
             return Promise.resolve();
         })
         .catch(error => {
+            console.log("Error comp", error)
             notify(error.response.data.error, {type: 'error'})
             return Promise.reject();
         });       

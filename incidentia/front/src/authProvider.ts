@@ -1,5 +1,4 @@
 import axios from 'axios';
-//import { useNotify } from 'react-admin';
 
 const authProvider = {
     // Login de authProvider
@@ -19,9 +18,11 @@ const authProvider = {
             })
             .catch(error => {
                 // Notificación de error cuando status negativo
-                return Promise.reject();    
+               
+                return Promise.reject();
             });
         } catch (error) {
+            console.log(error)
             return Promise.reject();
         }
     },
