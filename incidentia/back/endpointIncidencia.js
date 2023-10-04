@@ -25,45 +25,33 @@ export function addEndpoints(app, conn) {
             const skip = start;
   
             try {
-                // convertimos el resultado del query a un arreglo con todos los objetos que representan cada reporte
-                // let data = await queryCursor.toArray()
-
+                // Filtering
                 const query = filter ? JSON.parse(filter) : {};
 
                 // Sorting
                 const [field, order] = sort;
                 const sortQuery = { [field]: order === 'ASC' ? 1 : -1 };
+                                    // convierte de [cosa, otro] a {cosa: otro}
 
-                // const cursor = queryCursor.find(query).sort(sortQuery).skip(skip).limit(limit);
-
-                // el query a la base de datos que obtiene la informacion a enviar al cliente
-
+                // El pipeline a la base de datos que obtiene la información a enviar al cliente
                 const data = await db.aggregate([
-                    { $match: query },
-                    ...mainPipeline,
-                    { $sort: sortQuery },
-                    { $skip: skip },
-                    { $limit: limit }
-                  ]).toArray();
+                    { $match: query }, // inicia con el filtro
+                    ...mainPipeline, // construye todas sus madres 
+                    { $sort: sortQuery }, // hace un sort de la info
+                    { $skip: skip }, // consigue solo pa partir de cierto numero 
+                    { $limit: limit } // consigue hasta cierto otro numero 
+                ]).toArray();
 
+                // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
                 const totalCountPipeline = [
-                    { $match: query },
-                    { $count: 'totalCount' }
+                    { $match: query }, // filtra
+                    { $count: 'totalCount' } // cuenta
                 ];
-                  
                 const [totalCount] = await db.aggregate(totalCountPipeline).toArray();
 
-
-                // const queryCursor = await db.find(query).aggregate(mainPipeline);
-                // let data = await queryCursor.skip(skip).limit(limit).toArray()
-                // const totalCount = await db.countDocuments(queryCursor);
-
-                res.set('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.set('X-Total-Count', totalCount);
-
+                // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
                 res.set('Access-Control-Expose-Headers', 'Content-Range');
-                const temp = `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
-                res.set('Content-Range', temp);
+                res.set('Content-Range', `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`);
 
                 res.status(200);
 
