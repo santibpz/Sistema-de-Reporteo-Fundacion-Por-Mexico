@@ -7,8 +7,8 @@ let password = "PasswordMUYSEGURO123!";
 export function makeNewToken(userData) {
     const { id, nombre } = userData;
     const payload = {
-        id,
-        nombre,
+        id: id,
+        nombre: nombre,
         iat: Date.now(),
         // expire in 60 minutes
         exp: Date.now() + 1000 * 60 * 60,
@@ -34,9 +34,9 @@ export function verifyTokenFromReq(req) {
 
 export function getUsernameFromJWT(req) {
     try {
-        let token = req.headers.authorization.split(" ")[1];
+        let token = req.headers.authorization;
         let decoded = verifyToken(token);
-        return decoded.name;
+        return decoded.nombre;
     }
     catch {
         return "Sin usuario"

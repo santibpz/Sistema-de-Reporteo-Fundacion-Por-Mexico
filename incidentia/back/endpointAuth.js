@@ -26,7 +26,7 @@ export function addEndpoints(app, conn) {
                 
                 bcrypt.compare(password, result.contra, (error, resultB)=>{
                     if(resultB){
-                        let token= makeNewToken({id: result._id, nombre: result.nombreCompleto}); 
+                        let token= makeNewToken({id: result._id, nombre: result.nombreC}); 
                         const {matricula, nombreCompleto, rol} = result
                         //retorna data de usuario para AAA
                         response.json({token, matricula, nombreCompleto, rol})

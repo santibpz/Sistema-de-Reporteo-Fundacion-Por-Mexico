@@ -13,21 +13,61 @@ export function addEndpoints(app, conn) {
             let dbFig = await conn();
             let dbConn = dbFig.conn;
             let db = dbFig.db.collection(dbCollection);
+
+
+            // cosas de filtros
+            // query params
+            const { range, filter, sort } = req.query;
+        
+            // Parse range parameter
+            const [start, end] = JSON.parse(range);
+            const limit = end - start + 1;
+            const skip = start;
   
-
             try {
+                // convertimos el resultado del query a un arreglo con todos los objetos que representan cada reporte
+                // let data = await queryCursor.toArray()
 
+                const query = filter ? JSON.parse(filter) : {};
+
+                // Sorting
+                const [field, order] = sort;
+                const sortQuery = { [field]: order === 'ASC' ? 1 : -1 };
+
+                // const cursor = queryCursor.find(query).sort(sortQuery).skip(skip).limit(limit);
 
                 // el query a la base de datos que obtiene la informacion a enviar al cliente
-                const queryCursor = await db.aggregate(mainPipeline)
 
-                // convertimos el resultado del query a un arreglo con todos los objetos que representan cada reporte
-                let data = await queryCursor.toArray()
+                const data = await db.aggregate([
+                    { $match: query },
+                    ...mainPipeline,
+                    { $sort: sortQuery },
+                    { $skip: skip },
+                    { $limit: limit }
+                  ]).toArray();
+
+                const totalCountPipeline = [
+                    { $match: query },
+                    { $count: 'totalCount' }
+                ];
+                  
+                const [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+
+
+                // const queryCursor = await db.find(query).aggregate(mainPipeline);
+                // let data = await queryCursor.skip(skip).limit(limit).toArray()
+                // const totalCount = await db.countDocuments(queryCursor);
+
+                res.set('Access-Control-Expose-Headers', 'X-Total-Count');
+                res.set('X-Total-Count', totalCount);
 
                 res.set('Access-Control-Expose-Headers', 'Content-Range');
-                res.set('Content-Range', data.length);
-                                                 
-                res.status(200).json(data);
+                const temp = `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
+                res.set('Content-Range', temp);
+
+                res.status(200);
+
+                res.json(data);
             } catch (error) {
                 console.error('Error:', error);    
                 res.status(500).json({ error: 'Internal server error' });
