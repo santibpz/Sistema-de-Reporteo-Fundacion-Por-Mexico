@@ -22,7 +22,9 @@ const LoginPage = () => {
         e.preventDefault();
         login({matricula, password })
          .then(() => notify('Acceso Autorizado', {type: 'success'}))
-         .catch((error) => notify(error.response.data.message, {type: 'error'}))
+         .catch((error) => {
+         notify('Credenciales Inválidas', {type: 'error'})
+        })
     }
     return(
                           

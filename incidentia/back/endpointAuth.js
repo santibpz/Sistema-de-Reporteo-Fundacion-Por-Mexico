@@ -14,13 +14,11 @@ export function addEndpoints(app, conn) {
         const dbFig = await conn();
         const db = dbFig.db.collection(dbCollection);
         const { matricula, password } = request.body;
-        logger.info("test1")
         try {
             // Consulta coordinador
             let result = await db.findOne({ matricula: matricula });
-            console.log(result)
-            if (result.length == 0) {
-                response.sendStatus(401)
+            if (result == null) {
+                return response.status(401).json({message: "Credenciales inválidas. Intente de nuevo"})
             } else {
                 // Validación credencial (passhashed)
                 
