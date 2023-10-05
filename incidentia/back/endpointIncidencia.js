@@ -18,7 +18,7 @@ export function addEndpoints(app, conn) {
             // cosas de filtros
             // query params
             const { range, filter, sort } = req.query;
-        
+
             // Parse range parameter
             const [start, end] = JSON.parse(range);
             const limit = end - start + 1;
@@ -27,6 +27,9 @@ export function addEndpoints(app, conn) {
             try {
                 // Filtering
                 const query = filter ? JSON.parse(filter) : {};
+                if (query.categoria){ 
+                    query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+                }
 
                 // Sorting
                 const [field, order] = sort;
@@ -47,7 +50,11 @@ export function addEndpoints(app, conn) {
                     { $match: query }, // filtra
                     { $count: 'totalCount' } // cuenta
                 ];
-                const [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+                let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+
+                if (!totalCount) {
+                    totalCount = { totalCount: 0 };
+                }
 
                 // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
                 res.set('Access-Control-Expose-Headers', 'Content-Range');
