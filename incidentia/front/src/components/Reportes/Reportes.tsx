@@ -134,11 +134,13 @@ const Reportes = () => {
           {searchInput}
         </Grid>
       </Grid>
+      {/* mapeo de todos los reportes */}
       <Grid container spacing={1} columnSpacing={2} rowSpacing={2} style={{ padding: 15 }}>
         {filteredData.map((reporte) => (
           <ReporteCard
             key={reporte.id}
             id={reporte.id}
+            coordinador={reporte.coordinador}
             titulo={reporte.titulo}
             descripcion={reporte.descripcion}
             categoria={reporte.categoria}
@@ -181,7 +183,7 @@ export const ReporteCard = (props:ReporteProps) => {
                   </Grid>
                   <Grid sx={{p:1}} container direction='column' justifyContent='center' alignItems='flex-start' item xs={8} >
                     <Typography mt={1} variant="body2" ><strong>{props.titulo}</strong></Typography>
-                    <Typography mb={1} variant="body2" style={{color:'darkgrey'}}>Creado por usuario</Typography>
+                    <Typography mb={1} variant="body2" style={{color:'darkgrey'}}>Abierto por {props.coordinador}</Typography>
                   </Grid>
                </Grid>  
 
