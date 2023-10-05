@@ -16,7 +16,6 @@ export function addEndpoints(app, conn) {
       let db = dbFig.db.collection(dbCollection);
 
       // cosas de filtros
-
       // query params
       const { range, filter, sort } = req.query;
 
@@ -26,8 +25,15 @@ export function addEndpoints(app, conn) {
       const skip = start;
 
       try {
-        // Filtering
-        const query = filter ? JSON.parse(filter) : {};
+          // Filtering
+          const query = filter ? JSON.parse(filter) : {};
+          if (query.categoria){ 
+              query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+          }
+          if (query.titulo) { 
+              query.titulo = { $regex: query.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
+          }
+
 
         // Sorting
         const [field, order] = sort;
@@ -83,9 +89,13 @@ export function addEndpoints(app, conn) {
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
           { $match: query }, // filtra
-          { $count: "totalCount" }, // cuenta
-        ];
-        const [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+          { $count: 'totalCount' } // cuenta
+      ];
+        let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+
+        if (!totalCount) {
+            totalCount = { totalCount: 0 };
+        }
 
         // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
         res.set("Access-Control-Expose-Headers", "Content-Range");
