@@ -21,10 +21,18 @@ export const mainPipeline = [
       foreignField: '_id',
       as: 'comentarios'
     }},
+    {$lookup: {
+      from: 'coordinadores',
+      localField: 'coordinador',
+      foreignField: '_id',
+      as: 'coordinador'
+    }},
+    {$unwind: "$coordinador"},
     // stage 3: proyectar la información que se enviará al cliente
     {$project: {
         id: "$_id",
         _id: 0,
+        coordinador: "$coordinador.nombreCompleto",
         titulo: 1,
         descripcion: 1,
         categoria: {
@@ -32,7 +40,7 @@ export const mainPipeline = [
               field: 'nombre',
               input: { $arrayElemAt: [ "$categoria", 0 ] }
             }
-          } ,
+          },
         subcategoria:{
             $getField: {
               field: 'nombre',
@@ -41,7 +49,6 @@ export const mainPipeline = [
           },
         estatus: 1,
         prioridad: 1,
-        comentarios: 1,
         fecha: 1
     }}
 ]

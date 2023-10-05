@@ -109,7 +109,7 @@ export function addEndpoints(app, conn) {
             const result = await db.deleteOne({_id: new ObjectId(id)})
 
             if (result.deletedCount == 1) {
-                res.status(204).json({message: 'Sse ha borrado con éxito el comentario.'})
+                res.status(204).json({message: 'Se ha borrado con éxito el comentario.'})
             } else {
                 res.status(500).json({error: 'No se ha podido borrar el comentario. Se recomienda intentar más tarde'})
             }

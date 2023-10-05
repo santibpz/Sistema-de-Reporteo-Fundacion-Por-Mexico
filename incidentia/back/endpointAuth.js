@@ -89,12 +89,12 @@ export function addEndpoints(app, conn) {
                     })
                 })
             } else {
-                throw new Error('Usuario existente');
+                response.status(401).json({ error: 'Ese usuario ya existe.' });
             }
 
         } catch(err) {
 
-            response.status(401).json({ message: 'Error creando usuario' });
+            response.status(401).json({ error: 'Error creando usuario' });
         }
     });
 
