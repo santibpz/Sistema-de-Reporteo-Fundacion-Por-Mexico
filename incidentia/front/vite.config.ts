@@ -8,6 +8,7 @@ export default defineConfig({
         'process.env': process.env,
     },
     server: {
+        port: 8080,
         host: true,
     },
     base: './',
