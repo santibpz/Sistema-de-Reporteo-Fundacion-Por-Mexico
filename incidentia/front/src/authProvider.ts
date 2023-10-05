@@ -5,7 +5,7 @@ const authProvider = {
     login: async ({ matricula, password }: { matricula: string; password: string }) => {
         try {
             // Solicitud http post de ruta login
-            return await axios.post('http://localhost:8081/login', { matricula, password })
+            return await axios.post(import.meta.env.VITE_LOGIN, { matricula, password })
             .then(response => {
 
                 // Se guarda response en almacenamiento de navegador cuando status positivo
