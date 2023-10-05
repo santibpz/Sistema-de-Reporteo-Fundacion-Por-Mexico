@@ -23,4 +23,10 @@ export const dataProvider = {
   getComentarios: (resource:string, params:{id:string}) => fetchJsonUtil(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
       data: json
   })),
+  // CSFM 04/10/23 - integracion de datos por get - start
+  getChart: (resource:string) => fetchJsonUtil(`${apiUrl}/${resource}`).then(({ json }) => ({
+    data: json
+})),
+// CSFM 04/10/23 - integracion de datos por get - end
+
 }

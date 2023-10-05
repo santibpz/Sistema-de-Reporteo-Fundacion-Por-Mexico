@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import BarChartComponent from '../components/Charts/BarChart';
+import { useDataProvider } from "react-admin"
+
 
 //DummyData para la gráfica
 const chartData = [
@@ -17,6 +19,28 @@ const chartData = [
 
 //Se define el contedor de la gráfica
 const ChartPage = (props) => {
+
+  // CSFM 04/10/23 - integracion de datos por get - start
+  const dataProvider = useDataProvider();
+  const [flag, setFlag] = useState(true);
+  
+  useEffect(() => {
+    if (flag) {
+      dataProvider
+        .getChart("ChartPage")
+        .then(({ data }) => {
+          console.log(data);
+          setFlag(false);
+        })
+        .catch(() => console.log("error"));
+    }
+  }, [flag]);
+  
+  const refetchChart = () => setFlag(true);
+  
+
+  // CSFM 04/10/23 - integracion de datos por get - end
+
   const chartContainerRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(600);
   const [chartHeight, setChartHeight] = useState(300);

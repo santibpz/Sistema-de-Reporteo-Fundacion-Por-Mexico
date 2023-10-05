@@ -11,6 +11,7 @@ import * as Subcategorias from './endpointSubcategorias.js';
 import * as ReporteSemanal from './endpointReporteSemanal.js';
 import * as Auth from './endpointAuth.js';
 import * as Comentarios from './endpointComentarios.js';
+import * as Charts from './endpointCharts.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -54,6 +55,7 @@ Subcategorias.addEndpoints(app, connDB);
 ReporteSemanal.addEndpoints(app, connDB);
 Auth.addEndpoints(app, connDB);
 Comentarios.addEndpoints(app, connDB);
+Charts.addEndpoints(app, connDB);
 
 // middleware de errores y rutas no encontradas
 app.use(middleware.unknownEndpoint);
