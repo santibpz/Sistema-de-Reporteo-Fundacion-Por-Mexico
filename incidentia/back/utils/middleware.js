@@ -16,8 +16,8 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, request, response, next) => {
     logger.error(getUsernameFromJWT(request), error.message, request.path)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
+    if (error.name === 'CastError') { // id mal formada
+        return response.status(400).send({ error: 'El recurso nose pudo encontrar' })
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     } else if (error.name === 'JsonWebTokenError') {
@@ -28,6 +28,9 @@ const errorHandler = (error, request, response, next) => {
         return response.status(401).json({
             error: 'token expired'
         })
+    } else if(error.name === 'MongoServerError') {
+        if(error.message == "Document failed validation") return response.status(400).json({error: "Todos los campos deben de ser llenados."})
+        // return response.status(400).json({error: 'Se deben de llenar todos los campos'})
     }
 
     next(error)

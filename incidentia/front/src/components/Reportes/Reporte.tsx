@@ -5,13 +5,14 @@ import {
   SimpleShowLayout,
   TextField,
   useDataProvider,
+  useDelete,
   useGetOne,
   useNotify,
   useRedirect,
 } from "react-admin";
 import Reportes from "./Reportes";
 import ReporteForm from "../ReporteForm";
-import { Button, Grid, Paper, Typography, Divider, Card } from "@mui/material";
+import { Button, Grid, Paper, Typography, Divider, Card, IconButton} from "@mui/material";
 import "@fontsource/roboto/300.css";
 import ArticleSharpIcon from "@mui/icons-material/ArticleSharp";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -37,8 +38,12 @@ const ReporteList = () => (
 
 // componente para crear nuevos reportes
 const ReporteCreate = () => {
+  const notify = useNotify()
+  const onError = (error) => { 
+     notify('Todos los campos deben llenarse', {type: 'error'});
+};
   return (
-    <Create>
+    <Create mutationOptions={{onError}}>
       <ReporteForm />
     </Create>
   );
@@ -50,6 +55,8 @@ export const ReporteShow = () => {
   const redirect = useRedirect();
   const dataProvider = useDataProvider();
   const params = useParams();
+  const [deleteOne] = useDelete()
+
 
   const [comentarios, setComentarios] = useState<ComentarioProps[]>([]);
   const [flag, setFlag] = useState(true)
@@ -68,6 +75,7 @@ export const ReporteShow = () => {
     }
   );
 
+  // petición para obtener los comentarios de la base de datos
   flag ?  dataProvider
         .getComentarios("comentarios", { id })
         .then(({ data }) => {
@@ -79,6 +87,28 @@ export const ReporteShow = () => {
 
   
   const refetchComentarios = () => setFlag(true)
+
+  // funcion que maneja el evento de borrar un reporte
+  const handleDelete = () => {
+    // confirmamos si se quiere borrar el reporte
+    confirm("¿Estás seguro que quieres borrar el reporte? \n Esta acción es irreversible.") ?
+    deleteOne(
+        'reportes',
+        { id },
+        {
+            onSuccess: () => {
+                notify('El reporte se ha borrado con éxito', { type: 'success' })
+                redirect('/reportes')
+                
+            },
+            onError: () => {
+                notify('Ha ocurrido un error al intentar borrar el reporte. Intentar más tarde.', { type: 'error' })
+            }
+        }
+    ) :
+    null
+  }
+  const handleEdit= () => {}
         
   if (isLoading) return <Bars />;
 
@@ -177,12 +207,13 @@ export const ReporteShow = () => {
                   alignItems="flex-end"
                   xs={6}
                 >
-                  <Button>
-                    <DeleteIcon sx={{ color: "red", fontSize: 35 }} />
-                  </Button>
-                  <Button>
-                    <EditIcon sx={{ color: "green", fontSize: 35 }} />
-                  </Button>
+                 
+                  <IconButton onClick={handleDelete} color="primary">
+                    <DeleteIcon sx = {{color:'red'}} />
+                  </IconButton>
+                  <IconButton onClick={handleEdit} color="primary">
+                    <EditIcon sx = {{color:'green'}} />
+                  </IconButton>
                 </Grid>
               </Grid>
             </Grid>

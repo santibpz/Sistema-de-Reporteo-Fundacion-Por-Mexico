@@ -38,24 +38,26 @@ const ReporteForm = () => {
     // regresar el formulario
     return(
         <SimpleForm >   
-            <TextInput source="titulo" />
-            <TextInput source="descripcion" />
+            <TextInput source="titulo" required />
+            <TextInput source="descripcion" required />
             <RadioButtonGroupInput source="prioridad" choices={[
                 { id: 'alta', name: 'alta' },
                 { id: 'media', name: 'media' },
                 { id: 'baja', name: 'baja' },
-             ]} />
+             ]} required />
             <SelectInput 
               onChange={(e) => setCategoriaId(e.target.value)}
               source = "categoria" 
               choices = {categorias}
               optionText="nombre"
-              optionValue="id"/>  
+              optionValue="id"
+              required/>  
               <SelectInput 
               source = "subcategoria" 
               choices = {subcategorias}
               optionText="nombre"
               optionValue="id"
+              required
                 />
         </SimpleForm>
     )

@@ -105,7 +105,7 @@ export function addEndpoints(app, conn) {
                 } else {
                     // Manda error y cierra conexion con bd
                     dbConn.close();
-                    throw new Error('Usuario existente');
+                    response.status(401).json({ error: 'Ese usuario ya existe.' });
                 }
             }catch(errorInsersion){
                 // Manda error y cierra conexion con bd

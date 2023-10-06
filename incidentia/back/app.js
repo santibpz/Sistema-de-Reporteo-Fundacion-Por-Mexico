@@ -27,6 +27,7 @@ let dbLogLevel = config.DB_LOG_LEVEL;
 if (consoleLogLevel == null) {
     consoleLogLevel = 3;
 }
+
 if (dbLogLevel == null) {
     dbLogLevel = -1;
 }
@@ -34,7 +35,6 @@ if (dbLogLevel == null) {
 logger.setConsoleLogLevel(consoleLogLevel);
 logger.setDBLogLevel(dbLogLevel);
 logger.info("SYS", "Iniciando nueva instancia del servidor", "app.js");
-
 
 // inicializacion de express
 const app=express();
