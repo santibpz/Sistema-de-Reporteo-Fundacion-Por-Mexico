@@ -4,7 +4,7 @@ import { useDataProvider } from "react-admin"
 
 
 //DummyData para la gráfica
-const chartData = [
+const chartData1 = [
   { name: 'Trabajadores de Aula', pendientes: 10, activos: 20 },
   { name: 'Inmobiliario', pendientes: 15, activos: 25 },
   { name: 'Equipo Tecnológico', pendientes: 12, activos: 18 },
@@ -13,12 +13,13 @@ const chartData = [
   { name: 'Beneficiarios', pendientes: 18, activos: 37 },
   { name: 'Otros', pendientes: 9, activos: 2 }
 ];
+let chartData = [{}]
 
 //Solicitar datos a la API
 //const data = dataProvider.getInfoForChart();
 
 //Se define el contedor de la gráfica
-const ChartPage = (props) => {
+const ChartPage = (props: any) => {
 
   // CSFM 04/10/23 - integracion de datos por get - start
   const dataProvider = useDataProvider();
@@ -30,9 +31,10 @@ const ChartPage = (props) => {
         .getChart("ChartPage")
         .then(({ data }) => {
           console.log(data);
+          chartData = data
           setFlag(false);
         })
-        .catch(() => console.log("error"));
+        .catch((error: any) => console.log(error));
     }
   }, [flag]);
   
