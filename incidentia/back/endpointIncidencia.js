@@ -294,11 +294,15 @@ export function addEndpoints(app, conn) {
       // extraemos el id del reporte a borrar 
       const { id } = req.params
 
-        // borrar comentario de la coleccion de comentarios
+        // borrar reporte
         const result = await db.deleteOne({_id: new ObjectId(id)})
 
-        if (result.deletedCount == 1) {
-            res.status(204).json({message: 'Se ha borrado con éxito el reporte.'})
+        // borrar comentarios asociados al reporte
+
+        const deleteCommentsQuery = await dbFig.db.collection('comentarios').deleteMany({reporte: new ObjectId(id)})
+
+        if (result.deletedCount == 1 && deleteCommentsQuery.acknowledged == true) {
+            res.status(204).json({id})
         } else {
             res.status(500).json({error: 'No se ha podido borrar el reporte. Se recomienda intentar más tarde'})
         }

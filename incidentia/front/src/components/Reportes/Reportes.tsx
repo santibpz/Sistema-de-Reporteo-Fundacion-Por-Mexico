@@ -1,9 +1,12 @@
 import React, { useState } from "react"
 import { Link, useCreate, useCreatePath, useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
-import { Grid, Select, InputField, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal} from "@mui/material"
+import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal, FormGroup, Checkbox,} from "@mui/material"
+import Divider from "@mui/material/Divider"
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
 import { ReporteShow } from "./Reporte"
 import TextField from '@mui/material/TextField';
 
@@ -174,7 +177,6 @@ const Reportes = () => {
 
 // declaracion del componente que representa un reporte
 export const ReporteCard = (props:ReporteProps) => {
-   
     return (
       <Grid className="reporte" container item sm lg = 'auto' alignItems="center" justifyContent="center" >
         <Grid item>
@@ -249,17 +251,33 @@ export const ReporteCard = (props:ReporteProps) => {
 }
 
 
+// ########################## START HERE ##########################
+// ########################## START HERE ##########################
+// ########################## START HERE ##########################
+// ########################## START HERE ##########################
+// ########################## START HERE ##########################
+
 export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   const [update, { isLoading, error }] = useUpdate();
   const notify = useNotify();
   const refresh = useRefresh();
+ 
+  const [flag, setFlag] = useState(false)
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(estatus)
+  const [resolucion, setResolucion] = useState(false)
+  const [resolucionValue, setResolucionValue] = useState('')
+  const [completado, setCompletado] = useState(false)
+  const [razon, setRazon] = useState('')
   const handleOpen = () => setOpen(true);
   const handleClose = () => { 
     setOpen(false)
     setValue(estatus)
+    setCompletado(false)
+    setResolucion(false)
+    setResolucionValue('')
+    setFlag(false)
   }
 
     const style = {
@@ -268,15 +286,46 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 400,
-        bgcolor: 'background.paper',
+        bgcolor: '#1A1110 ',
+        color: 'white',
         border: '2px solid #000',
         boxShadow: 24,
-        p: 4,
+        p:2
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue((event.target as HTMLInputElement).value);
-    };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, action:string) => {
+      const selection = (event.target as HTMLInputElement).value
+      switch(action) {
+        case 'isCompleted':
+          setValue(selection);
+          if(selection=='completado') {
+            setCompletado(true) 
+          } else {
+            setCompletado(false);
+            setResolucionValue('')
+            setResolucion(false)
+            setFlag(false)
+            setRazon('')
+          }
+            
+          break;
+        case 'isResolved':
+          if(selection == "Si") {
+            setResolucion(true);
+            setFlag(false)
+            
+          } else {
+              setResolucion(false);
+              setFlag(true)
+          }
+          setResolucionValue(selection)
+          setRazon('')
+          break
+        case 'isExplained':
+          setRazon(selection)
+    }
+  }
+
 
     const handleClick = () => {
       if(value !== estatus) {
@@ -325,44 +374,131 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h4" component="h2">
-            {titulo}
-          </Typography>
+          <Grid container direction='column' sx ={{backgroundColor:''}} >
+          {/* titulo de la seccion */}
+          <Grid container item xs={12} direction='row' justifyContent="space-between" alignItems="center" sx = {{height:'20%'}}>
+            <Typography id="modal-modal-title" variant="h5" component="h2">
+              Actualización de Estatus
+            </Typography>
+            <Button onClick = {handleClose} sx = {{backgroundColor:''}}>
+                <CloseIcon />
+            </Button>
+          </Grid>
 
-          <FormControl>
-            <FormLabel id="controlled-radio-buttons-group">Selecciona el estatus</FormLabel>
-            <RadioGroup
-              aria-labelledby="controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
-              value={value}
-              onChange={handleChange}
-            >
-              <FormControlLabel value="pendiente" control={<Radio />} label="pendiente" />
-              <FormControlLabel value="completado" control={<Radio />} label="completado" />
-            </RadioGroup>
-          </FormControl>
+          <Divider sx = {{backgroundColor:'lightgrey', mt:2, mb:2}} />
 
-          <Button 
-          onClick={handleClick}
-          variant="contained" 
-          color="secondary" 
-          >
-            Guardar
-          </Button>
-          
+          {/* Sección para la selección del estatus */}
+          <Grid container item direction='column' xs = {12} sx={{height:'80%'}}>
+            <FormControl>
+              <FormLabel id="controlled-radio-buttons-group" sx ={{color: 'white', ml:1.5}}>Actualiza el estatus del Reporte {`"${titulo}":`}</FormLabel>
+              
+              <RadioGroup
+                aria-labelledby="controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                value={value}
+                onChange={(e) => handleChange(e, 'isCompleted')}
+              >
+                <Grid container justifyContent='space-around' sx ={{mt:1}} >
+                  <FormControlLabel value="pendiente" control={<Radio sx={{color: 'white'}}/>} label="pendiente" />
+                  <FormControlLabel value="completado" control={<Radio sx={{color: 'white'}} />} label="completado" />
+                </Grid>
+              </RadioGroup>
+            </FormControl>
 
-          <Button 
-          onClick={handleClose}
-          variant="contained" 
-          color="secondary" 
-          >
-            Cerrar
-          </Button>
+            
+            {completado ? 
+            (
+            <>
+            <Divider sx ={{backgroundColor:'lightgrey', mt:2, mb:2}} />
+            <Grid container item justifyContent='space-between' alignItems = 'center'>
+            <FormControl>  
+              <Grid container item direction='row' justifyContent='space-between' alignItems = 'center'>
+                <FormLabel id="controlled-radio-buttons-group" sx ={{color: 'white', ml:1.5 }}>¿Se le dió solución al incidente?</FormLabel>
+                <RadioGroup
+                value={resolucionValue}
+                onChange={(e) => handleChange(e, 'isResolved')}
+                sx = {{ml:2}}>
+                  <Grid container direction='row'>
+                    <FormControlLabel value = "Si"  control={<Radio />} label="Si" />
+                    <FormControlLabel value = "No"  control={<Radio />} label="No" />
+                  </Grid>
+                </RadioGroup>
+              </Grid>
+            </FormControl>
 
+            </Grid>
+            </>): null}
+
+            {
+              (completado && resolucion) ? 
+              (
+                <>
+                  <Divider sx ={{backgroundColor:'lightgrey', mt:2, mb:2}} />
+                  <Grid container item>
+                    <Typography variant = "subtitle1" sx = {{ml: 2}}>Indica como se resolvió el Incidente:</Typography>
+                    <Grid container item justifyContent='center'>
+                      <TextField
+                      value = {razon}
+                      onChange = {(e) => handleChange(e, 'isExplained')}
+                      id="outlined-multiline-flexible"
+                      variant="outlined"
+                      multiline
+                      rows={5}
+                      sx = {{width: '80%', bgcolor: 'white'}}
+                      placeholder="razón"
+                      // error = {markError}
+                      required />
+                    </Grid>
+                    <Button 
+                    onClick={handleClick}
+                    variant="contained" 
+                    color="secondary" 
+                    sx = {{margin:'auto', width: '80%'}}
+                    >
+                      Guardar
+                    </Button>
+                  </Grid>
+                </>
+              ) : 
+              ((completado && !resolucion) && flag) ? 
+              (
+                <>
+                  <Divider sx ={{backgroundColor:'lightgrey', mt:2, mb:2}} />
+                  <Grid container item>
+                    <Typography variant = "subtitle1" sx = {{ml: 2}}>Indica porque no se pudo dar solución al incidente:</Typography>
+                    <Grid container item justifyContent='center'>
+                      <TextField
+                      value = {razon}
+                      onChange = {(e) => handleChange(e, 'isExplained')}
+                      id="outlined-multiline-flexible"
+                      variant="outlined"
+                      multiline
+                      rows={5}
+                      sx = {{width: '80%', bgcolor: 'white'}}
+                      placeholder="razón"
+                      // error = {markError}
+                      required />
+                    </Grid>
+                    <Button 
+                    onClick={handleClick}
+                    variant="contained" 
+                    color="secondary" 
+                    sx = {{margin:'auto', width: '80%'}}
+                    >
+                      Guardar
+                    </Button>
+                  </Grid>
+                </>
+              ) : null
+            }
+
+          </Grid> 
+          </Grid>
         </Box>
       </Modal>
     </div>
   );
 }
+
 
 export default Reportes;
