@@ -32,7 +32,7 @@ const Registrarse = () =>{
 
     const handleSendData = async() => {
         // Convert the form data to JSON
-        return axios.post(import.meta.env.VITE_REGISTRARSE, {nombreCompleto: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
+        return axios.post(import.meta.env.VITE_SIMPLE_REST_URL + "/registrarse", {nombreCompleto: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol })
         .then(response => {
             notify(response.data.message, {type:'success'})
             setTimeout(() => {
