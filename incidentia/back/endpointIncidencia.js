@@ -233,7 +233,7 @@ export function addEndpoints(app, conn) {
           categoria: new ObjectId(data.categoria),
           subcategoria: new ObjectId(data.subcategoria),
           estatus: "pendiente",
-          fecha: new Date(),
+          fecha: new Date()
         };
         const result = await db.insertOne(reporte);
 
