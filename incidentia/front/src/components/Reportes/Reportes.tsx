@@ -11,6 +11,7 @@ import { ReporteShow } from "./Reporte"
 import TextField from '@mui/material/TextField';
 import { on } from "events"
 import { redirect } from "react-router-dom"
+import ConfirmacionDialog from "../ConfirmacionDialog"
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -313,7 +314,7 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
             
           break;
         case 'isResolved':
-          if(selection == "Si") {
+          if(selection == "Resuelto") {
             setResolucion(true);
             setFlag(false)
             
@@ -331,17 +332,23 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
     if(razon.length>=20) setMarkError(false)
   }
 
-
-    const handleClick = () => {
+    const validateData = ():boolean => {
+      // validamos que la caja de texto no este vacia
       if(!razon) {
        setMarkError(true) // error en la caja de texto
        notify('La caja de texto está vacia', {type:'error'})
-       return
+       return false
+
+       // validamos que el input tenga al menos una longitud igual o mayor a 20
       } else if(razon.length < 20) {
         notify('La longitud de la explicación debe de ser de al menos 20 caractéres', {type:'error'})
-        return
+        return false
       }
+      return true
+    }
 
+    const handleSave = () => {
+      
       // solicitud para archivar el reporte
 
       const data = {
@@ -434,8 +441,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                 onChange={(e) => handleChange(e, 'isResolved')}
                 sx = {{ml:2}}>
                   <Grid container direction='row'>
-                    <FormControlLabel value = "Si"  control={<Radio />} label="Si" />
-                    <FormControlLabel value = "No"  control={<Radio />} label="No" />
+                    <FormControlLabel value = "Resuelto"  control={<Radio />} label="Si" />
+                    <FormControlLabel value = "No Resuelto"  control={<Radio />} label="No" />
                   </Grid>
                 </RadioGroup>
               </Grid>
@@ -465,17 +472,12 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                         error = {markError}
                         />
                     </Grid>
-                    <Button 
-                    onClick={handleClick}
-                    variant="contained" 
-                    color="secondary" 
-                    sx = {{margin:'auto', width: '80%'}}
-                    >
-                      Guardar
-                    </Button>
+                    
+                    <ConfirmacionDialog message={"Esta acción archivará el reporte con el estatus actualizado.\n Una vez archivado, el reporte ya no se puede editar. ¿Desea Continuar?"} onContinue={handleSave} validateData={validateData} />
+
                   </Grid>
                 </>
-              ) : 
+              ) :
               ((completado && !resolucion) && flag) ? 
               (
                 <>
@@ -497,14 +499,9 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
 
                         />
                     </Grid>
-                    <Button 
-                    onClick={handleClick}
-                    variant="contained" 
-                    color="secondary" 
-                    sx = {{margin:'auto', width: '80%'}}
-                    >
-                      Guardar
-                    </Button>
+                    
+                    <ConfirmacionDialog message={"Esta acción archivará el reporte con el estatus actualizado.\n Una vez archivado, el reporte ya no se puede editar. ¿Desea Continuar?"} onContinue={handleSave} validateData={validateData} />
+
                   </Grid>
                 </>
               ) : null
