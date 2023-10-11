@@ -1,30 +1,36 @@
+import React, { useState } from "react";
 import {
   Admin,
+  Layout,
   Resource,
   CustomRoutes
 } from "react-admin";
+import { Route } from 'react-router-dom';
 import { i18nProvider } from "./i18nProvider";
 import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
+import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
 import Reporte from "./components/Reportes/Reporte";
 import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
 import Registrarse from "./registrarse";
 import ChartPage from "./pages/ChartPage";
+import { MyAppBar } from './MyAppBar';
+import { lightTheme, darkTheme } from './theme/themes.js';
 
-import { Route } from 'react-router-dom';
+const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
 
-import { ReporteShow } from "./components/Reportes/Reporte"
-
-//hola
 export const App = () => {
-  
+
   return(
     <Admin 
       loginPage = {LoginPage} 
       dataProvider={dataProvider} 
       authProvider = {authProvider} 
       i18nProvider={i18nProvider}
+      layout={MyLayout}
+      theme = {lightTheme}
+      darkTheme = {darkTheme} 
       >
 
       <Resource 

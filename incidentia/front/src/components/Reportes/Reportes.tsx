@@ -6,9 +6,8 @@ import Divider from "@mui/material/Divider"
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-
-import { ReporteShow } from "./Reporte"
 import TextField from '@mui/material/TextField';
+import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
 import { on } from "events"
 import { redirect } from "react-router-dom"
 import ConfirmacionDialog from "../ConfirmacionDialog"
@@ -178,7 +177,7 @@ export const ReporteCard = (props:ReporteProps) => {
         <Paper
             sx={{
             width: 300,
-            height: 300,
+            height: 370,
             // backgroundColor: '#E6E6FA',
             }}
             elevation={10}
@@ -191,13 +190,13 @@ export const ReporteCard = (props:ReporteProps) => {
              alignItems="stretch"
             >
                {/* contenedor para el título y creador del usuario */}
-               <Grid container item style = {{backgroundColor: '#F8F8F8'}} xs>
+               <Grid container item style = {{backgroundColor: lightColorCategoria[props.categoria]}} xs>
                   <Grid container justifyContent='center' alignContent='center' item xs={4}>
-                    <AssignmentIcon fontSize="large"/>
+                  <AssignmentIcon fontSize="large"/>
                   </Grid>
                   <Grid sx={{p:1}} container direction='column' justifyContent='center' alignItems='flex-start' item xs={8} >
-                    <Typography mt={1} variant="body2" ><strong>{props.titulo}</strong></Typography>
-                    <Typography mb={1} variant="body2" style={{color:'darkgrey'}}>Abierto por {props.coordinador}</Typography>
+                    <Typography mt={1} variant="body2" color={"white"} ><strong>{props.titulo}</strong></Typography>
+                    <Typography mb={1} variant="body2" style={{color:'#E5E4E2'}}>Abierto por {props.coordinador}</Typography>
                   </Grid>
                </Grid>  
 
@@ -232,9 +231,9 @@ export const ReporteCard = (props:ReporteProps) => {
                   </Grid>
                </Grid>          
     
-               <Grid container justifyContent="center" alignItems="center" style = {{ backgroundColor: '#003366'}} xs item >
+               <Grid container direction='column' justifyContent="center" alignItems="center" style = {{ backgroundColor: lightColorCategoria[props.categoria]}} xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
-                <Link to={`/reportes/show/${props.id}`}>Ver Reporte</Link>
+                <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
                </Grid>
                 
             </Grid>
@@ -371,9 +370,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
        size="small"
        onClick={handleOpen}
        disabled={isLoading}
-       sx={{ padding: '7px', color: 'black',  backgroundColor: '#F0FFF0', '&:hover': {
-        transform: 'scale(1.1)',
-        backgroundColor: '#F0FFF0'
+       sx={{ padding: '7px', color: 'white',  backgroundColor: '#ADADAD', '&:hover': {
+       backgroundColor: '#B0B0B0'
     }}}>
         Actualizar Estatus
       </Button>
