@@ -11,7 +11,6 @@ import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
-import Reporte from "./components/Reportes/Reporte";
 import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
 import Registrarse from "./registrarse";
 import ChartPage from "./pages/ChartPage";
