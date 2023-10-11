@@ -2,8 +2,6 @@ import {
   Create,
   List,
   RecordContextProvider,
-  SimpleShowLayout,
-  TextField,
   useDataProvider,
   useDelete,
   useGetOne,
@@ -11,22 +9,21 @@ import {
   useRedirect,
 } from "react-admin";
 import Reportes from "./Reportes";
-import ReporteForm from "../ReporteForm";
-import { Button, Grid, Paper, Typography, Divider, Card, IconButton} from "@mui/material";
+import ReporteForm from "./ReporteForm";
+import {Grid, Paper, Typography, Divider, Card, IconButton} from "@mui/material";
 import "@fontsource/roboto/300.css";
 import ArticleSharpIcon from "@mui/icons-material/ArticleSharp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import PollIcon from "@mui/icons-material/Poll";
 import { useParams } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Bars } from "react-loading-icons";
 
 import img from "../../images/logo-fundacion-por-mexico.png";
-import ComentarioForm from "../ComentarioForm";
-import Comentarios from "../Comentarios";
+import ComentarioForm from "../Comentarios/ComentarioForm";
+import Comentarios from "../Comentarios/Comentarios";
 import { ComentarioProps } from "../../types";
 
 // componente que despliega la información de todos los reportes
@@ -39,7 +36,7 @@ const ReporteList = () => (
 // componente para crear nuevos reportes
 const ReporteCreate = () => {
   const notify = useNotify()
-  const onError = (error) => { 
+  const onError = () => { 
      notify('Todos los campos deben llenarse', {type: 'error'});
 };
   return (

@@ -104,9 +104,6 @@ export function addEndpoints(app, conn) {
           `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
         );
 
-        res.set('Access-Control-Expose-Headers', 'Content-Range');
-        res.set('Content-Range', data.length);
-
         res.status(200).json(data);
       } catch (error) {
         console.error("Error:", error);
@@ -233,7 +230,7 @@ export function addEndpoints(app, conn) {
           categoria: new ObjectId(data.categoria),
           subcategoria: new ObjectId(data.subcategoria),
           estatus: "pendiente",
-          fecha: new Date(),
+          fecha: new Date()
         };
         const result = await db.insertOne(reporte);
 

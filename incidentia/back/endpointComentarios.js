@@ -53,7 +53,7 @@ export function addEndpoints(app, conn) {
                     comentario,
                     reporte: new ObjectId(reporteId),
                     publicadoPor: new ObjectId(decodedToken.id),
-                    fecha: new Date()    
+                    fecha: new Date()  
                 }
 
                 // creamos el comentario en la colección comentarios
