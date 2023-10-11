@@ -8,6 +8,7 @@ import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte from "./components/Reportes/Reporte";
+import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
 import Registrarse from "./registrarse";
 import ChartPage from "./pages/ChartPage";
 
@@ -31,6 +32,12 @@ export const App = () => {
        list={Reporte.ReporteList} 
        create = {Reporte.ReporteCreate} 
         />  
+
+      <Resource 
+       name="archivados"
+       list={ReporteArchivado.ReporteArchivadoList} 
+        />  
+
       <Resource 
        name="ChartPage" 
        list={ChartPage} 

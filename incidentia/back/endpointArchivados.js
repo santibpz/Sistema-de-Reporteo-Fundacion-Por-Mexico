@@ -1,10 +1,80 @@
 import { ObjectId } from 'mongodb';
 import { calculaDiasTranscurridos } from './utils/calculaTiempo.js';
+import { mainPipeline } from './utils/pipelines.js';
 
 const prefix = "/archivados";
 const dbCollection = "archivados";
 
 export function addEndpoints(app, conn) {
+
+    // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
+  app.get(prefix + "", async (req, res) => {
+    // cosas de todos los endpoints
+    try {
+      // conn con db
+      let dbFig = await conn();
+      let dbConn = dbFig.conn;
+      let db = dbFig.db.collection(dbCollection);
+
+      // cosas de filtros
+      // query params
+      const { range, filter, sort } = req.query;
+
+      // Parse range parameter
+      const [start, end] = JSON.parse(range);
+      const limit = end - start + 1;
+      const skip = start;
+
+      try {
+          // Filtering
+          const query = filter ? JSON.parse(filter) : {};
+        // Sorting
+        const [field, order] = sort;
+        const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+        // convierte de [cosa, otro] a {cosa: otro}
+
+         // El pipeline a la base de datos que obtiene la información a enviar al cliente
+
+        const getReportesArchivadosPipeline = [
+          { $match: query }, // inicia con el filtro
+          ...mainPipeline, // construye todas sus madres
+          { $sort: sortQuery }, // hace un sort de la info
+          { $skip: skip }, // consigue solo pa partir de cierto numero
+          { $limit: limit }, // consigue hasta cierto otro numero
+        ];
+
+        const data = await db.aggregate(getReportesArchivadosPipeline).toArray();
+        
+        // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
+        const totalCountPipeline = [
+          { $match: query }, // filtra
+          { $count: 'totalCount' } // cuenta
+      ];
+        let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+
+        if (!totalCount) {
+            totalCount = { totalCount: 0 };
+        }
+
+        // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
+        res.set("Access-Control-Expose-Headers", "Content-Range");
+        res.set(
+          "Content-Range",
+          `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
+        );
+
+        res.status(200).json(data);
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Ocurrió un error" });
+      } finally {
+        dbConn.close();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Ocurrió un error" });
+    }
+  });
 
     // creacion de un reporte archivado
     app.post(prefix, async (req, res) => {

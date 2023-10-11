@@ -16,7 +16,6 @@ interface ConfirmacionProps {
 
 const ConfirmacionDialog = (props:ConfirmacionProps) => {
     const [open, setOpen] = useState(false);
-  
     const handleClickOpen = () => {
         if(props.validateData != undefined) {
              if(props.validateData()) setOpen(true)

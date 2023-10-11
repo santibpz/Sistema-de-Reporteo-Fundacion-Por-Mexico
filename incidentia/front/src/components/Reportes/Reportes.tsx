@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Link, useCreate, useCreatePath, useListContext, useNotify, useRefresh, useUpdate } from "react-admin"
+import { Link, useCreate, useCreatePath, useListContext, useNotify, useRedirect, useRefresh, useUpdate } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal, FormGroup, Checkbox,} from "@mui/material"
 import Divider from "@mui/material/Divider"
@@ -163,15 +163,7 @@ const Reportes = () => {
          >
             {data.map(reporte => <ReporteCard 
                                   key = {reporte.id}
-                                  id = {reporte.id}
-                                  coordinador = {reporte.coordinador}
-                                  titulo = {reporte.titulo}
-                                  descripcion = {reporte.descripcion}
-                                  categoria={reporte.categoria}
-                                  subcategoria={reporte.subcategoria}
-                                  prioridad = {reporte.prioridad}
-                                  estatus = {reporte.estatus}
-                                  fecha = {reporte.fecha} />)}
+                                  {...reporte} />)}
       </Grid>
     </div>
     )
@@ -254,16 +246,11 @@ export const ReporteCard = (props:ReporteProps) => {
 }
 
 
-// ########################## START HERE ##########################
-// ########################## START HERE ##########################
-// ########################## START HERE ##########################
-// ########################## START HERE ##########################
-// ########################## START HERE ##########################
-
 export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   const [create, { isLoading, error }] = useCreate();
   const notify = useNotify();
   const refresh = useRefresh();
+  const redirect = useRedirect();
  
   const [flag, setFlag] = useState(false)
 
@@ -347,9 +334,10 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
       return true
     }
 
+    // función para actualizar el estatus y archivar el reporte
     const handleSave = () => {
       
-      // solicitud para archivar el reporte
+      // solicitud para archivar el reporte con el estatus actualizado
 
       const data = {
         reporteId: id, 
@@ -363,8 +351,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
               {
                 onSuccess: () => {
                   refresh()
+                  redirect('/archivados')
                   notify('El reporte se ha archivado correctamente.', {type: 'success'})
-                  // redirect('/archivados')
                 },
                 onError: () => {
                   notify('Ha ocurrido un error Archivando el reporte. Intente más tarde', {type: 'error'})

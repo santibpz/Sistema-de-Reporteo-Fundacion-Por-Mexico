@@ -104,9 +104,6 @@ export function addEndpoints(app, conn) {
           `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
         );
 
-        res.set('Access-Control-Expose-Headers', 'Content-Range');
-        res.set('Content-Range', data.length);
-
         res.status(200).json(data);
       } catch (error) {
         console.error("Error:", error);

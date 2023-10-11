@@ -16,12 +16,6 @@ export const mainPipeline = [
     }
     },
     {$lookup: {
-      from: 'comentarios',
-      localField: 'comentarios',
-      foreignField: '_id',
-      as: 'comentarios'
-    }},
-    {$lookup: {
       from: 'coordinadores',
       localField: 'coordinador',
       foreignField: '_id',
@@ -49,7 +43,11 @@ export const mainPipeline = [
           },
         estatus: 1,
         prioridad: 1,
-        fecha: 1
+        fecha: 1,
+        resolucion: 1,
+        razon:1,
+        intermediarios: 1,
+        tiempoResolucion:1
     }}
 ]
 

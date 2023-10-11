@@ -10,7 +10,11 @@ export interface ReporteProps {
     subcategoria: string,
     prioridad: string,
     estatus: string,
-    fecha: string
+    fecha: string,
+    resolucion?: string,
+    razon?: string, 
+    intermediarios?: Array<any>,
+    tiempoResolucion?: string
 
 }
 
