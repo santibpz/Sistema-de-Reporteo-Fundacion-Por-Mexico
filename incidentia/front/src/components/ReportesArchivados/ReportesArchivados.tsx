@@ -90,7 +90,7 @@ const ReporteArchivadoCard = (props:ReporteProps) => {
 
                     <Grid container justifyContent='center' item sx={{bgcolor:'', p:2}}>
                         <Typography variant="subtitle1" sx={{fontWeight:800}}>Resolución del Reporte</Typography>
-                        <Typography>{props.razon}, Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nemo libero in rerum porro dolorem, natus autem earum quas? Nobis et quasi porro necessitatibus repellat voluptas tempora illum dignissimos maiores eaque?</Typography>
+                        <Typography>{props.razon}</Typography>
                     </Grid>
 
                     <Grid container item direction='column' alignItems='center' justifyContent='space-between' sx ={{bgcolor:'#eee', p:2}}>
