@@ -20,6 +20,9 @@ import logger from './utils/logger.js';
 import { connDB } from './utils/DBUtils.js';
 import { networkInterfaces } from 'os';
 
+// import https from 'https'
+// import fs from 'fs';
+
 // cosas del loggeo
 // cambiar con .env
 let consoleLogLevel = config.CONSOLE_LOG_LEVEL;
@@ -107,3 +110,11 @@ app.listen(config.PORT, async () => {
 
     logger.info("SYS", `Iniciado nueva instancia del servidor en: ${ip}:${config.PORT}`, "app.js");
 });
+
+
+// certificados
+
+// https.createServer({cert: fs.readFileSync("back.cer"), key: fs.readFileSync("back.key")}, app).listen(8081, async ()=>{
+//     await connDB();
+//     console.log("Servidor escuchando en puerto 8081")
+// })
