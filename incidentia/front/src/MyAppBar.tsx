@@ -1,11 +1,17 @@
 import { AppBar, ToggleThemeButton } from 'react-admin';
-import { useState, useEffect } from 'react';
-import { lightTheme, darkTheme, handleThemeChange } from './theme/themes.js';
+import { handleThemeChange } from './theme/themes.js';
+import { useEffect } from 'react';
 
-export const MyAppBar = () => {
-    const [theme, setTheme] = useState(lightTheme);
+export const MyAppBar = ({ isDarkTheme, onThemeToggle }) => {
+  const handleThemeToggle = () => {
+    handleThemeChange(onThemeToggle);
+  };
 
-    return (
-        <AppBar toolbar={<ToggleThemeButton />} />
-    );
+  useEffect(() => {
+    console.log('Theme:', isDarkTheme ? 'dark' : 'light');
+  }, [isDarkTheme]);
+
+  return (
+    <AppBar toolbar={<ToggleThemeButton onClick={handleThemeToggle} />} />
+  );
 };

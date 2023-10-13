@@ -72,7 +72,6 @@ const Reportes = () => {
         setFilters({},[]);
       }
     };
-    //setFilters({ titulo: 'charly' }, []);
 
     if (isLoading) return null
 
@@ -96,6 +95,7 @@ const Reportes = () => {
           fullWidth
           value={selectedCategory}
           onChange={handleCategoryChange}
+          style={{ height: '40px', marginTop:'4px'}}
         >
           <MenuItem value="">
             <em>Seleccionar Categoría</em>
@@ -115,6 +115,7 @@ const Reportes = () => {
           fullWidth
           value={selectedPriority}
           onChange={handlePriorityChange}
+          style={{ height: '40px', marginTop:'4px'}}
         >
           <MenuItem value="">
             <em>Seleccionar Prioridad</em>
@@ -140,25 +141,30 @@ const Reportes = () => {
           item 
           style={{ width: 'auto', padding: 15}}
           >
+          {/*se agrega el filtro de búsqueda*/}
           <FormControl variant="outlined" fullWidth>
             <InputLabel>Tipo de Búsqueda</InputLabel>
-            <Select value={searchType} onChange={handleSearchTypeChange}>
+            {/*Se agrega el menú de selección de tipo de búsqueda*/}
+            <Select value={searchType} onChange={handleSearchTypeChange} style={{ width: '200px' }}>
               <MenuItem value="titulo">Nombre de Incidente</MenuItem>
               <MenuItem value="categoria">Categoría</MenuItem>
               <MenuItem value="prioridad">Prioridad</MenuItem>
             </Select>
           </FormControl>
         </Grid>
+        {/*Se agrega el input de búsqueda*/}
         <Grid item xs style={{ width: 'auto', padding: 15}}>
           {searchInput}
         </Grid>
       </Grid>
+      {/*Se agrega el contenedor de los reportes*/}
       <Grid 
          container 
          spacing={1} 
          columnSpacing={2}
          rowSpacing={2}
          style={{padding: 15}}
+         justifyContent="center"
          >
             {data.map(reporte => <ReporteCard 
                                   key = {reporte.id}
@@ -172,8 +178,19 @@ const Reportes = () => {
 // declaracion del componente que representa un reporte
 export const ReporteCard = (props:ReporteProps) => {
     return (
-      <Grid className="reporte" container item sm lg = 'auto' alignItems="center" justifyContent="center" >
-        <Grid item>
+      // regresar el componente que representa un reporte
+      <Grid className="reporte" 
+            container item sm lg = 'auto' 
+            alignItems="center" 
+            justifyContent="center" 
+            >
+        {/* contenedor para el reporte */}
+        <Grid item sx={{
+              boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.25)',
+              '&:hover': {
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.45)',
+              },
+            }}>
         <Paper
             sx={{
             width: 300,
@@ -192,7 +209,7 @@ export const ReporteCard = (props:ReporteProps) => {
                {/* contenedor para el título y creador del usuario */}
                <Grid container item style = {{backgroundColor: lightColorCategoria[props.categoria]}} xs>
                   <Grid container justifyContent='center' alignContent='center' item xs={4}>
-                  <AssignmentIcon fontSize="large"/>
+                  <AssignmentIcon fontSize="large" style={{ color: 'white' }} />
                   </Grid>
                   <Grid sx={{p:1}} container direction='column' justifyContent='center' alignItems='flex-start' item xs={8} >
                     <Typography mt={1} variant="body2" color={"white"} ><strong>{props.titulo}</strong></Typography>
@@ -370,8 +387,9 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
        size="small"
        onClick={handleOpen}
        disabled={isLoading}
-       sx={{ padding: '7px', color: 'white',  backgroundColor: '#ADADAD', '&:hover': {
-       backgroundColor: '#B0B0B0'
+       sx={{ padding: '7px', color: 'white',  backgroundColor: '#ADADAD', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)', '&:hover': {
+       backgroundColor: '#B0B0B0',
+       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
     }}}>
         Actualizar Estatus
       </Button>

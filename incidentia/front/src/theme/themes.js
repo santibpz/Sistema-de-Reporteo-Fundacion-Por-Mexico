@@ -1,6 +1,6 @@
 import {defaultTheme} from "react-admin";
 
-export const handleThemeChange = () => {
+export const handleThemeChange = (setTheme, theme, lightTheme, darkTheme) => {
   setTheme(theme === lightTheme ? darkTheme : lightTheme);
 };
 
