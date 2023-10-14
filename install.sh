@@ -93,6 +93,16 @@ cat $DIR/incidentia/front/.env
 echo "back-end .env file:"
 cat $DIR/incidentia/back/.env
 
+# configure firewall
+echo "----------- Configuring firewall -----------"
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+sudo ufw allow 'Nginx Full'
+sudo ufw allow 'OpenSSH'
+sudo ufw allow 'ssh'
+sudo ufw enable
+
 # start the server
 echo "----------- Starting server -----------"
 # run ./start.sh as non admin
