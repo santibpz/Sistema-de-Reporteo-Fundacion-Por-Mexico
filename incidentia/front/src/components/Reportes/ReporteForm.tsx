@@ -48,7 +48,7 @@ const ReporteForm = () => {
   return (
     <SimpleForm>
       <TextInput source="titulo" required />
-      <TextInput source="descripcion" required />
+      <TextInput source="descripcion" required multiline fullWidth />
       <RadioButtonGroupInput
         source="prioridad"
         choices={[
