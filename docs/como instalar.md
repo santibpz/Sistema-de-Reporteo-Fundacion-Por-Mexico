@@ -26,6 +26,14 @@
 6. Responder a las preguntas que se otorguen.
 7. Al finalizar, se debe de ver `Server is up and running and seems to be configured correctly.` 
 
+para hacerlo de un jalón:
+```
+git clone https://github.com/santibpz/Sistema-de-Reporteo-Fundacion-Por-Mexico.git
+mv Sistema-de-Reporteo-Fundacion-Por-Mexico Incidentia
+cd Incidentia
+sudo ./install.sh
+```
+
 Al terminar estos pasos, el servidor debería de estar corriendo. 
 En caso de necesitar volver a correr el sistema, quitar los `screen` llamados `front` y `back`. Correr `./start.sh` (sin sudo).
 

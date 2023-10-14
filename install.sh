@@ -37,18 +37,18 @@ sudo apt update
 # install node
 echo "installing node"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-source ~/.bashrc
+~/.bashrc
 nvm install node
 
 # install nginx
 echo "installing nginx"
-sudo apt install -Y nginx
+sudo apt install -y nginx
 sudo ufw allow 'Nginx HTTP'
 
 # install certbot if using https
 if [ "$PROTOCOL" == "https" ]; then
     echo "installing certbot"
-    sudo apt install -Y certbot python3-certbot-nginx
+    sudo apt install -y certbot python3-certbot-nginx
 fi
 
 # nginx config
