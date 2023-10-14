@@ -36,9 +36,10 @@ sudo apt update
 
 # install node
 echo "installing node"
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+# run without sudo:
+sudo -u $SUDO_USER curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 reset
-nvm install node
+sudo -u $SUDO_USER nvm install node
 
 # install nginx
 echo "installing nginx"
