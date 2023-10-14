@@ -9,6 +9,7 @@ echo "----------- Getting variables -----------"
 
 # get the current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+echo "running in dir DIR=$DIR"
 # check if the current directory has this install.sh script
 if [ ! -f "$DIR/install.sh" ]; then
     echo "Error: you need to be on the same directory as install.sh"
@@ -26,7 +27,7 @@ read MONGOURI
 
 # install dependencies
 echo "----------- Installing dependencies -----------"
-exho "updating apt"
+echo "updating apt"
 sudo apt update
 
 # install mongodb
@@ -36,16 +37,18 @@ sudo apt update
 # install node
 echo "installing node"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install node
 
 # install nginx
 echo "installing nginx"
-sudo apt install nginx
+sudo apt install -Y nginx
 sudo ufw allow 'Nginx HTTP'
 
 # install certbot if using https
 if [ "$PROTOCOL" == "https" ]; then
     echo "installing certbot"
-    sudo apt install certbot python3-certbot-nginx
+    sudo apt install -Y certbot python3-certbot-nginx
 fi
 
 # nginx config
