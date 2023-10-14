@@ -3,7 +3,9 @@ import {
   Admin,
   Layout,
   Resource,
-  CustomRoutes
+  CustomRoutes,
+  ListGuesser,
+  NotFound
 } from "react-admin";
 import { Route } from 'react-router-dom';
 import { i18nProvider } from "./i18nProvider";
@@ -12,10 +14,13 @@ import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
 import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
-import Registrarse from "./registrarse";
 import ChartPage from "./pages/ChartPage";
 import { MyAppBar } from './MyAppBar';
 import { lightTheme, darkTheme } from './theme/themes.js';
+
+import CoordinadorCreate from "./components/Registro";
+import { Registro } from "./components/Registro";
+
 
 const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
 
@@ -32,12 +37,22 @@ export const App = () => {
       darkTheme = {darkTheme} 
       >
 
-      <Resource 
+  {permissions => (
+              <>
+                  {permissions === 'Ejecutivo'
+                      ? (<Resource
+                          name="coordinadores"
+                          list={ListGuesser}
+                          create={CoordinadorCreate}
+                       />)
+                      : null}
+
+<Resource 
        name="reportes" 
        list={Reporte.ReporteList} 
        create = {Reporte.ReporteCreate} 
         />  
-
+        
       <Resource 
        name="archivados"
        list={ReporteArchivado.ReporteArchivadoList} 
@@ -52,9 +67,15 @@ export const App = () => {
             <Route path="reportes/show/:id" element={<ReporteShow />} />
             <Route path="/chart" element={<ChartPage />} />
       </CustomRoutes>
-      <CustomRoutes noLayout>
-        <Route path="/registrarse"  element={<Registrarse />}/>
+      <CustomRoutes>
+        <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
       </CustomRoutes>
+              </>
+          )
+          
+          }
+
+      
     </Admin>  
   )
 }

@@ -1,7 +1,7 @@
-import ObjectId from 'mongodb';
+import {ObjectId} from 'mongodb';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
-import { makeNewToken } from './utils/JWTUtils.js';
+import { makeNewToken, verifyTokenFromReq } from './utils/JWTUtils.js';
 import logger from './utils/logger.js';
 const dbCollection = "coordinadores";
 
@@ -51,11 +51,29 @@ export function addEndpoints(app, conn) {
     });
 
     // Hacer el registro de un usuario
-    app.post("/registrarse", async function(request, response){
+    app.post("/registro", async function(request, response){
         try{
             const dbFig = await conn();
             let dbConn = dbFig.conn;
             const db = dbFig.db.collection(dbCollection);
+
+            // verify that only coordinador ejecutivo pueda acceder a este recurso
+            const decodedToken = verifyTokenFromReq(request);
+
+            // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+            if (!decodedToken.id)
+            return response
+            .status(401)
+            .json({
+                error:
+                "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+            });
+
+            // verificamos si el usuario accediendo es ejecutivo
+            const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+            console.log("ss", coordinador)
+            if(coordinador == null || coordinador.rol != 'Ejecutivo') return response.status(403).json({error: "No tienes permiso de Acceder."})
+
 
             const { nombreCompleto, matricula, password, rol } = request.body;
 
@@ -81,6 +99,7 @@ export function addEndpoints(app, conn) {
             }
             
             try{
+                
                 // Validación usuario nuevo
                 const result = await db.find({ matricula: matricula }).toArray();
                 if (result.length == 0) {
@@ -88,7 +107,22 @@ export function addEndpoints(app, conn) {
                     bcrypt.genSalt(10, (error, salt)=>{
                         // Generación de credencial (passhashed)
                         bcrypt.hash(password, salt, async(error, hash)=>{
-                            let usuarioAgregar={"nombreCompleto": nombreCompleto,"matricula": matricula, "contra": hash, "rol": rol};
+                             // verificamos si se está creando un coordinador de aula
+                            
+                             let usuarioAgregar = {}
+                            if(rol=="Aula") {
+                                const {aulaId} = request.body  // extraemos el id del aula al que es asignado este coordinador
+                                if(!aulaId || aulaId === '') return response.status(400).json({error: 'Se debe seleccionar un aula'})
+                                usuarioAgregar={"nombreCompleto": nombreCompleto,"matricula": matricula, "contra": hash, "rol": rol, aula: new ObjectId(aulaId)};
+                                console.log(aulaId)
+
+                            } else {
+                                let {aulasId} = request.body
+                            if(!aulasId || aulasId.length === 0) return response.status(400).json({error: 'Se deben seleccionar las aulas que gestiona este coordinador nacional'})
+                                aulasId = aulasId.map(aulaId => new ObjectId(aulaId))
+                                console.log(aulasId)
+                                usuarioAgregar={"nombreCompleto": nombreCompleto,"matricula": matricula, "contra": hash, "rol": rol, aulas: aulasId};
+                            }
                             // Insersión de datos
                             const data = await db.insertOne(usuarioAgregar);
                             // Checar si se inserto bien o no
@@ -112,8 +146,11 @@ export function addEndpoints(app, conn) {
                 dbConn.close();
                 response.status(401).json({ message: 'Error creando usuario' });
             }
-        }catch(errorConexion){
+        }
+    
+        catch(errorConexion){
             // Manda error
+            console.log(errorConexion);
             response.status(401).json({ message: 'Error de conexion' });
         }
     });

@@ -17,6 +17,7 @@
     "@mui/material": "^5.14.12",
     "axios": "^1.5.0",
     "chart.js": "^4.4.0",
+    "multiselect-react-dropdown": "^2.0.25",
     "ra-data-simple-rest": "^4.12.0",
     "react": "^18.2.0",
     "react-admin": "^4.12.0",

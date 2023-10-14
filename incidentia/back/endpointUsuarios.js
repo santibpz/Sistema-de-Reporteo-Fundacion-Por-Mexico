@@ -1,7 +1,7 @@
 import ObjectId from 'mongodb';
 
-const prefix = "/Usuarios";
-const dbCollection = "Usuarios";
+const prefix = "/coordinadores";
+const dbCollection = "coordinadores";
 
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
@@ -28,13 +28,20 @@ export function addEndpoints(app, conn) {
                 // Sorting
                 const sortQuery = sort ? JSON.parse(sort) : {};
 
-                const cursor = db.find(query).sort(sortQuery).skip(skip).limit(limit);
+                const result = await db.find({}).project({id:"$_id", _id:0, nombreCompleto:1}).toArray()
+                // const result = await cursor.toArray();
+
+                console.log(result)
+
                 const totalCount = await db.countDocuments(query);
 
-                res.set('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.set('X-Total-Count', totalCount);
+                        // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
+                res.set("Access-Control-Expose-Headers", "Content-Range");
+                res.set(
+                "Content-Range",
+                `items ${skip + 1}-${skip + result.length}/${totalCount.totalCount}`
+                );
 
-                const result = await cursor.toArray();
                 res.json(result);
             } catch (error) {
                 console.error('Error:', error);
