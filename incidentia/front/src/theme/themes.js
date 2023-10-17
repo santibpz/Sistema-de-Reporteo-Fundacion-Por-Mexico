@@ -1,8 +1,4 @@
-import {defaultTheme} from "react-admin";
-
-export const handleThemeChange = (setTheme, theme, lightTheme, darkTheme) => {
-  setTheme(theme === lightTheme ? darkTheme : lightTheme);
-};
+import { createTheme } from '@mui/material/styles';
 
 const lightPalette = {
     primary: {
@@ -38,28 +34,27 @@ export const lightColorCategoria = {
     "Otros": '#A355D7' // Morado vibrante
   }  
 
-export const darkColorCategoria = {
-  "Trabajadores de Aula": '#6D9C84', // Verde Pastel más oscuro
-  "Inmobiliario": '#E57373', // Rojo Pastel más oscuro
-  "Equipo Tecnológico": '#6F90B0', // Azul Pastel más oscuro
-  "Infraestructura": '#E3BAC9', // Rosa Pastel más oscuro
-  "Material Académico": '#E3C46A', // Naranja Pastel más oscuro
-  "Beneficiarios": '#6DA19C', // Aqua Pastel más oscuro
-  "Otros": '#B58FB4' // Morado Pastel más oscuro
-}
+  export const darkColorCategoria = {
+    "Trabajadores de Aula": '#4CAF50', // Verde oscuro
+    "Inmobiliario": '#D32F2F', // Rojo oscuro
+    "Equipo Tecnológico": '#1976D2', // Azul oscuro
+    "Infraestructura": '#E91E63', // Rosa oscuro
+    "Material Académico": '#FF9800', // Naranja oscuro
+    "Beneficiarios": '#009688', // Verde azul oscuro
+    "Otros": '#8E24AA' // Morado oscuro
+  };
+  
 
-export const lightTheme = {
-    ...defaultTheme,
+export const theme = createTheme({
     palette: {
         mode: "light",
         ...lightPalette,
     }
-};
+});
     
-export const darkTheme = {
-      ...lightTheme,
+export const darkTheme = createTheme({
       palette: {
         mode: 'dark',
         ...darkPalette,
       }
-};
+});

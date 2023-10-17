@@ -11,6 +11,7 @@ import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../.
 import { on } from "events"
 import { redirect } from "react-router-dom"
 import ConfirmacionDialog from "../ConfirmacionDialog"
+import { styled } from '@mui/system';
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -27,6 +28,12 @@ const prioridades = [
   { value: "media", label: "Media" },
   { value: "baja", label: "Baja" }
 ];
+
+const StyledGrid = styled(Grid)(({ theme, categoria }) => ({
+  backgroundColor: theme.palette.mode === 'light' 
+  ? lightColorCategoria[categoria]
+  : darkColorCategoria[categoria],
+}));
 
 const Reportes = () => {
     // obtener los datos de la lista de reportes
@@ -195,7 +202,6 @@ export const ReporteCard = (props:ReporteProps) => {
             sx={{
             width: 300,
             height: 370,
-            // backgroundColor: '#E6E6FA',
             }}
             elevation={10}
         >
@@ -207,7 +213,7 @@ export const ReporteCard = (props:ReporteProps) => {
              alignItems="stretch"
             >
                {/* contenedor para el título y creador del usuario */}
-               <Grid container item style = {{backgroundColor: lightColorCategoria[props.categoria]}} xs>
+               <StyledGrid categoria={props.categoria} container item xs>
                   <Grid container justifyContent='center' alignContent='center' item xs={4}>
                   <AssignmentIcon fontSize="large" style={{ color: 'white' }} />
                   </Grid>
@@ -215,7 +221,7 @@ export const ReporteCard = (props:ReporteProps) => {
                     <Typography mt={1} variant="body2" color={"white"} ><strong>{props.titulo}</strong></Typography>
                     <Typography mb={1} variant="body2" style={{color:'#E5E4E2'}}>Abierto por {props.coordinador}</Typography>
                   </Grid>
-               </Grid>  
+               </StyledGrid>  
 
                {/* contenedor para la categoria, subcategoria, estatus y prioridad */}
                <Grid style = {{ margin: '1px'}} xs={6} container item >
@@ -248,10 +254,10 @@ export const ReporteCard = (props:ReporteProps) => {
                   </Grid>
                </Grid>          
     
-               <Grid container direction='column' justifyContent="center" alignItems="center" style = {{ backgroundColor: lightColorCategoria[props.categoria]}} xs item >
+               <StyledGrid categoria={props.categoria} container direction='column' justifyContent="center" alignItems="center" xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
                 <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
-               </Grid>
+               </StyledGrid>
                 
             </Grid>
         </Paper>
