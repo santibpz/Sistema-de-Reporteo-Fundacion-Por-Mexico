@@ -1,0 +1,10 @@
+- [ ] Documento de requerimientos
+- [x] Repositorio de código (link)
+- [ ] Documento de pruebas (conforme a los requerimientos)
+- [x] Manual de instalación en pdf
+- [ ] Video del martes
+- [x] Seguir el manual de instalación en un video
+- [ ] Video de funcionalidad para el socio formador (similar al de hoy, pero 5-10)
+- [x] SRS
+- [ ] Manual de usuario
+- [ ] SAR (software architecture report)

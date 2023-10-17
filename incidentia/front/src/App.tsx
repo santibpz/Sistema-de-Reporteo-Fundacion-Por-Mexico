@@ -1,33 +1,33 @@
-import React, { useState } from "react";
-import {
-  Admin,
-  Layout,
-  Resource,
-  CustomRoutes,
-  ListGuesser,
-  NotFound
-} from "react-admin";
+
+import React, {useState} from 'react';
 import { Route } from 'react-router-dom';
-import { i18nProvider } from "./i18nProvider";
-import { dataProvider } from "./dataProvider";
-import authProvider from "./authProvider";
-import LoginPage from "./pages/LoginPage";
-import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
-
-import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
+import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound } from 'react-admin';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import { dataProvider } from './dataProvider';
+import { i18nProvider } from './i18nProvider';
+import authProvider from './authProvider';
+import ChartPage from './pages/ChartPage';
+import LoginPage from './pages/LoginPage';
+import { MyAppBar } from './theme/MyAppBar';
+import { darkTheme, theme } from './theme/themes';
+import Reporte, { ReporteShow } from './components/Reportes/Reporte';
+import ReporteArchivado from './components/ReportesArchivados/ReporteArchivado';
 import Aula from "./components/Aulas/Aula"
-import ChartPage from "./pages/ChartPage";
-import { MyAppBar } from './MyAppBar';
-import { lightTheme, darkTheme } from './theme/themes.js';
-
 import CoordinadorCreate from "./components/Registro";
 import { Registro } from "./components/Registro";
 
-
-const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
-
 export const App = () => {
+  const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
 
+        
+  const [disableColors, setDisableColors] = useState(false);
+
+  const handleDisableColorsToggle = () => {
+    setDisableColors(!disableColors);
+  };
 
   return(
     <Admin 
@@ -35,8 +35,8 @@ export const App = () => {
       dataProvider={dataProvider} 
       authProvider = {authProvider} 
       i18nProvider={i18nProvider}
-      layout={MyLayout}
-      theme = {lightTheme}
+      layout={layout}
+      theme = {theme}
       darkTheme = {darkTheme} 
       >
 
@@ -61,16 +61,19 @@ export const App = () => {
        name="reportes" 
        list={ Reporte.ReporteList} 
        create = { permissions === 'Aula' ? (Reporte.ReporteCreate) : null } 
+       icon={AssignmentIcon}
         />  
         
       <Resource 
        name="archivados"
        list={ReporteArchivado.ReporteArchivadoList} 
+       icon={ArchiveIcon}
         />  
 
       <Resource 
        name="ChartPage" 
        list={ChartPage} 
+       icon={BarChartIcon}
         />  
 
       <CustomRoutes>
@@ -82,9 +85,7 @@ export const App = () => {
           )
           
           }
-
-      
-    </Admin>  
-  )
-}
-
+  
+    </Admin>
+  );
+};

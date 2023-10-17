@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLogin, useNotify } from 'react-admin';
-import { Grid, Paper, Avatar, TextField, Button, Typography, Link} from "@mui/material"
+import { Box, Grid, Paper, Avatar, TextField, Button, Typography, Link} from "@mui/material"
+import image from '../images/FXM_B_sinFondo.png'
 
 // import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 
@@ -15,7 +16,9 @@ const LoginPage = () => {
         padding:20,
         height: "60vh",
         width: 350,
-        margin: "70px auto"
+        margin: "70px auto",
+        borderRadius: "20px",
+        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.5)",
     }
 
     const handleSubmit = (e: Event) => {
@@ -27,30 +30,36 @@ const LoginPage = () => {
         })
     }
     return(
-                          
-            <Paper  style = {paperStyle}>
+        <div style={{height: "maxHeight", display:'flex', backgroundColor:'#69B035'}}>
+        <Grid container alignItems="center" justifyContent="center">
+        <Grid item>
+            <img src={image} alt="logo"/>
+        </Grid>
+        <Grid container direction="column" alignItems="center">
+            <Paper style = {paperStyle}>
                 <Grid 
                 className = 'login'
                 container
                 spacing = {2}
                 style = {{padding: 20}}
                 justifyContent="center"
-                alignItems="center">
+                alignItems="center"
+                >
 
-                    <Grid item align = 'center'>
-                        <Avatar sx = {{backgroundColor: 'black'}}></Avatar>
+                    <Grid item align = 'center' style={{color:"#69B035"}}>
                         <h2>Iniciar Sesión</h2>
                     </Grid>
-                    <Grid item>
-                        <TextField
+                    <Grid style = {{padding: 20}} item>
+                        <TextField sx = {{marginBottom: 1}}
                          value={matricula}
                          onChange={(e) => setMatricula(e.target.value)}
                          label = 'Matrícula'
                          placeholder='Matrícula' 
                          required
-                         fullWidth>
+                         fullWidth
+                         >
                          </TextField>
-                        <TextField 
+                        <TextField sx = {{marginBottom: 2}}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         label = 'Contraseña' 
@@ -63,20 +72,12 @@ const LoginPage = () => {
                         sx = {{backgroundColor: 'blue'}} 
                         variant = 'contained' 
                         fullWidth>Entrar</Button>
-                        <Typography style = {{paddingTop: 5, margin: 'auto'}}>
-                        <Link href="#" sx = {{textDecoration: 'none'}}>
-                            Olvidé mi contraseña
-                        </Link>
-                    </Typography>
-                    <Typography style = {{paddingTop: 5, margin: 'auto'}}>
-                        <Link href="#/registrarse" sx = {{textDecoration: 'none'}}>
-                            Registrarse
-                        </Link>
-                    </Typography>
                     </Grid>
-
                 </Grid>
             </Paper>
+            </Grid>
+        </Grid>
+    </div>    
     )
 }
 

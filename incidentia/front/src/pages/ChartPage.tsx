@@ -2,17 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import BarChartComponent from '../components/Charts/BarChart';
 import { useDataProvider } from "react-admin"
 
-
-//DummyData para la gráfica
-const chartData1 = [
-  { name: 'Trabajadores de Aula', pendientes: 10, activos: 20 },
-  { name: 'Inmobiliario', pendientes: 15, activos: 25 },
-  { name: 'Equipo Tecnológico', pendientes: 12, activos: 18 },
-  { name: 'Infraestructura', pendientes: 30, activos: 52 },
-  { name: 'Material Académico', pendientes: 20, activos: 40 },
-  { name: 'Beneficiarios', pendientes: 18, activos: 37 },
-  { name: 'Otros', pendientes: 9, activos: 2 }
-];
 let chartData = [{}]
 
 //Solicitar datos a la API

@@ -8,6 +8,7 @@ import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
+import { StyledGrid } from "../../theme/themes"
 import ConfirmacionDialog from "../ConfirmacionDialog"
 
 import { Empty } from "react-admin";
@@ -36,10 +37,7 @@ const Reportes = () => {
 
     const {data,
         isLoading,
-        displayedFilters,
-        filterValues,
         setFilters,
-        hideFilter
       } = useListContext();
 
       console.log("dksd", data)
@@ -93,6 +91,7 @@ const Reportes = () => {
           fullWidth
           value={searchTerm}
           onChange={handleSearchTermChange}
+          style={{ height: 56, marginTop:2}}
         />
       );
     } else if (searchType === "categoria") {
@@ -103,6 +102,7 @@ const Reportes = () => {
           fullWidth
           value={selectedCategory}
           onChange={handleCategoryChange}
+          style={{ height: 54, marginTop: 2}}
         >
           <MenuItem value="">
             <em>Seleccionar Categoría</em>
@@ -122,6 +122,7 @@ const Reportes = () => {
           fullWidth
           value={selectedPriority}
           onChange={handlePriorityChange}
+          style={{ height: 54, marginTop:2}}
         >
           <MenuItem value="">
             <em>Seleccionar Prioridad</em>
@@ -154,25 +155,30 @@ const Reportes = () => {
           item 
           style={{ width: 'auto', padding: 15}}
           >
+          {/*se agrega el filtro de búsqueda*/}
           <FormControl variant="outlined" fullWidth>
             <InputLabel>Tipo de Búsqueda</InputLabel>
-            <Select value={searchType} onChange={handleSearchTypeChange}>
+            {/*Se agrega el menú de selección de tipo de búsqueda*/}
+            <Select value={searchType} onChange={handleSearchTypeChange} style={{ width: 200, height: 55 }}>
               <MenuItem value="titulo">Nombre de Incidente</MenuItem>
               <MenuItem value="categoria">Categoría</MenuItem>
               <MenuItem value="prioridad">Prioridad</MenuItem>
             </Select>
           </FormControl>
         </Grid>
+        {/*Se agrega el input de búsqueda*/}
         <Grid item xs style={{ width: 'auto', padding: 15}}>
           {searchInput}
         </Grid>
       </Grid>
+      {/*Se agrega el contenedor de los reportes*/}
       <Grid 
          container 
          spacing={1} 
          columnSpacing={2}
          rowSpacing={2}
          style={{padding: 15}}
+         justifyContent="center"
          >
             {data.map(reporte => <ReporteCard 
                                   key = {reporte.id}
@@ -186,13 +192,23 @@ const Reportes = () => {
 // declaracion del componente que representa un reporte
 export const ReporteCard = (props:ReporteProps) => {
     return (
-      <Grid className="reporte" container item sm lg = 'auto' alignItems="center" justifyContent="center" >
-        <Grid item>
+      // regresar el componente que representa un reporte
+      <Grid className="reporte" 
+            container item sm lg = 'auto' 
+            alignItems="center" 
+            justifyContent="center" 
+            >
+        {/* contenedor para el reporte */}
+        <Grid item sx={{
+              boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.25)',
+              '&:hover': {
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.45)',
+              },
+            }}>
         <Paper
             sx={{
             width: 300,
             height: 370,
-            // backgroundColor: '#E6E6FA',
             }}
             elevation={10}
         >
@@ -204,15 +220,15 @@ export const ReporteCard = (props:ReporteProps) => {
              alignItems="stretch"
             >
                {/* contenedor para el título y creador del usuario */}
-               <Grid container item style = {{backgroundColor: lightColorCategoria[props.categoria]}} xs>
+               <StyledGrid categoria={props.categoria} container item xs>
                   <Grid container justifyContent='center' alignContent='center' item xs={4}>
-                  <AssignmentIcon fontSize="large"/>
+                  <AssignmentIcon fontSize="large" style={{ color: 'white' }} />
                   </Grid>
                   <Grid sx={{p:1}} container direction='column' justifyContent='center' alignItems='flex-start' item xs={8} >
                     <Typography mt={1} variant="body2" color={"white"} ><strong>{props.titulo}</strong></Typography>
                     <Typography mb={1} variant="body2" style={{color:'#E5E4E2'}}>Abierto por {props.coordinador}</Typography>
                   </Grid>
-               </Grid>  
+               </StyledGrid>  
 
                {/* contenedor para la categoria, subcategoria, estatus y prioridad */}
                <Grid style = {{ margin: '1px'}} xs={6} container item >
@@ -245,10 +261,10 @@ export const ReporteCard = (props:ReporteProps) => {
                   </Grid>
                </Grid>          
     
-               <Grid container direction='column' justifyContent="center" alignItems="center" style = {{ backgroundColor: lightColorCategoria[props.categoria]}} xs item >
+               <StyledGrid categoria={props.categoria} container direction='column' justifyContent="center" alignItems="center" xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
-                <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
-               </Grid>
+                <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{color:"white", backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
+               </StyledGrid>
                 
             </Grid>
         </Paper>
@@ -384,8 +400,9 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
        size="small"
        onClick={handleOpen}
        disabled={isLoading}
-       sx={{ padding: '7px', color: 'white',  backgroundColor: '#ADADAD', '&:hover': {
-       backgroundColor: '#B0B0B0'
+       sx={{ padding: '7px', color: 'white',  backgroundColor: '#ADADAD', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)', '&:hover': {
+       backgroundColor: '#B0B0B0',
+       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
     }}}>
         Actualizar Estatus
       </Button>
