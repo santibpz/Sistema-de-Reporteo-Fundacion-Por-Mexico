@@ -15,6 +15,7 @@ import { darkTheme, theme } from './theme/themes';
 import Reporte, { ReporteShow } from './components/Reportes/Reporte';
 import ReporteArchivado from './components/ReportesArchivados/ReporteArchivado';
 import Registrarse from './registrarse';
+import { DisableColorsProvider } from './theme/DisableColorContext';
 
 export const App = () => {
   const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
@@ -26,6 +27,7 @@ export const App = () => {
   };
 
   return (
+    <DisableColorsProvider>
     <Admin
       loginPage={LoginPage}
       dataProvider={dataProvider}
@@ -65,5 +67,6 @@ export const App = () => {
         </CustomRoutes>
       
     </Admin>
+    </DisableColorsProvider>
   );
 };

@@ -7,6 +7,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import { StyledBackgroundGrid } from "../../theme/themes"
 import { StyledGrid } from "../../theme/themes"
 import TextField from '@mui/material/TextField';
+import { useDisableColors } from '../../theme/DisableColorContext'; 
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -35,6 +36,7 @@ const ReportesArchivados = () => {
   const [searchType, setSearchType] = useState("titulo");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
+  const { disableColors } = useDisableColors();
 
   const handleSearchTypeChange = (event) => {
     setSearchType(event.target.value);
@@ -160,14 +162,14 @@ const ReportesArchivados = () => {
          justifyContent="center"
          
          >
-            {data.map(reporte => <ReporteArchivadoCard key={reporte.id} {...reporte} />)}
+            {data.map(reporte => <ReporteArchivadoCard key={reporte.id} {...reporte} disableColors={disableColors}/>)}
       </Grid>
       </div>
     )
 }
 
 
-const ReporteArchivadoCard = (props:ReporteProps) => {
+const ReporteArchivadoCard = (props:ReporteProps & { disableColors: boolean }) => {
     return(
         <Grid container item sm lg = 'auto' alignItems="center" justifyContent="center" >
             <Paper
@@ -186,7 +188,7 @@ const ReporteArchivadoCard = (props:ReporteProps) => {
               <Grid container direction='column'>
 
                 {/* sección de titulo de reporte archivado */}
-                <StyledGrid categoria={props.categoria} container item direction='row'>
+                <StyledGrid categoria={props.categoria} disableColors={props.disableColors} container item direction='row'>
 
 
                     {/* icono y titulo */}
