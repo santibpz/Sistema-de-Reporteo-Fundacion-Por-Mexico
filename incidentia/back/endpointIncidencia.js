@@ -19,8 +19,6 @@ export function addEndpoints(app, conn) {
       // query params
       const { range, filter, sort } = req.query;
 
-      console.log("REQQQ QUERYYY", req.query)
-
       // Parse range parameter
       let limit, skip;
       if(range) {
@@ -30,18 +28,18 @@ export function addEndpoints(app, conn) {
       }
 
       try {
-          // Filtering
-          const query = filter ? JSON.parse(filter) : {};
-          if (query.categoria){ 
-              query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
-          }
-          else if (query.titulo) { 
-              query.titulo = { $regex: query.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
-          }
-          else if(query.aula) {
-            query.aula = new ObjectId(query.aula); // si hay un filtro de aula, lo convierte a id
-          }
 
+        // Filtering
+        const filterQuery = filter ? JSON.parse(filter) : {};
+        if (filterQuery.categoria){ 
+            filterQuery.categoria = new ObjectId(filterQuery.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+        }
+        if (filterQuery.titulo) { 
+            filterQuery.titulo = { $regex: filterQuery.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
+        }
+        if(filterQuery.aula) {
+            filterQuery.aula = new ObjectId(filterQuery.aula); // si hay un filtro de aula, lo convierte a id
+          }
 
         // Sorting
         let sortQuery;
@@ -74,22 +72,9 @@ export function addEndpoints(app, conn) {
             .status(401)
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
 
-
-        // let getReportesPipeline = (skip && limit && sortQuery) ? 
-        // getReportesPipeline = [
-        //   { $match: query }, // inicia con el filtro
-        //   ...mainPipeline, // construye todos los datos de los reportes
-        //   { $sort: sortQuery }, // hace un sort de la info
-        //   { $skip: skip }, // consigue solo pa partir de cierto numero
-        //   { $limit: limit }, // consigue hasta cierto otro numero
-        // ] : [
-        //   { $match: query }, // inicia con el filtro
-        //   ...mainPipeline, // construye todos los datos de los reportes
-        // ]
-
         const getReportesPipeline = [
-          { $match: query }, // inicia con el filtro
-          ...mainPipeline, // construye todos los datos de los reportes
+          { $match: filterQuery }, // inicia con el filtro
+          ...mainPipeline, // construye todas sus madres
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
           { $limit: limit }, // consigue hasta cierto otro numero
@@ -109,7 +94,7 @@ export function addEndpoints(app, conn) {
             .toArray();
         } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
           // id del aula de la cual se buscan los reportes
-          if(query.aula) {
+          if(filterQuery.aula) {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
           data = await db.aggregate(getReportesPipeline)
                .toArray();
@@ -118,7 +103,7 @@ export function addEndpoints(app, conn) {
 
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
-          { $match: query }, // filtra
+          { $match: filterQuery }, // filtra
           { $count: 'totalCount' } // cuenta
       ];
         let [totalCount] = await db.aggregate(totalCountPipeline).toArray();

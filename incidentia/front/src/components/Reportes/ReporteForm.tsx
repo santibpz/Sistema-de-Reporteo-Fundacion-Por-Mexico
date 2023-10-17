@@ -34,13 +34,12 @@ const ReporteForm = () => {
   // obtener las subcategorias de la base de datos dependiendo de la categoria seleccionada
   useEffect(() => {
     const fetchSubcategorias = async () => {
-      const baseUrl = "http://127.0.0.1:8081";
       categoriaId
-        ? await fetch(`${baseUrl}/subcategorias/${categoriaId}`)
+        ? await fetch(`${import.meta.env.VITE_SIMPLE_REST_URL}/subcategorias/${categoriaId}`)
             .then((data) => data.json())
             .then((data) => setSubcategorias(data))
             .catch((err) => console.log(err))
-        : null;
+        : ["Otro"];
     };
     fetchSubcategorias();
   }, [categoriaId]);
@@ -49,13 +48,13 @@ const ReporteForm = () => {
   return (
     <SimpleForm>
       <TextInput source="titulo" required />
-      <TextInput source="descripcion" required />
+      <TextInput source="descripcion" required multiline fullWidth />
       <RadioButtonGroupInput
         source="prioridad"
         choices={[
-          { id: "alta", name: "alta" },
-          { id: "media", name: "media" },
-          { id: "baja", name: "baja" },
+          { id: "alta", name: "Alta" },
+          { id: "media", name: "Media" },
+          { id: "baja", name: "Baja" },
         ]}
         required
       />

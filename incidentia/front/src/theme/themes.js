@@ -1,15 +1,13 @@
-import {defaultTheme} from "react-admin";
-
-export const handleThemeChange = () => {
-  setTheme(theme === lightTheme ? darkTheme : lightTheme);
-};
+import { createTheme } from '@mui/material/styles';
+import { styled } from '@mui/system';
+import {Grid} from '@mui/material';
 
 const lightPalette = {
     primary: {
-        main: "#1C8D41",
+        main: "#69B035",
     },
     secondary: {
-        main: "#1C8D41",
+        main: "#69B035",
     },
     error: {
         main: "#BA1015",
@@ -38,28 +36,68 @@ export const lightColorCategoria = {
     "Otros": '#A355D7' // Morado vibrante
   }  
 
-export const darkColorCategoria = {
-  "Trabajadores de Aula": '#6D9C84', // Verde Pastel más oscuro
-  "Inmobiliario": '#E57373', // Rojo Pastel más oscuro
-  "Equipo Tecnológico": '#6F90B0', // Azul Pastel más oscuro
-  "Infraestructura": '#E3BAC9', // Rosa Pastel más oscuro
-  "Material Académico": '#E3C46A', // Naranja Pastel más oscuro
-  "Beneficiarios": '#6DA19C', // Aqua Pastel más oscuro
-  "Otros": '#B58FB4' // Morado Pastel más oscuro
+export const lightMainColor = {
+    "Trabajadores de Aula": '#69B035',
+    "Inmobiliario": '#69B035',
+    "Equipo Tecnológico": '#69B035',
+    "Infraestructura": '#69B035',
+    "Material Académico": '#69B035',
+    "Beneficiarios": '#69B035',
+    "Otros": '#69B035'
 }
 
-export const lightTheme = {
-    ...defaultTheme,
+export const darkColorCategoria = {
+    "Trabajadores de Aula": '#4CAF50', // Verde oscuro
+    "Inmobiliario": '#D32F2F', // Rojo oscuro
+    "Equipo Tecnológico": '#1976D2', // Azul oscuro
+    "Infraestructura": '#E91E63', // Rosa oscuro
+    "Material Académico": '#FF9800', // Naranja oscuro
+    "Beneficiarios": '#009688', // Verde azul oscuro
+    "Otros": '#8E24AA' // Morado oscuro
+};
+
+export const darkMainColor = {
+    "Trabajadores de Aula": '#1C8D41',
+    "Inmobiliario": '#1C8D41',
+    "Equipo Tecnológico": '#1C8D41',
+    "Infraestructura": '#1C8D41',
+    "Material Académico": '#1C8D41',
+    "Beneficiarios": '#1C8D41',
+    "Otros": '#1C8D41'
+}
+  
+
+export const theme = createTheme({
     palette: {
         mode: "light",
         ...lightPalette,
     }
-};
+});
     
-export const darkTheme = {
-      ...lightTheme,
+export const darkTheme = createTheme({
       palette: {
         mode: 'dark',
         ...darkPalette,
       }
-};
+});
+
+export const StyledGrid = styled(Grid)(({ theme, categoria, disableColors }) => {
+    let colorCategoria, mainColor;
+
+    if (disableColors) {
+        mainColor = theme.palette.mode === 'light' ? lightMainColor[categoria] : darkMainColor[categoria];
+        colorCategoria = mainColor; // Usar color principal cuando disableColors está activado
+    } else {
+        colorCategoria = theme.palette.mode === 'light' ? lightColorCategoria[categoria] : darkColorCategoria[categoria];
+    }
+
+    return {
+        backgroundColor: colorCategoria,
+    };
+});
+
+
+export const StyledBackgroundGrid = styled(Grid)(({ theme }) => ({
+        backgroundColor: theme.palette.mode === 'light' ? '#EEE' : '#888',
+        borderRadius: "20px"
+    }));
