@@ -1,4 +1,5 @@
-import ObjectId from 'mongodb';
+import {ObjectId} from 'mongodb';
+import { verifyTokenFromReq } from './utils/JWTUtils.js';
 
 const prefix = "/aulas";
 const dbCollection = "aulas";
@@ -11,8 +12,48 @@ export function addEndpoints(app, conn) {
             const dbFig = await conn();
             const db = dbFig.db.collection(dbCollection);
 
-            const data = await db.find({}).project({id:"$_id", _id:0, nombre:1}).toArray();
-            if(data.length == 0) return res.status(500).json({error:'Ocurrió un Error. Intente hacer el registro más tarde'})
+             // verificar que solo coordinadores ejecutivo y nacional puedan acceder a este recurso
+             const decodedToken = verifyTokenFromReq(req);
+
+             // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+             if (!decodedToken.id)
+             return res
+             .status(401)
+             .json({
+                 error:
+                 "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+             });
+
+             // verificamos si el usuario accediendo es ejecutivo o nacional
+            const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+            console.log("ss", coordinador)
+            if(coordinador == null || coordinador.rol == 'Aula') return res.status(403).json({error: "No tienes permiso de Acceder."})
+
+        
+            let data = [] // informacion a enviar al cliente
+
+            if(coordinador.rol == 'Nacional') {
+                // hacemos un pipeline para poder obtener la información de las aulas que gestiona este coordinador
+                const aulasNacionalPipeline = [
+                    {$match: {_id: new ObjectId(decodedToken.id)}},
+                    {$project: {aulas:1, _id: 0}}
+                ]
+
+                 // si el rol es nacional, buscar las aulas asociadas a este coordinador
+                 let aulasCoordinadorNacional = await dbFig.db.collection('coordinadores').aggregate(aulasNacionalPipeline).toArray()
+                 let aulasId = aulasCoordinadorNacional[0].aulas // arreglo con los ids de las aulas
+                 console.log(aulasId)
+
+                 // buscar todas las aulas que gestiona este coordinador
+                 data = await db.find({
+                    "_id": { $in: aulasId }
+                  }).project({id:"$_id", _id: 0, nombre:1, direccion:1, numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
+            } 
+            else if(coordinador.rol == 'Ejecutivo') {
+                // si el rol es ejecutivo, buscar todas las aulas
+                data = await db.find({}).project({id:"$_id", _id: 0, nombre:1, direccion:1,  numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
+            }
+
             // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
             res.set("Access-Control-Expose-Headers", "Content-Range");
             res.set(
@@ -22,7 +63,8 @@ export function addEndpoints(app, conn) {
           
             res.status(200).json(data)
         } catch (error) {
-            res.status(500).json(error)
+            console.log(error)
+            res.status(500).json({error: "Ocurrió un error. Intente más tarde"})
         }
     });
 

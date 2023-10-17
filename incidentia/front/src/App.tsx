@@ -13,7 +13,9 @@ import { dataProvider } from "./dataProvider";
 import authProvider from "./authProvider";
 import LoginPage from "./pages/LoginPage";
 import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
+
 import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
+import Aula from "./components/Aulas/Aula"
 import ChartPage from "./pages/ChartPage";
 import { MyAppBar } from './MyAppBar';
 import { lightTheme, darkTheme } from './theme/themes.js';
@@ -25,6 +27,7 @@ import { Registro } from "./components/Registro";
 const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
 
 export const App = () => {
+
 
   return(
     <Admin 
@@ -47,10 +50,17 @@ export const App = () => {
                        />)
                       : null}
 
-<Resource 
+                  {(permissions === 'Ejecutivo' || permissions === 'Nacional')
+                      ? (<Resource
+                          name="aulas"
+                          list={Aula.AulaList}
+                       />)
+                      : null}
+
+      <Resource 
        name="reportes" 
-       list={Reporte.ReporteList} 
-       create = {Reporte.ReporteCreate} 
+       list={ Reporte.ReporteList} 
+       create = { permissions === 'Aula' ? (Reporte.ReporteCreate) : null } 
         />  
         
       <Resource 
@@ -66,9 +76,7 @@ export const App = () => {
       <CustomRoutes>
             <Route path="reportes/show/:id" element={<ReporteShow />} />
             <Route path="/chart" element={<ChartPage />} />
-      </CustomRoutes>
-      <CustomRoutes>
-        <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
+            <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
       </CustomRoutes>
               </>
           )

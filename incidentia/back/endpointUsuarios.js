@@ -46,7 +46,7 @@ export function addEndpoints(app, conn) {
             } catch (error) {
                 console.error('Error:', error);
                 res.status(500).json({ error: 'Internal server error' });
-            } finally {
+            } finally {   
                 dbConn.close();
             }
         } catch (error) {

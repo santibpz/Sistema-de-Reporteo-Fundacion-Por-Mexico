@@ -1,7 +1,6 @@
-import React, {useState, useEffect, useRef} from "react";
+import {useState, useEffect, useRef} from "react";
 import axios from 'axios';
-import { Grid, Paper, Avatar, TextField, Button, Typography, 
-        Link, FormControl, FormControlLabel, FormGroup, Checkbox, InputLabel, Select, MenuItem, Box} from "@mui/material"
+import { Grid, Paper, TextField,InputLabel, Select, MenuItem, Box} from "@mui/material"
 import { Create, useNotify, useRedirect } from 'react-admin';
 import Multiselect from 'multiselect-react-dropdown';
 import ConfirmacionDialog from "./ConfirmacionDialog";
@@ -22,25 +21,27 @@ export const Registro = () =>{
     const roles = ['Aula', 'Nacional'];
 
     const paperStyle={
-        // padding:10,
-        // height: "80vh",
         width: 350,
         margin: "30px auto"
     }
 
-    const [aulas, setAulas] = useState([])
-    const [isCoordinadorAula, setIsCoordinadorAula] = useState(false)
-    const [isCoordinadorNacional, setIsCoordinadorNacional] = useState(false)
+    const [aulas, setAulas] = useState([]) // estado de aulas
+    const [isCoordinadorAula, setIsCoordinadorAula] = useState(false) // estado para determinar si la seleccion es coordinador de aula
+    const [isCoordinadorNacional, setIsCoordinadorNacional] = useState(false) // estado para determinar si la seleccion es coordinador nacional
 
+    // estado datos
     const [datos, setDatos]=useState({
         fullName: "",
         username: "",
         password: "",
         rol: "",
     });
+
+    // estados para determinar las aulas seleccionadas
     const [aulaSeleccionada, setAulaSeleccionada] = useState('')
     const [aulasSeleccionadas, setAulasSeleccionadas] = useState<string[]>([])
 
+    // manejador de cambios
     const handleChange= (event: { target: { name: any; value: any; }; })=> {
         setDatos({
             ...datos,
@@ -50,26 +51,31 @@ export const Registro = () =>{
         event.target.value === 'Nacional' ? setIsCoordinadorNacional(true) : setIsCoordinadorNacional(false);
     };
 
+    // funcion para enviar la solicitud de creacion de un nuevo usuario
     const handleSendData = async() => {
         // Convert the form data to JSON
         
+        // datos base
         const baseData = {nombreCompleto: datos.fullName, matricula: datos.username, password: datos.password, rol: datos.rol }
 
-        let data = {}
+        let data = {} // datos finales
+
+        // checamos el tipo de coordinador a crear
         if(baseData.rol == 'Aula') {
           
-            data={
+            data= {
                 ...baseData,
                 aulaId: aulaSeleccionada
             }
         } else if(baseData.rol == 'Nacional') {
           
-            data={
+            data= {
                 ...baseData,
                 aulasId: aulasSeleccionadas
             }
         }
 
+        // solicitud via axios
         return axios.post(import.meta.env.VITE_SIMPLE_REST_URL + "/registro", data, {
             headers: {
               authorization: localStorage.getItem('auth')
@@ -88,22 +94,30 @@ export const Registro = () =>{
         });       
     };
 
+    // funcion onSelect
     const onSelect = (selectedList:any, selectedItem:{nombre:string, id:string}) => {
         const {id} = selectedItem;
         console.log(selectedItem.nombre)
         setAulasSeleccionadas([...aulasSeleccionadas, id])
     }
 
+    // funcion onRemove
     const onRemove = (selectedList:any, removedItem:{nombre:string, id:string}) => {
         const {id:removedId} = removedItem;
         console.log(removedItem.nombre)
         setAulasSeleccionadas(aulasSeleccionadas.filter((id:string) => id != removedId));
     }
 
+    // utilizamos el hook useEffect para solicitar la informacion de las aulas a desplegar en los dropdowns una vez
+    // se renderize este componente
     useEffect(() => {
         const fetchAulas = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SIMPLE_REST_URL}/aulas`)
+                const response = await axios.get(`${import.meta.env.VITE_SIMPLE_REST_URL}/aulas`, {
+                    headers: {
+                      authorization: localStorage.getItem('auth')
+                    }
+                  })
                 const {data} = response
                 setAulas(data)
 

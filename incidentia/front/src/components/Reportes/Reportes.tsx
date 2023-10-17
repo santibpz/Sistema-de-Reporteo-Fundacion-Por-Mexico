@@ -1,16 +1,18 @@
 import React, { useState } from "react"
-import { Link, useCreate, useCreatePath, useListContext, useNotify, useRedirect, useRefresh, useUpdate } from "react-admin"
+import { Link, useCreate, useListContext, useNotify, usePermissions, useRedirect, useRefresh } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
-import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal, FormGroup, Checkbox,} from "@mui/material"
+import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
-import { on } from "events"
-import { redirect } from "react-router-dom"
 import ConfirmacionDialog from "../ConfirmacionDialog"
+
+import { Empty } from "react-admin";
+import EmptyView from "../EmptyView"
+
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -30,6 +32,8 @@ const prioridades = [
 
 const Reportes = () => {
     // obtener los datos de la lista de reportes
+    const { permissions } = usePermissions();
+
     const {data,
         isLoading,
         displayedFilters,
@@ -37,6 +41,17 @@ const Reportes = () => {
         setFilters,
         hideFilter
       } = useListContext();
+
+      console.log("dksd", data)
+      console.log("aaaaa", displayedFilters)
+      console.log("vals", filterValues)
+
+      if (isLoading) return null   
+
+      if(data.length == 0 && permissions !== 'Aula') {
+        return <EmptyView />
+      }
+       
 
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
     const [searchType, setSearchType] = useState("titulo");
@@ -72,9 +87,7 @@ const Reportes = () => {
         setFilters({},[]);
       }
     };
-    //setFilters({ titulo: 'charly' }, []);
 
-    if (isLoading) return null
 
     let searchInput = null;
 

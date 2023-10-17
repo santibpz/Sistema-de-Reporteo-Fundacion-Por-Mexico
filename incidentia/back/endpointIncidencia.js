@@ -19,10 +19,15 @@ export function addEndpoints(app, conn) {
       // query params
       const { range, filter, sort } = req.query;
 
+      console.log("REQQQ QUERYYY", req.query)
+
       // Parse range parameter
-      const [start, end] = JSON.parse(range);
-      const limit = end - start + 1;
-      const skip = start;
+      let limit, skip;
+      if(range) {
+        const [start, end] = JSON.parse(range);
+        limit = end - start + 1;
+        skip = start;
+      }
 
       try {
           // Filtering
@@ -30,14 +35,21 @@ export function addEndpoints(app, conn) {
           if (query.categoria){ 
               query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
           }
-          if (query.titulo) { 
+          else if (query.titulo) { 
               query.titulo = { $regex: query.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
+          }
+          else if(query.aula) {
+            query.aula = new ObjectId(query.aula); // si hay un filtro de aula, lo convierte a id
           }
 
 
         // Sorting
-        const [field, order] = sort;
-        const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+        let sortQuery;
+        if(sort) {
+          const [field, order] = sort;
+          sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+
+        }
         // convierte de [cosa, otro] a {cosa: otro}
 
         // extraemos el token de la solicitud
@@ -53,27 +65,41 @@ export function addEndpoints(app, conn) {
             });
 
         // verificamos los permisos del coordinador
-        const user = await dbFig.db
+        const coordinador = await dbFig.db
           .collection("coordinadores")
           .findOne({ _id: new ObjectId(decodedToken.id) });
 
-        if (!user)
+        if (!coordinador)
           return res
             .status(401)
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
 
+
+        // let getReportesPipeline = (skip && limit && sortQuery) ? 
+        // getReportesPipeline = [
+        //   { $match: query }, // inicia con el filtro
+        //   ...mainPipeline, // construye todos los datos de los reportes
+        //   { $sort: sortQuery }, // hace un sort de la info
+        //   { $skip: skip }, // consigue solo pa partir de cierto numero
+        //   { $limit: limit }, // consigue hasta cierto otro numero
+        // ] : [
+        //   { $match: query }, // inicia con el filtro
+        //   ...mainPipeline, // construye todos los datos de los reportes
+        // ]
+
         const getReportesPipeline = [
           { $match: query }, // inicia con el filtro
-          ...mainPipeline, // construye todas sus madres
+          ...mainPipeline, // construye todos los datos de los reportes
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
           { $limit: limit }, // consigue hasta cierto otro numero
-        ];
+        ]
+
 
         let data = [];
 
         // mostrar solo los reportes creados por el coordinador de aula
-        if (user.rol == "Aula") {
+        if (coordinador.rol == "Aula") {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
           data = await db
             .aggregate([
@@ -81,9 +107,13 @@ export function addEndpoints(app, conn) {
               ...getReportesPipeline,
             ])
             .toArray();
-        } else {
+        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          // id del aula de la cual se buscan los reportes
+          if(query.aula) {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db.aggregate(getReportesPipeline).toArray();
+          data = await db.aggregate(getReportesPipeline)
+               .toArray();
+          }
         }
 
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
@@ -224,9 +254,14 @@ export function addEndpoints(app, conn) {
                 "Su sesión ha expirado, por favor inicie sesión nuevamente.",
             });
 
+        // obtenemos la informacion del coordinador para poder asignar al reporte el id del aula al que el reporte esta asociado
+        const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+        if(coordinador.rol != 'Aula') return res.status(401).json({error: 'El recurso no está disponible'})
+
         const reporte = {
           ...data,
           coordinador: new ObjectId(decodedToken.id),
+          aula: new ObjectId(coordinador.aula),
           categoria: new ObjectId(data.categoria),
           subcategoria: new ObjectId(data.subcategoria),
           estatus: "pendiente",
@@ -235,9 +270,18 @@ export function addEndpoints(app, conn) {
         const result = await db.insertOne(reporte);
 
         if (result.insertedId) {
-          res.status(201).json({ id: result.insertedId }); // 201 Created
+          // agregamos a la cuenta de numero de reportes pendientes en la coleccion aulas
+          const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesPendientes: 1 } })
+          console.log("this queri aula", queryAula)
+          if(queryAula.modifiedCount == 1)  {
+           return res.status(201).json({ id: result.insertedId })  // 201 Created
+          } else {
+            await db.deleteOne({_id: new ObjectId(result.insertedId)}) // si no se pudo actualizar el contador de reportes activos en la coleccion de aulas, entonces borramos el reporte creado para no causar irregularidades en la base de datos
+            return res.status(500).json({error: 'Lo sentimos, ocurrió un problema creando el reporte'})
+          }
+           
         } else {
-          res
+          return res
             .status(500)
             .json({ error: "No se pudo crear el reporte. Intente más tarde" });
         }
