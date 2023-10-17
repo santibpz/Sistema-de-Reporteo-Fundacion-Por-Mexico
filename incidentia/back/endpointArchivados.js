@@ -28,6 +28,12 @@ export function addEndpoints(app, conn) {
       try {
           // Filtering
           const query = filter ? JSON.parse(filter) : {};
+          if (query.categoria){ 
+            query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+        }
+        if (query.titulo) { 
+            query.titulo = { $regex: query.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
+        }
         // Sorting
         const [field, order] = sort;
         const sortQuery = { [field]: order === "ASC" ? 1 : -1 };

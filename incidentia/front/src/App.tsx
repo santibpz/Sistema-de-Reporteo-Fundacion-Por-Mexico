@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Route } from 'react-router-dom';
 import { Admin, CustomRoutes, Layout, Resource } from 'react-admin';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -18,6 +18,12 @@ import Registrarse from './registrarse';
 
 export const App = () => {
   const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
+
+  const [disableColors, setDisableColors] = useState(false);
+
+  const handleDisableColorsToggle = () => {
+    setDisableColors(!disableColors);
+  };
 
   return (
     <Admin
