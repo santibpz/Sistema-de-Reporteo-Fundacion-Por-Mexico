@@ -326,18 +326,41 @@ export function addEndpoints(app, conn) {
       let dbFig = await conn();
       let db = dbFig.db.collection(dbCollection);
 
+       // verificar que solo oordinador ejecutivo pueda acceder a este recurso
+       const decodedToken = verifyTokenFromReq(req);
+
+       // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+       if (!decodedToken.id)
+       return res
+       .status(401)
+       .json({
+           error:
+           "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+       });
+
+       // verificamos si el usuario accediendo es ejecutivo
+       const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+       if(coordinador == null) return res.status(403).json({error: "No tienes permiso de para realizar esta acción."})
+
       // extraemos el id del reporte a borrar 
       const { id } = req.params
+
+      console.log('QQ')
 
         // borrar reporte
         const result = await db.deleteOne({_id: new ObjectId(id)})
 
-        // borrar comentarios asociados al reporte
+        console.log(result)
 
-        const deleteCommentsQuery = await dbFig.db.collection('comentarios').deleteMany({reporte: new ObjectId(id)})
+        if (result.deletedCount == 1) {
+          console.log('herter')
+          // borrar comentarios asociados al reporte
+          await dbFig.db.collection('comentarios').deleteMany({reporte: new ObjectId(id)})
 
-        if (result.deletedCount == 1 && deleteCommentsQuery.acknowledged == true) {
-            res.status(204).json({id})
+          // hacemos update del numero de reportes pendientes en la coleccion de aulas
+          const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesPendientes: -1 } })
+          console.log('qA',queryAula)
+          if(queryAula.modifiedCount == 1) return res.status(204).json({id})
         } else {
             res.status(500).json({error: 'No se ha podido borrar el reporte. Se recomienda intentar más tarde'})
         }
