@@ -19,6 +19,8 @@ export function addEndpoints(app, conn) {
       // query params
       const { range, filter, sort } = req.query;
 
+      console.log(req.query)
+
       // Parse range parameter
       let limit, skip;
       if(range) {
@@ -31,15 +33,13 @@ export function addEndpoints(app, conn) {
 
         // Filtering
         const filterQuery = filter ? JSON.parse(filter) : {};
+        
         if (filterQuery.categoria){ 
             filterQuery.categoria = new ObjectId(filterQuery.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
         }
         if (filterQuery.titulo) { 
             filterQuery.titulo = { $regex: filterQuery.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
         }
-        if(filterQuery.aula) {
-            filterQuery.aula = new ObjectId(filterQuery.aula); // si hay un filtro de aula, lo convierte a id
-          }
 
         // Sorting
         let sortQuery;
@@ -72,8 +72,7 @@ export function addEndpoints(app, conn) {
             .status(401)
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
 
-        const getReportesPipeline = [
-          { $match: filterQuery }, // inicia con el filtro
+        let getReportesPipeline = [
           ...mainPipeline, // construye todas sus madres
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
@@ -88,17 +87,27 @@ export function addEndpoints(app, conn) {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
           data = await db
             .aggregate([
+              { $match: filterQuery }, // inicia con el filtro
               { $match: { coordinador: new ObjectId(decodedToken.id) } },
               ...getReportesPipeline,
             ])
             .toArray();
         } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          console.log('ebt');
           // id del aula de la cual se buscan los reportes
           if(filterQuery.aula) {
+            console.log(filterQuery.aula)
+            filterQuery.aula = new ObjectId(filterQuery.aula)
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db.aggregate(getReportesPipeline)
+          data = await db.aggregate([{$match: filterQuery}, ...getReportesPipeline])
                .toArray();
-          }
+          console.log("dataa", data)
+          } else data = await db.aggregate(getReportesPipeline)
+          .toArray();
+          
+          // data = await db.aggregate(getReportesPipeline).toArray()
+          console.log("aaa", data)
+
         }
 
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)

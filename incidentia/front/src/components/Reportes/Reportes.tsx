@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link, useCreate, useListContext, useNotify, usePermissions, useRedirect, useRefresh } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal } from "@mui/material"
@@ -32,23 +32,20 @@ const prioridades = [
 ];
 
 const Reportes = () => {
+    
     // obtener los datos de la lista de reportes
     const { permissions } = usePermissions();
 
     const {data,
         isLoading,
         setFilters,
+        filterValues, // a dictionary of filter values, e.g. { title: 'lorem', nationality: 'fr' }
+        displayedFilters
       } = useListContext();
 
       console.log("dksd", data)
-      console.log("aaaaa", displayedFilters)
-      console.log("vals", filterValues)
-
-      if (isLoading) return null   
-
-      if(data.length == 0 && permissions !== 'Aula') {
-        return <EmptyView />
-      }
+      console.log("fV", filterValues)
+      console.log("dF", displayedFilters)
        
 
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
@@ -141,6 +138,18 @@ const Reportes = () => {
         </Select>
       );
     }
+
+    const handleClick = () => setFilters({},[])
+
+    if (isLoading) {
+    return <div>loading...</div>
+    }
+    
+    if(data.length == 0 && permissions !== 'Aula') {
+      return <EmptyView handleMostrar={handleClick} />                                                                                                      
+    }
+
+
 
     return(
     // regresar todos los reportes que se representan como un componente ReporteCard
