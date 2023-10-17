@@ -45,12 +45,6 @@ const Reportes = () => {
       console.log("dksd", data)
       console.log("aaaaa", displayedFilters)
       console.log("vals", filterValues)
-
-      if (isLoading) return null   
-
-      if(data.length == 0 && permissions !== 'Aula') {
-        return <EmptyView />
-      }
        
 
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
@@ -140,6 +134,13 @@ const Reportes = () => {
         </Select>
       );
     }
+
+    if (isLoading) return null  
+    
+    if(data.length == 0 && permissions !== 'Aula') {
+      return <EmptyView />
+    }
+
 
     return(
     // regresar todos los reportes que se representan como un componente ReporteCard
