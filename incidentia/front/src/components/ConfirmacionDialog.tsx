@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useImperativeHandle, forwardRef} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,26 +14,32 @@ interface ConfirmacionProps {
     onContinue: () => any
 }
 
-const ConfirmacionDialog = (props:ConfirmacionProps) => {
+const ConfirmacionDialog = (props:ConfirmacionProps, ref?:any) => {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {
         if(props.validateData != undefined) {
              if(props.validateData()) setOpen(true)
              else return;
         }
+        setOpen(true)
     };
   
     const handleClose = () => {
       setOpen(false);
     };
+
+    useImperativeHandle(ref, () => {
+      return { handleClose }
+    })
   
     return (
       <>
         <Button
+        fullWidth
         onClick={handleClickOpen}
         variant="contained"
         color="secondary" 
-        sx = {{margin:'auto', width: '80%'}}>
+        >
           Guardar
         </Button>
         <Dialog
@@ -46,7 +52,7 @@ const ConfirmacionDialog = (props:ConfirmacionProps) => {
             Atención
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <DialogContentText sx = {{fontWeight: 600}}>
               {props.message}
             </DialogContentText>
           </DialogContent>
@@ -72,4 +78,4 @@ const ConfirmacionDialog = (props:ConfirmacionProps) => {
     );
   }
 
-  export default ConfirmacionDialog
+  export default forwardRef(ConfirmacionDialog)

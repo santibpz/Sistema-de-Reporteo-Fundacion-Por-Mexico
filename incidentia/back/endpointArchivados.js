@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { calculaDiasTranscurridos } from './utils/calculaTiempo.js';
 import { mainPipeline } from './utils/pipelines.js';
+import { verifyTokenFromReq } from './utils/JWTUtils.js';
 
 const prefix = "/archivados";
 const dbCollection = "archivados";
@@ -88,6 +89,23 @@ export function addEndpoints(app, conn) {
             // conexion con db    
             let dbFig = await conn();    
             let db = dbFig.db.collection(dbCollection);   
+
+            // verificar que solo oordinador ejecutivo pueda acceder a este recurso
+            const decodedToken = verifyTokenFromReq(req);
+
+            // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+            if (!decodedToken.id)
+            return response
+            .status(401)
+            .json({
+                error:
+                "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+            });
+
+            // verificamos si el usuario accediendo es coordinador aula
+            const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+            console.log("ss", coordinador)
+            if(coordinador == null || coordinador.rol != 'Aula') return response.status(403).json({error: "No es posible completar esta acción"})
             
             // extraemos el id del reporte a archivar y la información de la actualización del reporte
             const {reporteId, estatus, resolucion, razon } = req.body
@@ -128,6 +146,7 @@ export function addEndpoints(app, conn) {
             const reporteArchivado = {
                 ...reporte,
                 _id: new ObjectId(),
+                aula: new ObjectId(coordinador.aula),
                 fecha,
                 estatus,
                 resolucion,
@@ -141,19 +160,39 @@ export function addEndpoints(app, conn) {
             // insertamos el reporte archivado a la base de datos 
             const result = await db.insertOne(reporteArchivado)
 
-            console.log(result)
 
             if(result.insertedId) { // verificamos que el archivo se haya archivado correctamente
 
-                // borramos el reporte de la coleccion de reporte
-                await dbFig.db.collection('reportes').deleteOne({_id: new ObjectId(reporteId)})
-                res.status(201).json({id: result.insertedId})
-            } else {
-                res.status(500).json({error: "No se pudo archivar el reporte. Intente más tarde."})
-            }
+              // agregamos a la cuenta de numero de reportes archivados en la coleccion aulas
+              const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesArchivados: 1 } })
+
+              if(queryAula.modifiedCount == 1)  { // si se modificó adecuadamente, borramos el reporte de la coleccion de reportes
+
+                // borramos el reporte de la coleccion de reportes
+                const deleteQuery = await dbFig.db.collection('reportes').deleteOne({_id: new ObjectId(reporteId)})
+
+                if(deleteQuery.deletedCount == 1) { // si se borró adecuadamente regresamos el id del reporte archivado
+                  // si se 
+                  return res.status(201).json({ id: result.insertedId })  // 201 Created
+
+                } else { 
+                  // si no se pudo borrar el reporte, volvemos a dejar el contador de numero de reportes archivados como estaba
+                  await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesArchivados: -1 } })
+                }
+              } 
+
+              // si se llegó a este punto, no se actualizó el contador del documento de aula al que pertenece este reporte archivado ni se borró el reporte
+              // por lo tanto, tenemos que borrar el reporte archivado para no tener irregularidades en la base de datos
+              await db.deleteOne({_id: new ObjectId(result.insertedId)}) 
+                
+            } 
+              
+            return res.status(500).json({error: "No se pudo archivar el reporte. Intente más tarde."})
+          
 
         }   
         catch (error) {   
+            console.log(error)
             res.status(500).json({ error: 'Ocurrió un error. Intente más tarde' });
         } 
     })

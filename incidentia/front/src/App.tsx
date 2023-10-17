@@ -1,6 +1,7 @@
+
 import React, {useState} from 'react';
 import { Route } from 'react-router-dom';
-import { Admin, CustomRoutes, Layout, Resource } from 'react-admin';
+import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound } from 'react-admin';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -14,12 +15,15 @@ import { MyAppBar } from './theme/MyAppBar';
 import { darkTheme, theme } from './theme/themes';
 import Reporte, { ReporteShow } from './components/Reportes/Reporte';
 import ReporteArchivado from './components/ReportesArchivados/ReporteArchivado';
-import Registrarse from './registrarse';
 import { DisableColorsProvider } from './theme/DisableColorContext';
+import Aula from "./components/Aulas/Aula"
+import CoordinadorCreate from "./components/Registro";
+import { Registro } from "./components/Registro";
 
 export const App = () => {
   const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
 
+        
   const [disableColors, setDisableColors] = useState(false);
 
   const handleDisableColorsToggle = () => {
@@ -33,39 +37,57 @@ export const App = () => {
       dataProvider={dataProvider}
       authProvider={authProvider}
       i18nProvider={i18nProvider}
-      theme={theme}
-      darkTheme={darkTheme}
       layout={layout}
-    >
+      theme = {theme}
+      darkTheme = {darkTheme} 
+      >
 
-        <Resource
-          name="reportes"
-          list={Reporte.ReporteList}
-          create={Reporte.ReporteCreate}
-          icon={AssignmentIcon}
-        />
+  {permissions => (
+              <>
+                  {permissions === 'Ejecutivo'
+                      ? (<Resource
+                          name="coordinadores"
+                          list={ListGuesser}
+                          create={CoordinadorCreate}
+                       />)
+                      : null}
 
-        <Resource
-          name="archivados"
-          list={ReporteArchivado.ReporteArchivadoList}
-          icon={ArchiveIcon}
-        />
+                  {(permissions === 'Ejecutivo' || permissions === 'Nacional')
+                      ? (<Resource
+                          name="aulas"
+                          list={Aula.AulaList}
+                       />)
+                      : null}
 
-        <Resource
-          name="ChartPage"
-          list={ChartPage}
-          icon={BarChartIcon}
-        />
+      <Resource 
+       name="reportes" 
+       list={ Reporte.ReporteList} 
+       create = { permissions === 'Aula' ? (Reporte.ReporteCreate) : null } 
+       icon={AssignmentIcon}
+        />  
+        
+      <Resource 
+       name="archivados"
+       list={ReporteArchivado.ReporteArchivadoList} 
+       icon={ArchiveIcon}
+        />  
 
-        <CustomRoutes>
-          <Route path="reportes/show/:id" element={<ReporteShow />} />
-          <Route path="/chart" element={<ChartPage />} />
-        </CustomRoutes>
+      <Resource 
+       name="ChartPage" 
+       list={ChartPage} 
+       icon={BarChartIcon}
+        />  
 
-        <CustomRoutes noLayout>
-          <Route path="/registrarse" element={<Registrarse />} />
-        </CustomRoutes>
-      
+      <CustomRoutes>
+            <Route path="reportes/show/:id" element={<ReporteShow />} />
+            <Route path="/chart" element={<ChartPage />} />
+            <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
+      </CustomRoutes>
+              </>
+          )
+          
+          }
+  
     </Admin>
     </DisableColorsProvider>
   );

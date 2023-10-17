@@ -64,6 +64,10 @@ const authProvider = {
             fullName: localStorage.getItem('nombreCompleto'),
             rol: localStorage.getItem('rol')
         }),
-    getPermissions: ()=>{return Promise.resolve()},
+    getPermissions: ()=>{
+        const role = localStorage.getItem('rol');
+        return role ? Promise.resolve(role) : Promise.reject();
+
+    },
 };
 export default authProvider;

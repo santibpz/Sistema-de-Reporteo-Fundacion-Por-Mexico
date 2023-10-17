@@ -1,50 +1,70 @@
-import ObjectId from 'mongodb';
+import {ObjectId} from 'mongodb';
+import { verifyTokenFromReq } from './utils/JWTUtils.js';
 
-const prefix = "/Aulas";
-const dbCollection = "Aulas";
+const prefix = "/aulas";
+const dbCollection = "aulas";
 
 export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
-    app.get(prefix + "", async (req, res) => {
+    app.get(prefix, async (req, res, next) => {
         // cosas de todos los endpoints
         try {
-            // conn con db
-            let dbFig = await conn();
-            let dbConn = dbFig.conn;
-            let db = dbFig.db.collection(dbCollection);
+            const dbFig = await conn();
+            const db = dbFig.db.collection(dbCollection);
 
-            // cosas del endpoint
-            // query params
-            const { range, filter, sort } = req.query;
+             // verificar que solo coordinadores ejecutivo y nacional puedan acceder a este recurso
+             const decodedToken = verifyTokenFromReq(req);
+
+             // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+             if (!decodedToken.id)
+             return res
+             .status(401)
+             .json({
+                 error:
+                 "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+             });
+
+             // verificamos si el usuario accediendo es ejecutivo o nacional
+            const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+            console.log("ss", coordinador)
+            if(coordinador == null || coordinador.rol == 'Aula') return res.status(403).json({error: "No tienes permiso de Acceder."})
+
         
-            // Parse range parameter
-            const [start, end] = JSON.parse(range);
-            const limit = end - start + 1;
-            const skip = start;
+            let data = [] // informacion a enviar al cliente
 
-            try {
-                const query = filter ? JSON.parse(filter) : {};
+            if(coordinador.rol == 'Nacional') {
+                // hacemos un pipeline para poder obtener la información de las aulas que gestiona este coordinador
+                const aulasNacionalPipeline = [
+                    {$match: {_id: new ObjectId(decodedToken.id)}},
+                    {$project: {aulas:1, _id: 0}}
+                ]
 
-                // Sorting
-                const sortQuery = sort ? JSON.parse(sort) : {};
+                 // si el rol es nacional, buscar las aulas asociadas a este coordinador
+                 let aulasCoordinadorNacional = await dbFig.db.collection('coordinadores').aggregate(aulasNacionalPipeline).toArray()
+                 let aulasId = aulasCoordinadorNacional[0].aulas // arreglo con los ids de las aulas
+                 console.log(aulasId)
 
-                const cursor = db.find(query).sort(sortQuery).skip(skip).limit(limit);
-                const totalCount = await db.countDocuments(query);
-
-                res.set('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.set('X-Total-Count', totalCount);
-
-                const result = await cursor.toArray();
-                res.json(result);
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal server error' });
-            } finally {
-                dbConn.close();
+                 // buscar todas las aulas que gestiona este coordinador
+                 data = await db.find({
+                    "_id": { $in: aulasId }
+                  }).project({id:"$_id", _id: 0, nombre:1, direccion:1, numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
+            } 
+            else if(coordinador.rol == 'Ejecutivo') {
+                // si el rol es ejecutivo, buscar todas las aulas
+                data = await db.find({}).project({id:"$_id", _id: 0, nombre:1, direccion:1,  numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
             }
+
+            // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
+            res.set("Access-Control-Expose-Headers", "Content-Range");
+            res.set(
+            "Content-Range",
+            data.length
+            );
+          
+            res.status(200).json(data)
         } catch (error) {
-            console.error('Error:', error);
-            next(error); 
+            console.log(error)
+            res.status(500).json({error: "Ocurrió un error. Intente más tarde"})
         }
     });
 
