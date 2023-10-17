@@ -15,6 +15,7 @@ import { MyAppBar } from './theme/MyAppBar';
 import { darkTheme, theme } from './theme/themes';
 import Reporte, { ReporteShow } from './components/Reportes/Reporte';
 import ReporteArchivado from './components/ReportesArchivados/ReporteArchivado';
+import { DisableColorsProvider } from './theme/DisableColorContext';
 import Aula from "./components/Aulas/Aula"
 import CoordinadorCreate from "./components/Registro";
 import { Registro } from "./components/Registro";
@@ -29,11 +30,12 @@ export const App = () => {
     setDisableColors(!disableColors);
   };
 
-  return(
-    <Admin 
-      loginPage = {LoginPage} 
-      dataProvider={dataProvider} 
-      authProvider = {authProvider} 
+  return (
+    <DisableColorsProvider>
+    <Admin
+      loginPage={LoginPage}
+      dataProvider={dataProvider}
+      authProvider={authProvider}
       i18nProvider={i18nProvider}
       layout={layout}
       theme = {theme}
@@ -87,5 +89,6 @@ export const App = () => {
           }
   
     </Admin>
+    </DisableColorsProvider>
   );
 };

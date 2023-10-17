@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
 import { StyledGrid } from "../../theme/themes"
 import ConfirmacionDialog from "../ConfirmacionDialog"
+import { useDisableColors } from '../../theme/DisableColorContext'; 
 
 import { Empty } from "react-admin";
 import EmptyView from "../EmptyView"
@@ -52,6 +53,7 @@ const Reportes = () => {
     const [searchType, setSearchType] = useState("titulo");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedPriority, setSelectedPriority] = useState("");
+    const { disableColors } = useDisableColors();
 
     const handleSearchTypeChange = (event) => {
       setSearchType(event.target.value);
@@ -190,7 +192,9 @@ const Reportes = () => {
          >
             {data.map(reporte => <ReporteCard 
                                   key = {reporte.id}
-                                  {...reporte} />)}
+                                  {...reporte}
+                                  disableColors={disableColors}
+                                  />)}
       </Grid>
     </div>
     )
@@ -198,7 +202,7 @@ const Reportes = () => {
 
 
 // declaracion del componente que representa un reporte
-export const ReporteCard = (props:ReporteProps) => {
+export const ReporteCard = (props:ReporteProps & { disableColors: boolean }) => {
     return (
       // regresar el componente que representa un reporte
       <Grid className="reporte" 
@@ -228,7 +232,7 @@ export const ReporteCard = (props:ReporteProps) => {
              alignItems="stretch"
             >
                {/* contenedor para el título y creador del usuario */}
-               <StyledGrid categoria={props.categoria} container item xs>
+               <StyledGrid categoria={props.categoria} disableColors={props.disableColors} container item xs>
                   <Grid container justifyContent='center' alignContent='center' item xs={4}>
                   <AssignmentIcon fontSize="large" style={{ color: 'white' }} />
                   </Grid>
@@ -269,7 +273,7 @@ export const ReporteCard = (props:ReporteProps) => {
                   </Grid>
                </Grid>          
     
-               <StyledGrid categoria={props.categoria} container direction='column' justifyContent="center" alignItems="center" xs item >
+               <StyledGrid categoria={props.categoria} disableColors={props.disableColors} container direction='column' justifyContent="center" alignItems="center" xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
                 <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{color:"white", backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
                </StyledGrid>

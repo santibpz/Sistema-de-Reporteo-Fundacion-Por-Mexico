@@ -14,9 +14,9 @@ const LoginPage = () => {
 
     const paperStyle={
         padding:20,
-        height: "60vh",
+        height: 365,
         width: 350,
-        margin: "70px auto",
+        margin: "32px auto",
         borderRadius: "20px",
         boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.5)",
     }
@@ -30,10 +30,10 @@ const LoginPage = () => {
         })
     }
     return(
-        <div style={{height: "maxHeight", display:'flex', backgroundColor:'#69B035'}}>
+        <div style={{height: "100%", display:'flex', backgroundColor:'#69B035'}}>
         <Grid container alignItems="center" justifyContent="center">
         <Grid item>
-            <img src={image} alt="logo"/>
+            <img src={image} alt="logo" style={{marginTop:10}}/>
         </Grid>
         <Grid container direction="column" alignItems="center">
             <Paper style = {paperStyle}>
@@ -59,7 +59,7 @@ const LoginPage = () => {
                          fullWidth
                          >
                          </TextField>
-                        <TextField sx = {{marginBottom: 2}}
+                        <TextField sx = {{marginBottom: 2, borderRadius: 20}}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         label = 'Contraseña' 
@@ -69,7 +69,7 @@ const LoginPage = () => {
                         fullWidth></TextField>
                         <Button 
                         onClick={handleSubmit}
-                        sx = {{backgroundColor: 'blue'}} 
+                        sx = {{backgroundColor: '#69B035'}} 
                         variant = 'contained' 
                         fullWidth>Entrar</Button>
                     </Grid>
