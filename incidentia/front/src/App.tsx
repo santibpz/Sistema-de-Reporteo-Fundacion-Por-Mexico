@@ -1,76 +1,63 @@
-import React, { useState } from "react";
-import {
-  Admin,
-  Layout,
-  Resource,
-  CustomRoutes
-} from "react-admin";
+import React from 'react';
 import { Route } from 'react-router-dom';
-import { i18nProvider } from "./i18nProvider";
-import { dataProvider } from "./dataProvider";
-import authProvider from "./authProvider";
-import LoginPage from "./pages/LoginPage";
-import Reporte, { ReporteShow } from "./components/Reportes/Reporte";
-import ReporteArchivado from "./components/ReportesArchivados/ReporteArchivado";
-import Registrarse from "./registrarse";
-import ChartPage from "./pages/ChartPage";
-import { MyAppBar } from './MyAppBar';
-import { lightTheme, darkTheme, handleThemeChange } from './theme/themes.js';
+import { Admin, CustomRoutes, Layout, Resource } from 'react-admin';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
-const MyLayout = (props) => <Layout {...props} appBar={MyAppBar} />;
+import ArchiveIcon from '@mui/icons-material/Archive';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import { dataProvider } from './dataProvider';
+import { i18nProvider } from './i18nProvider';
+import authProvider from './authProvider';
+import ChartPage from './pages/ChartPage';
+import LoginPage from './pages/LoginPage';
+import { MyAppBar } from './theme/MyAppBar';
+import { darkTheme, theme } from './theme/themes';
+import Reporte, { ReporteShow } from './components/Reportes/Reporte';
+import ReporteArchivado from './components/ReportesArchivados/ReporteArchivado';
+import Registrarse from './registrarse';
 
 export const App = () => {
+  const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
 
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
-
-  const handleThemeToggle = () => {
-    setIsDarkTheme(!isDarkTheme);
-  };
-
-  const theme = isDarkTheme ? darkTheme : lightTheme;
-
-  return(
-    <Admin 
-      loginPage = {LoginPage} 
-      dataProvider={dataProvider} 
-      authProvider = {authProvider} 
+  return (
+    <Admin
+      loginPage={LoginPage}
+      dataProvider={dataProvider}
+      authProvider={authProvider}
       i18nProvider={i18nProvider}
-      layout={MyLayout}
       theme={theme}
       darkTheme={darkTheme}
-      >
-      <MyAppBar isDarkTheme={isDarkTheme} onThemeToggle={handleThemeToggle} />
+      layout={layout}
+    >
 
-      <Resource 
-       name="reportes" 
-       list={Reporte.ReporteList} 
-       create = {Reporte.ReporteCreate} 
-       icon={AssignmentIcon}
-        />  
+        <Resource
+          name="reportes"
+          list={Reporte.ReporteList}
+          create={Reporte.ReporteCreate}
+          icon={AssignmentIcon}
+        />
 
-      <Resource 
-       name="archivados"
-       list={ReporteArchivado.ReporteArchivadoList} 
-       icon={ArchiveIcon} 
-        />  
+        <Resource
+          name="archivados"
+          list={ReporteArchivado.ReporteArchivadoList}
+          icon={ArchiveIcon}
+        />
 
-      <Resource 
-       name="ChartPage" 
-       list={ChartPage} 
-       icon={BarChartIcon}
-        />  
+        <Resource
+          name="ChartPage"
+          list={ChartPage}
+          icon={BarChartIcon}
+        />
 
-      <CustomRoutes>
-            <Route path="reportes/show/:id" element={<ReporteShow />} />
-            <Route path="/chart" element={<ChartPage />} />
-      </CustomRoutes>
-      <CustomRoutes noLayout>
-        <Route path="/registrarse"  element={<Registrarse />}/>
-      </CustomRoutes>
-    </Admin>  
-  )
-}
+        <CustomRoutes>
+          <Route path="reportes/show/:id" element={<ReporteShow />} />
+          <Route path="/chart" element={<ChartPage />} />
+        </CustomRoutes>
 
+        <CustomRoutes noLayout>
+          <Route path="/registrarse" element={<Registrarse />} />
+        </CustomRoutes>
+      
+    </Admin>
+  );
+};
