@@ -73,6 +73,7 @@ export function addEndpoints(app, conn) {
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
 
         let getReportesPipeline = [
+          { $match: filterQuery }, // inicia con el filtro
           ...mainPipeline, // construye todas sus madres
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
@@ -87,7 +88,6 @@ export function addEndpoints(app, conn) {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
           data = await db
             .aggregate([
-              { $match: filterQuery }, // inicia con el filtro
               { $match: { coordinador: new ObjectId(decodedToken.id) } },
               ...getReportesPipeline,
             ])
