@@ -20,11 +20,15 @@ export function addEndpoints(app, conn) {
       const { range, filter, sort } = req.query;
 
       // Parse range parameter
-      const [start, end] = JSON.parse(range);
-      const limit = end - start + 1;
-      const skip = start;
+      let limit, skip;
+      if(range) {
+        const [start, end] = JSON.parse(range);
+        limit = end - start + 1;
+        skip = start;
+      }
 
       try {
+
         // Filtering
         const filterQuery = filter ? JSON.parse(filter) : {};
         if (filterQuery.categoria){ 
@@ -33,10 +37,17 @@ export function addEndpoints(app, conn) {
         if (filterQuery.titulo) { 
             filterQuery.titulo = { $regex: filterQuery.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
         }
+        if(filterQuery.aula) {
+            filterQuery.aula = new ObjectId(filterQuery.aula); // si hay un filtro de aula, lo convierte a id
+          }
 
         // Sorting
-        const [field, order] = sort;
-        const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+        let sortQuery;
+        if(sort) {
+          const [field, order] = sort;
+          sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+
+        }
         // convierte de [cosa, otro] a {cosa: otro}
 
         // extraemos el token de la solicitud
@@ -52,20 +63,14 @@ export function addEndpoints(app, conn) {
             });
 
         // verificamos los permisos del coordinador
-        const user = await dbFig.db
+        const coordinador = await dbFig.db
           .collection("coordinadores")
           .findOne({ _id: new ObjectId(decodedToken.id) });
 
-        if (!user)
+        if (!coordinador)
           return res
             .status(401)
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
-
-        // mostrar solo los reportes creados por el coordinador de aula
-        if (user.rol == "Aula") {
-          // Agregar el filtro de usuario al query de filtros
-          filterQuery.coordinador = new ObjectId(decodedToken.id);
-        } 
 
         const getReportesPipeline = [
           { $match: filterQuery }, // inicia con el filtro
@@ -73,10 +78,28 @@ export function addEndpoints(app, conn) {
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
           { $limit: limit }, // consigue hasta cierto otro numero
-        ];
+        ]
+
 
         let data = [];
-        data = await db.aggregate(getReportesPipeline).toArray();
+
+        // mostrar solo los reportes creados por el coordinador de aula
+        if (coordinador.rol == "Aula") {
+          // El pipeline a la base de datos que obtiene la información a enviar al cliente
+          data = await db
+            .aggregate([
+              { $match: { coordinador: new ObjectId(decodedToken.id) } },
+              ...getReportesPipeline,
+            ])
+            .toArray();
+        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          // id del aula de la cual se buscan los reportes
+          if(filterQuery.aula) {
+          // El pipeline a la base de datos que obtiene la información a enviar al cliente
+          data = await db.aggregate(getReportesPipeline)
+               .toArray();
+          }
+        }
 
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
@@ -216,9 +239,14 @@ export function addEndpoints(app, conn) {
                 "Su sesión ha expirado, por favor inicie sesión nuevamente.",
             });
 
+        // obtenemos la informacion del coordinador para poder asignar al reporte el id del aula al que el reporte esta asociado
+        const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+        if(coordinador.rol != 'Aula') return res.status(401).json({error: 'El recurso no está disponible'})
+
         const reporte = {
           ...data,
           coordinador: new ObjectId(decodedToken.id),
+          aula: new ObjectId(coordinador.aula),
           categoria: new ObjectId(data.categoria),
           subcategoria: new ObjectId(data.subcategoria),
           estatus: "pendiente",
@@ -227,9 +255,18 @@ export function addEndpoints(app, conn) {
         const result = await db.insertOne(reporte);
 
         if (result.insertedId) {
-          res.status(201).json({ id: result.insertedId }); // 201 Created
+          // agregamos a la cuenta de numero de reportes pendientes en la coleccion aulas
+          const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesPendientes: 1 } })
+          console.log("this queri aula", queryAula)
+          if(queryAula.modifiedCount == 1)  {
+           return res.status(201).json({ id: result.insertedId })  // 201 Created
+          } else {
+            await db.deleteOne({_id: new ObjectId(result.insertedId)}) // si no se pudo actualizar el contador de reportes activos en la coleccion de aulas, entonces borramos el reporte creado para no causar irregularidades en la base de datos
+            return res.status(500).json({error: 'Lo sentimos, ocurrió un problema creando el reporte'})
+          }
+           
         } else {
-          res
+          return res
             .status(500)
             .json({ error: "No se pudo crear el reporte. Intente más tarde" });
         }
