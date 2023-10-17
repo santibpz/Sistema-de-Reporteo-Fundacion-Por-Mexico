@@ -1,25 +1,168 @@
+import React, { useState } from 'react';
 import { useListContext } from "react-admin";
 import { ReporteProps } from "../../types"
-import { Grid, Chip, Paper, Typography, Divider, Box, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material"
+import { Grid, FormControl, InputLabel, Select, MenuItem, Chip, Paper, Typography, Divider, Box, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material"
 import Bars from 'react-loading-icons/dist/esm/components/bars';
 import FolderIcon from '@mui/icons-material/Folder';
+import { StyledBackgroundGrid } from "../../theme/themes"
+import { StyledGrid } from "../../theme/themes"
+import TextField from '@mui/material/TextField';
+
+const categorias = [
+  { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
+  { value: "65012c3d07eb217c902f7ba1", label: "Inmobiliario" },
+  { value: "65012c3d07eb217c902f7ba2", label: "Equipo Tecnológico" },
+  { value: "65012c3d07eb217c902f7ba0", label: "Infraestructura" },
+  { value: "65012c3d07eb217c902f7ba6", label: "Material Académico" },
+  { value: "65012c3d07eb217c902f7ba5", label: "Beneficiarios"},
+  { value: "65012c3d07eb217c902f7ba7", label: "Otros" }
+];
+
+const prioridades = [
+  { value: "alta", label: "Alta" },
+  { value: "media", label: "Media" },
+  { value: "baja", label: "Baja" }
+];
 
 const ReportesArchivados = () => {
     // obtener los datos de la lista de reportes archivados
-    const { data, isLoading } = useListContext();
+    const {data,
+      isLoading,
+      setFilters,
+    } = useListContext();
+
+  const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
+  const [searchType, setSearchType] = useState("titulo");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPriority, setSelectedPriority] = useState("");
+
+  const handleSearchTypeChange = (event) => {
+    setSearchType(event.target.value);
+    setSearchTerm(""); // Limpia el término de búsqueda al cambiar el tipo de búsqueda
+    setFilters({},[]);
+  };
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+    setFilters({ titulo: event.target.value }, []);
+    if(event.target.value === "") {
+      setFilters({},[]);
+    }
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setFilters({ categoria: event.target.value }, []);
+    if(event.target.value === "") {
+      setFilters({},[]);
+    }
+  };
+
+  const handlePriorityChange = (event) => {
+    setSelectedPriority(event.target.value);
+    setFilters({ prioridad: event.target.value }, []);
+    if(event.target.value === "") {
+      setFilters({},[]);
+    }
+  };
 
     if(isLoading) return <Bars/>
 
+    let searchInput = null;
+
+    if (searchType === "titulo") {
+      searchInput = (
+        <TextField
+          label={`Buscar por ${searchType}`}
+          variant="outlined"
+          fullWidth
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+          style={{ height: 56, marginTop:2}}
+        />
+      );
+    } else if (searchType === "categoria") {
+      searchInput = (
+        <Select
+          label="Seleccionar Categoría"
+          variant="outlined"
+          fullWidth
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          style={{ height: 54, marginTop: 2}}
+        >
+          <MenuItem value="">
+            <em>Seleccionar Categoría</em>
+          </MenuItem>
+          {categorias.map((categoria) => (
+            <MenuItem key={categoria.value} value={categoria.value}>
+              {categoria.label}
+            </MenuItem>
+          ))}
+        </Select>
+      );
+    } else if (searchType === "prioridad") {
+      searchInput = (
+        <Select
+          label="Seleccionar Prioridad"
+          variant="outlined"
+          fullWidth
+          value={selectedPriority}
+          onChange={handlePriorityChange}
+          style={{ height: 54, marginTop:2}}
+        >
+          <MenuItem value="">
+            <em>Seleccionar Prioridad</em>
+          </MenuItem>
+          {prioridades.map((prioridad) => (
+            <MenuItem key={prioridad.value} value={prioridad.value}>
+              {prioridad.label}
+            </MenuItem>
+          ))}
+        </Select>
+      );
+    }
+
     return(
+      <div>
+        <Grid 
+        container 
+        spacing={1} 
+        alignItems="center"
+        >
+        <Grid 
+          item 
+          style={{ width: 'auto', padding: 15}}
+          >
+          {/*se agrega el filtro de búsqueda*/}
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel>Tipo de Búsqueda</InputLabel>
+            {/*Se agrega el menú de selección de tipo de búsqueda*/}
+            <Select value={searchType} onChange={handleSearchTypeChange} style={{ width: 200, height: 55 }}>
+              <MenuItem value="titulo">Nombre de Incidente</MenuItem>
+              <MenuItem value="categoria">Categoría</MenuItem>
+              <MenuItem value="prioridad">Prioridad</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        {/*Se agrega el input de búsqueda*/}
+        <Grid item xs style={{ width: 'auto', padding: 15}}>
+          {searchInput}
+        </Grid>
+      </Grid>
       <Grid 
          container 
          spacing={1} 
          columnSpacing={2}
          rowSpacing={2}
          style={{padding: 15}}
+         alignItems="center"
+         justifyContent="center"
+         
          >
             {data.map(reporte => <ReporteArchivadoCard key={reporte.id} {...reporte} />)}
       </Grid>
+      </div>
     )
 }
 
@@ -29,37 +172,43 @@ const ReporteArchivadoCard = (props:ReporteProps) => {
         <Grid container item sm lg = 'auto' alignItems="center" justifyContent="center" >
             <Paper
             sx={{
-            width: 380,
+            width: 400,
+            height: 950,
             // backgroundColor: '#E6E6FA',
+            boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.25)',
+              '&:hover': {
+                boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.45)',
+              },
             }}
             elevation={10}
         >
               {/* container */}
-              <Grid container direction='column' sx={{p:1}}>
+              <Grid container direction='column'>
 
-                {/* secion de titulo de reporte archivado */}
-                <Grid container item direction='row'>
+                {/* sección de titulo de reporte archivado */}
+                <StyledGrid categoria={props.categoria} container item direction='row'>
+
 
                     {/* icono y titulo */}
-                    <Grid container item xs={9} sx ={{bgcolor: '', p:2}}>
+                    <Grid container item xs={9} sx ={{bgcolor: '', p:3}}>
                         <Grid container item direction='row'>
                             <Grid container justifyContent='center' alignItems='center' item xs={2} sx = {{bgcolor: ''}}>
-                                <FolderIcon sx={{fontSize:50}} />
+                                <FolderIcon sx={{fontSize:50, color:"white"}} />
                             </Grid>
                             
                             <Grid container alignItems='center' item xs={10} sx = {{bgcolor: '', pl:2}}>
-                                <Typography variant='body1' sx={{fontWeight:600}}>{props.titulo}</Typography>
-                                <Typography variant = 'body2' sx={{color:'darkGrey'}}>Seguimiento por {props.coordinador}</Typography>
+                                <Typography variant='body1' sx={{fontWeight:600, color:"white"}}>{props.titulo}</Typography>
+                                <Typography variant = 'body2' style={{color:'#E5E4E2'}}>Seguimiento por {props.coordinador}</Typography>
                             </Grid>
                         </Grid>
                         
                     </Grid>
 
                     {/* stamp de resolucion */}
-                    <Grid container item justifyContent='center' alignItems='center' xs = {3}>
+                    <Grid container item justifyContent='center' alignItems='center' xs = {3} sx={{marginRight:0}}>
                         <CircularStamp text={props.resolucion || ""} bgcolor={props.resolucion === 'Resuelto' ? 'green':'red'} />
                     </Grid>
-                </Grid>
+                </StyledGrid>
 
                 <Divider />
 
@@ -78,9 +227,9 @@ const ReporteArchivadoCard = (props:ReporteProps) => {
                 {/* sección de descripcion del reporte */}
                 <Grid container item direction='column' justifyContent='' alignItems='center' sx ={{padding: 2, bgcolor: ''}}>
                     <Typography variant= "body1" sx={{fontWeight:800}}>Descripción del Reporte</Typography>
-                    <Box sx ={{bgcolor: '#eee', height:'100px', width: '100%', mt:1, p:1.5}}>
+                    <StyledBackgroundGrid sx ={{ height:'100px', width: '100%', mt:1, p:1.5}}>
                         <Typography variant= "body2">{props.descripcion}</Typography>
-                    </Box>
+                    </StyledBackgroundGrid>
                 </Grid>
 
                <Divider /> 
@@ -88,15 +237,15 @@ const ReporteArchivadoCard = (props:ReporteProps) => {
 
                 <Grid container item sx={{p:2}}>
 
-                    <Grid container justifyContent='center' item sx={{bgcolor:'', p:2}}>
+                    <Grid container direction='column' justifyContent='center' alignItems='center' item sx={{bgcolor:'', p:2}}>
                         <Typography variant="subtitle1" sx={{fontWeight:800}}>Resolución del Reporte</Typography>
                         <Typography>{props.razon}</Typography>
                     </Grid>
 
-                    <Grid container item direction='column' alignItems='center' justifyContent='space-between' sx ={{bgcolor:'#eee', p:2}}>
+                    <StyledBackgroundGrid container item direction='column' alignItems='center' justifyContent='space-between' sx ={{p:2}}>
                             <Typography variant="subtitle1" sx={{fontWeight:800}}>Tiempo de resolución del Reporte</Typography>
                             <Chip label={props.tiempoResolucion} sx={{bgcolor:'#FFDB58', fontWeight:500}} />
-                    </Grid>
+                    </StyledBackgroundGrid>
 
                 </Grid>
 
@@ -168,10 +317,10 @@ const IntermediariosTable = (props:{data:Array<any>}) => {
 // compontente para mostrar información que se repite
 const ShowInfo = ({label,data}:{label:string, data:string}) => {
     return(
-        <Grid container item xs={6} justifyContent='center' alignItems='center' direction='column' sx={{bgcolor: '#eee', p:1}}>
+        <StyledBackgroundGrid container item xs={6} justifyContent='center' alignItems='center' direction='column' sx={{p:1}}>
             <Typography variant="subtitle1" sx={{fontWeight:800}}>{label}</Typography>
             <Typography variant="body2" sx={{color:''}}>{data}</Typography>
-        </Grid>
+        </StyledBackgroundGrid>
     )
 }
 

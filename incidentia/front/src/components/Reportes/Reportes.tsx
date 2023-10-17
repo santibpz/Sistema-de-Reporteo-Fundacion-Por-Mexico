@@ -7,11 +7,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
-import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
-import { on } from "events"
-import { redirect } from "react-router-dom"
+import { StyledGrid } from "../../theme/themes"
 import ConfirmacionDialog from "../ConfirmacionDialog"
-import { styled } from '@mui/system';
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -29,20 +26,11 @@ const prioridades = [
   { value: "baja", label: "Baja" }
 ];
 
-const StyledGrid = styled(Grid)(({ theme, categoria }) => ({
-  backgroundColor: theme.palette.mode === 'light' 
-  ? lightColorCategoria[categoria]
-  : darkColorCategoria[categoria],
-}));
-
 const Reportes = () => {
     // obtener los datos de la lista de reportes
     const {data,
         isLoading,
-        displayedFilters,
-        filterValues,
         setFilters,
-        hideFilter
       } = useListContext();
 
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
@@ -92,6 +80,7 @@ const Reportes = () => {
           fullWidth
           value={searchTerm}
           onChange={handleSearchTermChange}
+          style={{ height: 56, marginTop:2}}
         />
       );
     } else if (searchType === "categoria") {
@@ -102,7 +91,7 @@ const Reportes = () => {
           fullWidth
           value={selectedCategory}
           onChange={handleCategoryChange}
-          style={{ height: '40px', marginTop:'4px'}}
+          style={{ height: 54, marginTop: 2}}
         >
           <MenuItem value="">
             <em>Seleccionar Categoría</em>
@@ -122,7 +111,7 @@ const Reportes = () => {
           fullWidth
           value={selectedPriority}
           onChange={handlePriorityChange}
-          style={{ height: '40px', marginTop:'4px'}}
+          style={{ height: 54, marginTop:2}}
         >
           <MenuItem value="">
             <em>Seleccionar Prioridad</em>
@@ -152,7 +141,7 @@ const Reportes = () => {
           <FormControl variant="outlined" fullWidth>
             <InputLabel>Tipo de Búsqueda</InputLabel>
             {/*Se agrega el menú de selección de tipo de búsqueda*/}
-            <Select value={searchType} onChange={handleSearchTypeChange} style={{ width: '200px' }}>
+            <Select value={searchType} onChange={handleSearchTypeChange} style={{ width: 200, height: 55 }}>
               <MenuItem value="titulo">Nombre de Incidente</MenuItem>
               <MenuItem value="categoria">Categoría</MenuItem>
               <MenuItem value="prioridad">Prioridad</MenuItem>
@@ -256,7 +245,7 @@ export const ReporteCard = (props:ReporteProps) => {
     
                <StyledGrid categoria={props.categoria} container direction='column' justifyContent="center" alignItems="center" xs item >
                 <ModalWindow id ={props.id} titulo = {props.titulo} estatus={props.estatus} />
-                <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
+                <Button component={Link} to={`/reportes/show/${props.id}`} variant="contained" style={{color:"white", backgroundColor: "#ADADAD", width: 155, marginTop: 5}}>Ver Reporte</Button>
                </StyledGrid>
                 
             </Grid>
