@@ -145,7 +145,7 @@ const Reportes = () => {
     return <div>loading...</div>
     }
     
-    if(data.length == 0 && permissions !== 'Aula') {
+    if(data.length == 0 && filterValues.aula && permissions !== 'Aula') {
       return <EmptyView handleMostrar={handleClick} />                                                                                                      
     }
 
