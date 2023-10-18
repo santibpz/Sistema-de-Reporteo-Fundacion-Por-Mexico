@@ -10,13 +10,14 @@ import TextField from '@mui/material/TextField';
 import { useDisableColors } from '../../theme/DisableColorContext'; 
 
 const categorias = [
-  { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
-  { value: "65012c3d07eb217c902f7ba1", label: "Inmobiliario" },
+  { value: "65012c3d07eb217c902f7ba4", label: "Recursos humanos" },
+  { value: "65012c3d07eb217c902f7ba1", label: "Mobiliario" },
   { value: "65012c3d07eb217c902f7ba2", label: "Equipo Tecnológico" },
   { value: "65012c3d07eb217c902f7ba0", label: "Infraestructura" },
-  { value: "65012c3d07eb217c902f7ba6", label: "Material Académico" },
+  { value: "65012c3d07eb217c902f7ba6", label: "Materiales" },
   { value: "65012c3d07eb217c902f7ba5", label: "Beneficiarios"},
-  { value: "65012c3d07eb217c902f7ba7", label: "Otros" }
+  { value: "65012c3d07eb217c902f7ba7", label: "Seguridad" },
+  { value: "652fd5a3d4a5b32ad20f8fd0", label: "Fenómeno meteorológico" }
 ];
 
 const prioridades = [

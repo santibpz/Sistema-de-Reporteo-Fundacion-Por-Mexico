@@ -1,6 +1,8 @@
 import { createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
-import {Grid, Chip} from '@mui/material';
+import {Grid, Chip, Typography} from '@mui/material';
+import logo from '../images/FXM_sinFondo.png'
+import whitelogo from '../images/FXM_B_PNG.png'
 
 const lightPalette = {
     primary: {
@@ -27,43 +29,48 @@ const darkPalette = {
 }
 
 export const lightColorCategoria = {
-    "Trabajadores de Aula": '#28A745', // Verde vibrante
-    "Inmobiliario": '#DC3545', // Rojo vibrante
-    "Equipo Tecnológico": '#007BFF', // Azul vibrante
+    "Recursos humanos": '#28A745', // Verde vibrante
+    "Mobiliario": '#DC3545', // Rojo vibrante
+    "Digital": '#007BFF', // Azul vibrante
     "Infraestructura": '#FF0066', // Rosa vibrante
-    "Material Académico": '#FF8800', // Naranja vibrante
+    "Materiales": '#FF8800', // Naranja vibrante
     "Beneficiarios": '#00B894', // Aqua vibrante
-    "Otros": '#A355D7' // Morado vibrante
-  }  
+    "Seguridad": '#A355D7', // Morado vibrante
+    "Fenómeno meteorológico": '#800020' // Vino vibrante
+}
+
 
 export const lightMainColor = {
-    "Trabajadores de Aula": '#69B035',
-    "Inmobiliario": '#69B035',
-    "Equipo Tecnológico": '#69B035',
+    "Recursos humanos": '#69B035',
+    "Mobiliario": '#69B035',
+    "Digital": '#69B035',
     "Infraestructura": '#69B035',
-    "Material Académico": '#69B035',
+    "Materiales": '#69B035',
     "Beneficiarios": '#69B035',
-    "Otros": '#69B035'
+    "Seguridad": '#69B035',
+    "Fenómeno meteorológico": '#69B035'
 }
 
 export const darkColorCategoria = {
-    "Trabajadores de Aula": '#4CAF50', // Verde oscuro
-    "Inmobiliario": '#D32F2F', // Rojo oscuro
-    "Equipo Tecnológico": '#1976D2', // Azul oscuro
+    "Recursos humanos": '#4CAF50', // Verde oscuro
+    "Mobiliario": '#D32F2F', // Rojo oscuro
+    "Digital": '#1976D2', // Azul oscuro
     "Infraestructura": '#E91E63', // Rosa oscuro
-    "Material Académico": '#FF9800', // Naranja oscuro
+    "Materiales": '#FF9800', // Naranja oscuro
     "Beneficiarios": '#009688', // Verde azul oscuro
-    "Otros": '#8E24AA' // Morado oscuro
+    "Seguridad": '#8E24AA', // Morado oscuro
+    "Fenómeno meteorológico": '#500000' // Vino oscuro
 };
 
 export const darkMainColor = {
-    "Trabajadores de Aula": '#1C8D41',
-    "Inmobiliario": '#1C8D41',
-    "Equipo Tecnológico": '#1C8D41',
+    "Recursos humanos": '#1C8D41',
+    "Mobiliario": '#1C8D41',
+    "Digital": '#1C8D41',
     "Infraestructura": '#1C8D41',
-    "Material Académico": '#1C8D41',
+    "Materiales": '#1C8D41',
     "Beneficiarios": '#1C8D41',
-    "Otros": '#1C8D41'
+    "Seguridad": '#1C8D41',
+    "Fenómeno meteorológico": '#1C8D41'
 }
   
 
@@ -96,8 +103,16 @@ export const StyledGrid = styled(Grid)(({ theme, categoria, disableColors }) => 
     };
 });
 
+export const StyledLogo = styled('img')(({ theme }) => ({
+    content: `url(${theme.palette.mode === 'light' ? logo : whitelogo})`,
+  }));
+
 export const StyledChip= styled(Chip)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'light' ? '#69B035' : '#1C8D41',
+}));
+
+export const StyledTypography= styled(Typography)(({ theme }) => ({
+    color: theme.palette.mode === 'light' ? '#69B035' : '#1C8D41',
 }));
 
 export const StyledBackgroundGrid = styled(Grid)(({ theme }) => ({

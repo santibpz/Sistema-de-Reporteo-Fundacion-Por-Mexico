@@ -11,8 +11,9 @@ export interface ReporteProps {
     prioridad: string,
     estatus: string,
     fecha: string,
+    oficio?: string,
     resolucion?: string,
-    razon?: string, 
+    razon?: string,
     intermediarios?: Array<any>,
     tiempoResolucion?: string
 
