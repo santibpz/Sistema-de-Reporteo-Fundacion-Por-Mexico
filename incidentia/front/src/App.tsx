@@ -5,7 +5,6 @@ import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound, usePermis
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import { dataProvider } from './dataProvider';
 import { i18nProvider } from './i18nProvider';
 import authProvider from './authProvider';
