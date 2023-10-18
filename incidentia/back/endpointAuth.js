@@ -23,7 +23,7 @@ export function addEndpoints(app, conn) {
                     return response.status(401).json({message: "Credenciales inválidas. Intente de nuevo"})
                 } else {
                     // Validación credencial (passhashed)
-                    bcrypt.compare(password, result.contra, (error, resultB)=>{
+                    bcrypt.compare(password, result.contra, (error, resultB)=> {
                         if(resultB){
                             let token= makeNewToken({id: result._id, nombre: result.nombreC}); 
                             const {matricula, nombreCompleto, rol} = result

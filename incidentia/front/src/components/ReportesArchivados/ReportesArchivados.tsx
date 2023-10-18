@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useListContext } from "react-admin";
+import { useListContext, usePermissions } from "react-admin";
 import { ReporteProps } from "../../types"
 import { Grid, FormControl, InputLabel, Select, MenuItem, Chip, Paper, Typography, Divider, Box, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material"
 import Bars from 'react-loading-icons/dist/esm/components/bars';
@@ -8,6 +8,8 @@ import { StyledBackgroundGrid } from "../../theme/themes"
 import { StyledGrid } from "../../theme/themes"
 import TextField from '@mui/material/TextField';
 import { useDisableColors } from '../../theme/DisableColorContext'; 
+import EmptyView from '../EmptyView';
+import usePagination from '@mui/material/usePagination/usePagination';
 
 const categorias = [
   { value: "65012c3d07eb217c902f7ba4", label: "Trabajadores de Aula" },
@@ -27,10 +29,16 @@ const prioridades = [
 
 const ReportesArchivados = () => {
     // obtener los datos de la lista de reportes archivados
-    const {data,
+    const {
+      data,
       isLoading,
       setFilters,
+      filterValues
     } = useListContext();
+
+    const {permissions} = usePermissions()
+
+    console.log(data)
 
   const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
   const [searchType, setSearchType] = useState("titulo");
@@ -125,6 +133,12 @@ const ReportesArchivados = () => {
       );
     }
 
+    const handleClick = () => setFilters({},[])
+
+    if(data.length == 0 && filterValues.aula && permissions !== 'Aula') {
+      return <EmptyView label = "Mostrar Todos los Reportes Archivados" handleMostrar={handleClick} />                                                                                                      
+                                                                                                  
+    }
     return(
       <div>
         <Grid 
@@ -170,6 +184,7 @@ const ReportesArchivados = () => {
 
 
 const ReporteArchivadoCard = (props:ReporteProps & { disableColors: boolean }) => {
+    console.log(props)
     return(
         <Grid container item sm lg = 'auto' alignItems="center" justifyContent="center" >
             <Paper
@@ -244,7 +259,7 @@ const ReporteArchivadoCard = (props:ReporteProps & { disableColors: boolean }) =
 
                     <StyledBackgroundGrid container item direction='column' alignItems='center' justifyContent='space-between' sx ={{p:2}}>
                             <Typography variant="subtitle1" sx={{fontWeight:800}}>Tiempo de resolución del Reporte</Typography>
-                            <Chip label={props.tiempoResolucion} sx={{bgcolor:'#FFDB58', fontWeight:500}} />
+                            <Chip label={`${props.tiempoResolucionDias} día(s)`} sx={{bgcolor:'#FFDB58', fontWeight:500}} />
                     </StyledBackgroundGrid>
 
                 </Grid>

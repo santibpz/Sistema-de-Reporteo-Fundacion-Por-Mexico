@@ -29,7 +29,6 @@ export function addEndpoints(app, conn) {
                 const sortQuery = sort ? JSON.parse(sort) : {};
 
                 const result = await db.find({}).project({id:"$_id", _id:0, nombreCompleto:1}).toArray()
-                // const result = await cursor.toArray();
 
                 console.log(result)
 
@@ -204,7 +203,6 @@ export function addEndpoints(app, conn) {
             // cosas del endpoint
             try {
                 const result = await db.deleteOne({_id: new ObjectId.ObjectId(req.params._id)});
-
                 res.json(result.deletedCount);
             } catch (error) {
                 console.error('Error:', error);
