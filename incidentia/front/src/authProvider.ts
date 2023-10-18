@@ -39,11 +39,11 @@ const authProvider = {
         // Se exceptua autorización en la ruta de registrarse, fuera de eso es requisito
         // tener almacenado el token "auth"
         const currentPath = window.location.pathname;
-    if (currentPath === '/registrarse') {
-        return Promise.resolve();
-    }else{
-        return localStorage.getItem("auth") ? Promise.resolve(): Promise.reject();
-    }
+        if (currentPath === '/registrarse') {
+            return Promise.resolve();
+        }else{
+            return localStorage.getItem("auth") ? Promise.resolve(): Promise.reject();
+        }
     },
     checkError: (error: any) =>{
         // Bajo status negativos se elimina el almacenamiento de navegador

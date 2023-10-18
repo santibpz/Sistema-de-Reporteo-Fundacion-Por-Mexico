@@ -12,10 +12,11 @@ export interface ReporteProps {
     estatus: string,
     fecha: string,
     oficio?: string,
+    fechaArchivado?: string,
     resolucion?: string,
     razon?: string,
     intermediarios?: Array<any>,
-    tiempoResolucion?: string
+    tiempoResolucionDias: Number
 
 }
 

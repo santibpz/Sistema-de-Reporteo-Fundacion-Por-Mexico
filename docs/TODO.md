@@ -1,10 +1,11 @@
-- [ ] Documento de requerimientos
+- [x] Documento de requerimientos
 - [x] Repositorio de código (link)
 - [ ] Documento de pruebas (conforme a los requerimientos)
 - [x] Manual de instalación en pdf
-- [ ] Video del martes
+- [ ] Video del martes (explicando código)
 - [x] Seguir el manual de instalación en un video
-- [ ] Video de funcionalidad para el socio formador (similar al de hoy, pero 5-10)
+- [ ] Video de funcionalidad para el socio formador (mostrar todo lo que se puede hacer)
 - [x] SRS
-- [ ] Manual de usuario
+- [x] Manual de usuario
+  - [ ] falta agregar sección de charts
 - [ ] SAR (software architecture report)

@@ -93,7 +93,6 @@ export function addEndpoints(app, conn) {
             ])
             .toArray();
         } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
-          console.log('ebt');
           // id del aula de la cual se buscan los reportes
           if(filterQuery.aula) {
             console.log(filterQuery.aula)
@@ -101,12 +100,8 @@ export function addEndpoints(app, conn) {
           // El pipeline a la base de datos que obtiene la información a enviar al cliente
           data = await db.aggregate([{$match: filterQuery}, ...getReportesPipeline])
                .toArray();
-          console.log("dataa", data)
           } else data = await db.aggregate(getReportesPipeline)
           .toArray();
-          
-          // data = await db.aggregate(getReportesPipeline).toArray()
-          console.log("aaa", data)
 
         }
 

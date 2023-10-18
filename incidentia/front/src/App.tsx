@@ -1,7 +1,7 @@
 
 import React, {useState} from 'react';
 import { Route } from 'react-router-dom';
-import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound } from 'react-admin';
+import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound, usePermissions } from 'react-admin';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ArchiveIcon from '@mui/icons-material/Archive';
@@ -19,6 +19,7 @@ import { DisableColorsProvider } from './theme/DisableColorContext';
 import Aula from "./components/Aulas/Aula"
 import CoordinadorCreate from "./components/Registro";
 import { Registro } from "./components/Registro";
+import Dashboard from './components/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
 import PersonIcon from '@mui/icons-material/Person';
 import { CoordinadoresList } from './components/List/coordinadoresList';
@@ -42,6 +43,13 @@ export const App = () => {
               <>
                   {permissions === 'Ejecutivo'
                       ? (<Resource
+                          name="dashboard"
+                          list={Dashboard}
+                       />)
+                      : null}
+                      
+                  {permissions === 'Ejecutivo'
+                      ? (<Resource
                           name="coordinadores"
                           list={CoordinadoresList}
                           create={CoordinadorCreate}
@@ -57,6 +65,7 @@ export const App = () => {
                        />)
                       : null}
 
+
       <Resource 
        name="reportes" 
        list={ Reporte.ReporteList} 
@@ -69,6 +78,7 @@ export const App = () => {
        list={ReporteArchivado.ReporteArchivadoList} 
        icon={ArchiveIcon}
         />  
+
 
       <Resource 
        name="ChartPage" 

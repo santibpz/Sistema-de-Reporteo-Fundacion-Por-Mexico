@@ -34,18 +34,7 @@ interface AulaProps {
 
 const AulaCard = (props:AulaProps) => {
     const redirect = useRedirect()
-    // const { data, total, isLoading, error, refetch } = useGetList();
-
-    // const showReportes = () => {
-    //     useGetList('reportes',
-    //     {
-    //         pagination: { 0, 9 },
-    //         sort: { "id", "ASC" },
-    //         {"aula": props.id}
-            
-    //     },
-    //     options)
-    // }
+   
     return(
         <Grid container sm lg='auto' item alignItems='center' justifyContent='center' >
             <Paper
@@ -79,8 +68,9 @@ const AulaCard = (props:AulaProps) => {
                         <Button onClick={() => redirect( `/reportes?filter={"aula":"${props.id}"}`)} sx ={{mt:0.1}}>Ver Reportes</Button>
                     </Grid>
                     <Grid container item direction='column' justifyContent='center' xs ={6}>
-                        <StyledChip sx ={{ width:170, margin:'auto', color:'white'}} label={`Reportes Archivados: ${props.numReportesArchivados ?? 0}`}/>
-                        <Button sx ={{mt:0.1}}>Ver Archivados</Button>
+                        <Chip sx ={{bgcolor: 'lightgreen', width:170, margin:'auto'}} label={`Reportes Archivados: ${props.numReportesArchivados ?? 0}`}/>
+                        <Button  onClick={() => redirect( `/archivados?filter={"aula":"${props.id}"}`)} sx ={{mt:0.1}}>Ver Archivados</Button>
+
                     </Grid>
                 </Grid>
 

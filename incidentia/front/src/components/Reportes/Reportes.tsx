@@ -149,7 +149,7 @@ const Reportes = () => {
     }
     
     if(data.length == 0 && filterValues.aula && permissions !== 'Aula') {
-      return <EmptyView handleMostrar={handleClick} />                                                                                                      
+      return <EmptyView label = "Mostrar Todos los Reportes" handleMostrar={handleClick} />                                                                                                      
     }
 
 

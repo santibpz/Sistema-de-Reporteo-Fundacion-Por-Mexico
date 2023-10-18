@@ -8,7 +8,7 @@ const dbCollection = "archivados";
 
 export function addEndpoints(app, conn) {
 
-    // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
+    // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filterQuery={"title":"bar"}
   app.get(prefix + "", async (req, res) => {
     // cosas de todos los endpoints
     try {
@@ -27,34 +27,78 @@ export function addEndpoints(app, conn) {
       const skip = start;
 
       try {
-          // Filtering
-          const query = filter ? JSON.parse(filter) : {};
-          if (query.categoria){ 
-            query.categoria = new ObjectId(query.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+          // filterQuerying
+          const filterQuery = filter ? JSON.parse(filter) : {};
+          if (filterQuery.categoria){ 
+            filterQuery.categoria = new ObjectId(filterQuery.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
         }
-        if (query.titulo) { 
-            query.titulo = { $regex: query.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
+        if (filterQuery.titulo) { 
+          filterQuery.titulo = { $regex: filterQuery.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
         }
         // Sorting
         const [field, order] = sort;
         const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
         // convierte de [cosa, otro] a {cosa: otro}
 
+
+        // extraemos el token de la solicitud
+        const decodedToken = verifyTokenFromReq(req);
+
+        // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+        if (!decodedToken.id)
+          return res
+            .status(401)
+            .json({
+              error:
+                "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+            });
+
+        // verificamos los permisos del coordinador
+        const coordinador = await dbFig.db
+          .collection("coordinadores")
+          .findOne({ _id: new ObjectId(decodedToken.id) });
+
+        if (!coordinador)
+          return res
+            .status(401)
+            .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
+
          // El pipeline a la base de datos que obtiene la información a enviar al cliente
 
         const getReportesArchivadosPipeline = [
-          { $match: query }, // inicia con el filtro
+          { $match: filterQuery }, // inicia con el filtro
           ...mainPipeline, // construye todas sus madres
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
           { $limit: limit }, // consigue hasta cierto otro numero
         ];
 
-        const data = await db.aggregate(getReportesArchivadosPipeline).toArray();
+        let data = []
+
+         // mostrar solo los reportes creados por el coordinador de aula
+         if (coordinador.rol == "Aula") {
+          // El pipeline a la base de datos que obtiene la información a enviar al cliente
+          data = await db
+            .aggregate([
+              { $match: { coordinador: new ObjectId(decodedToken.id) } },
+              ...getReportesArchivadosPipeline,
+            ])
+            .toArray();
+        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          // id del aula de la cual se buscan los reportes archivados
+          if(filterQuery.aula) {
+            filterQuery.aula = new ObjectId(filterQuery.aula)
+          // El pipeline a la base de datos que obtiene la información a enviar al cliente
+          data = await db.aggregate([{$match: filterQuery}, ...getReportesArchivadosPipeline])
+               .toArray();
+          } else data = await db.aggregate(getReportesArchivadosPipeline)
+          .toArray();
+
+        }
         
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
-          { $match: query }, // filtra
+          { $match: filterQuery }, // filtra
           { $count: 'totalCount' } // cuenta
       ];
         let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
@@ -71,6 +115,7 @@ export function addEndpoints(app, conn) {
         );
 
         res.status(200).json(data);
+
       } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Ocurrió un error" });
@@ -116,10 +161,10 @@ export function addEndpoints(app, conn) {
             if(reporte == null) return res.status(500).json({error: 'Ha ocurrido un error. Por favor intente más tarde.'})
 
             // obtenemos la fecha actual
-            const fecha = new Date()
+            const fechaArchivado = new Date()
 
             // calculamos los días transcurridos desde que se levantó el reporte hasta que se marca como completado
-            const diasTranscurridos = calculaDiasTranscurridos(reporte.fecha, fecha)
+            const diasTranscurridos = calculaDiasTranscurridos(reporte.fecha, fechaArchivado)
 
             // pipeline del número de intermediarios
             const intermediariosPipeline = [
@@ -146,12 +191,12 @@ export function addEndpoints(app, conn) {
                 ...reporte,
                 _id: new ObjectId(),
                 aula: new ObjectId(coordinador.aula),
-                fecha,
+                fechaArchivado,
                 estatus,
                 resolucion,
                 razon,
                 intermediarios,
-                tiempoResolucion: diasTranscurridos == 1 ? `${diasTranscurridos} día` : `${diasTranscurridos} días`
+                tiempoResolucionDias: diasTranscurridos || 1
             }
 
                 console.log("this reporte a archivar", reporteArchivado)

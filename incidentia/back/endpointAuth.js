@@ -23,7 +23,7 @@ export function addEndpoints(app, conn) {
                     return response.status(401).json({message: "Credenciales inválidas. Intente de nuevo"})
                 } else {
                     // Validación credencial (passhashed)
-                    bcrypt.compare(password, result.contra, (error, resultB)=>{
+                    bcrypt.compare(password, result.contra, (error, resultB)=> {
                         if(resultB){
                             let token= makeNewToken({id: result._id, nombre: result.nombreC}); 
                             const {matricula, nombreCompleto, rol} = result
@@ -92,7 +92,7 @@ export function addEndpoints(app, conn) {
     
             // Checar si el password tiene mas de 8 caracteres, tiene al menos una mayuscula, un numero y un caracter especial
             if (password.length < 8 || !password.match(/[A-Z]/) || !password.match(/[0-9]/) || !password.match(/[!@#$%^&*._-]/)) {
-                return response.status(400).json({error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial (!@#$%^&*.)."})
+                return response.status(400).json({error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial (!@#$%^&*._-)."})
             }
        
             try{
