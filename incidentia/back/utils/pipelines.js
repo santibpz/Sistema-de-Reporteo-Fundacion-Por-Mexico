@@ -44,10 +44,11 @@ export const mainPipeline = [
         estatus: 1,
         prioridad: 1,
         fecha: 1,
+        fechaArchivado:1,
         resolucion: 1,
         razon:1,
         intermediarios: 1,
-        tiempoResolucion:1
+        tiempoResolucionDias:1
     }}
 ]
 
