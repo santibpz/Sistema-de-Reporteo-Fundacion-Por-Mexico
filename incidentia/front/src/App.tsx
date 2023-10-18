@@ -1,6 +1,6 @@
 
 import React, {useState} from 'react';
-import { Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 import { Admin, CustomRoutes, Layout, Resource, ListGuesser, NotFound, usePermissions } from 'react-admin';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -38,63 +38,62 @@ export const App = () => {
       darkTheme = {darkTheme} 
       >
 
-  {permissions => (
-              <>
-                  {permissions === 'Ejecutivo'
-                      ? (<Resource
-                          name="dashboard"
-                          list={Dashboard}
-                       />)
-                      : null}
-                      
-                  {permissions === 'Ejecutivo'
-                      ? (<Resource
-                          name="coordinadores"
-                          list={CoordinadoresList}
-                          create={CoordinadorCreate}
-                          icon={PersonIcon}
-                       />)
-                      : null}
+    {permissions => (
+      <>
+        {permissions === 'Ejecutivo'
+          ? (<Resource
+              name="dashboard"
+              list={Dashboard}
+            />)
+          : null}
+            
+        {permissions === 'Ejecutivo'
+          ? (<Resource
+              name="coordinadores"
+              list={CoordinadoresList}
+              create={CoordinadorCreate}
+              icon={PersonIcon}
+            />)
+          : null}
 
-                  {(permissions === 'Ejecutivo' || permissions === 'Nacional')
-                      ? (<Resource
-                          name="aulas"
-                          list={Aula.AulaList}
-                          icon={SchoolIcon}
-                       />)
-                      : null}
-
-
-      <Resource 
-       name="reportes" 
-       list={ Reporte.ReporteList} 
-       create = { permissions === 'Aula' ? (Reporte.ReporteCreate) : null } 
-       icon={AssignmentIcon}
-        />  
-        
-      <Resource 
-       name="archivados"
-       list={ReporteArchivado.ReporteArchivadoList} 
-       icon={ArchiveIcon}
-        />  
+        {(permissions === 'Ejecutivo' || permissions === 'Nacional')
+          ? (
+              <Resource
+                name="aulas"
+                list={Aula.AulaList}
+                icon={SchoolIcon}
+              />
+            )
+          : null}
 
 
-      <Resource 
-       name="ChartPage" 
-       list={ChartPage} 
-       icon={BarChartIcon}
-        />  
-
-      <CustomRoutes>
-            <Route path="reportes/show/:id" element={<ReporteShow />} />
-            <Route path="/chart" element={<ChartPage />} />
-            <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
-      </CustomRoutes>
-              </>
-          )
+        <Resource 
+        name="reportes" 
+        list={ Reporte.ReporteList} 
+        create = { permissions === 'Aula' ? (Reporte.ReporteCreate) : null } 
+        icon={AssignmentIcon}
+          />  
           
-          }
-  
+        <Resource 
+        name="archivados"
+        list={ReporteArchivado.ReporteArchivadoList} 
+        icon={ArchiveIcon}
+          />  
+
+
+        <Resource 
+        name="ChartPage" 
+        list={ChartPage} 
+        icon={BarChartIcon}
+          />  
+
+        <CustomRoutes>
+              <Route path="reportes/show/:id" element={<ReporteShow />} />
+              <Route path="/chart" element={<ChartPage />} />
+              <Route path="/coordinadores/create"  element={permissions === 'Ejecutivo' ? <Registro />: <NotFound />}/>
+        </CustomRoutes>
+      </>
+    )}
     </Admin>
     </DisableColorsProvider>
   );
