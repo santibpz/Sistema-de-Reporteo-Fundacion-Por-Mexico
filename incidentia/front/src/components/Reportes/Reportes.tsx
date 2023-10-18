@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Link, useCreate, useListContext, useNotify, usePermissions, useRedirect, useRefresh } from "react-admin"
+import { Link, NotFound, useCreate, useListContext, useNotify, usePermissions, useRedirect, useRefresh } from "react-admin"
 import { ModalProps, ReporteProps } from "../../types"
 import { Grid, Select, InputLabel, MenuItem, Paper, Typography, Button, Box, Modal } from "@mui/material"
 import Divider from "@mui/material/Divider"
@@ -149,7 +149,11 @@ const Reportes = () => {
     
     if(data.length == 0 && filterValues.aula && permissions !== 'Aula') {
       return <EmptyView label = "Mostrar Todos los Reportes" handleMostrar={handleClick} />                                                                                                      
+    } else if(filterValues.aula && permissions === 'Aula') {
+      setFilters({}, [])
+      return <NotFound />
     }
+      
 
 
 
