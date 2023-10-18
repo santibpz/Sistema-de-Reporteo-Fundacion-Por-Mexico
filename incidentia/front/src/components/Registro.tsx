@@ -4,7 +4,7 @@ import { Grid, Paper, TextField,InputLabel, Select, MenuItem, Box} from "@mui/ma
 import { Create, useNotify, useRedirect } from 'react-admin';
 import Multiselect from 'multiselect-react-dropdown';
 import ConfirmacionDialog from "./ConfirmacionDialog";
-import img from '../images/logo-fundacion-por-mexico.png'
+import { StyledLogo } from "../theme/themes";
 
 
 const CoordinadorCreate = () => {
@@ -139,7 +139,7 @@ export const Registro = () =>{
                 justifyContent="center"
                 alignItems="center">
                     <Grid container item justifyContent='space-around' alignItems='center' xs={1} sx = {{bgcolor:'', p:0.7}}> 
-                        <img src={img} style={{width:'60px', height:'50px'}} />
+                        <StyledLogo style={{height:'70px'}} />
                         <h3>Registro Coordinadores</h3>
                     </Grid>
                     <Grid container item justifyContent='' xs ={10} sx ={{p:2}}>
@@ -147,10 +147,11 @@ export const Registro = () =>{
                         name="fullName"
                         value={datos.fullName}
                         onChange={handleChange}
-                        label="nombre completo"
-                        placeholder="nombre completo"
+                        label="Nombre completo"
+                        placeholder="Nombre completo"
                         required
                         fullWidth
+                        style={{marginBottom: 10}}
                         />
                         <TextField
                         name="username"
@@ -160,7 +161,7 @@ export const Registro = () =>{
                         placeholder="Matrícula"
                         required
                         fullWidth
-
+                        style={{marginBottom: 10}}
                         />
                         <TextField 
                         name="password"
@@ -171,7 +172,7 @@ export const Registro = () =>{
                         type="password" 
                         required 
                         fullWidth
-
+                        style={{marginBottom: 10}}
                         />
                         <InputLabel>Rol</InputLabel>
                         <Select
@@ -214,10 +215,11 @@ export const Registro = () =>{
                             />
                         </Box>
 
-                        <Box sx={{mt:2, width:'100%'}}>
+                        <Box justifyContent='center' sx={{mt:2, width:'100%', display:'flex', padding:2}}>
                         <ConfirmacionDialog message="Se recomienda Registrar las Credenciales 'Matricula' y 'Contraseña' para que el usuario pueda iniciar sesión con las mismas." 
                                             onContinue={handleSendData}
-                                            ref = {ConfirmacionDialogRef} />
+                                            ref = {ConfirmacionDialogRef}
+                                            />
                         </Box>
                     </Grid>
 
