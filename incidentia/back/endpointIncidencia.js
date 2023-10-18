@@ -72,44 +72,35 @@ export function addEndpoints(app, conn) {
             .status(401)
             .json({ error: "Ocurrió un error. Favor de iniciar Sesión" });
 
+        // mostrar solo los reportes creados por el coordinador de aula
+        if (coordinador.rol == "Aula") {
+          // Agregar a query que solo sean los tickets del usuario
+          filterQuery.coordinador = new ObjectId(decodedToken.id);
+        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          // id del aula de la cual se buscan los reportes
+          if(filterQuery.aula) { // si tiene un filtro de aula, convertir en ID de mongo
+            console.log(filterQuery.aula);
+            filterQuery.aula = new ObjectId(filterQuery.aula);
+          } 
+        }
+
+        
         let getReportesPipeline = [
           { $match: filterQuery }, // inicia con el filtro
           ...mainPipeline, // construye todas sus madres
           { $sort: sortQuery }, // hace un sort de la info
           { $skip: skip }, // consigue solo pa partir de cierto numero
           { $limit: limit }, // consigue hasta cierto otro numero
-        ]
+        ];
 
-
-        let data = [];
-
-        // mostrar solo los reportes creados por el coordinador de aula
-        if (coordinador.rol == "Aula") {
-          // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db
-            .aggregate([
-              { $match: { coordinador: new ObjectId(decodedToken.id) } },
-              ...getReportesPipeline,
-            ])
-            .toArray();
-        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
-          // id del aula de la cual se buscan los reportes
-          if(filterQuery.aula) {
-            console.log(filterQuery.aula)
-            filterQuery.aula = new ObjectId(filterQuery.aula)
-          // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db.aggregate([{$match: filterQuery}, ...getReportesPipeline])
-               .toArray();
-          } else data = await db.aggregate(getReportesPipeline)
-          .toArray();
-
-        }
+        let data = await db.aggregate(getReportesPipeline).toArray();
 
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
           { $match: filterQuery }, // filtra
           { $count: 'totalCount' } // cuenta
-      ];
+        ];
+
         let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
 
         if (!totalCount) {

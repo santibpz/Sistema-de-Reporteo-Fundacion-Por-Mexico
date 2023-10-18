@@ -65,7 +65,7 @@ const ReporteForm = () => {
       <SimpleForm justifyContent="center" alignItems="center" style={{padding:10, marginTop:20}} toolbar= {<SaveToolbar/>}>
         
         <TextInput source="titulo" style={{width:300}} required />
-        <TextInput source="descripcion" style={{width:300}} required />
+        <TextInput source="descripcion" style={{width:300}} multiline required />
         <RadioButtonGroupInput
           style={{width:300, display: "flex", justifyContent: "center", margin: "0 auto"}}
           source="prioridad"

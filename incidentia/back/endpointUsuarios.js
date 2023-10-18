@@ -1,4 +1,5 @@
 import ObjectId from 'mongodb';
+// import logger from 'utils/logger';
 
 const prefix = "/coordinadores";
 const dbCollection = "coordinadores";
@@ -28,17 +29,16 @@ export function addEndpoints(app, conn) {
                 // Sorting
                 const sortQuery = sort ? JSON.parse(sort) : {};
 
-                const result = await db.find({}).project({id:"$_id", _id:0, nombreCompleto:1}).toArray()
-
-                console.log(result)
+                const result = await db.find(query).project({id:"$_id", _id:0, nombreCompleto:1, matricula:1, rol:1}).sort(sortQuery).skip(skip).limit(limit).toArray();
+                // logger.debug("usuarios.js", result, "GET /coordinadores");
 
                 const totalCount = await db.countDocuments(query);
 
                         // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
                 res.set("Access-Control-Expose-Headers", "Content-Range");
                 res.set(
-                "Content-Range",
-                `items ${skip + 1}-${skip + result.length}/${totalCount.totalCount}`
+                    "Content-Range",
+                    `items ${skip + 1}-${skip + result.length}/${totalCount}`
                 );
 
                 res.json(result);

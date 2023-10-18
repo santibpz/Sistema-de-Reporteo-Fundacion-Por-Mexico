@@ -26,7 +26,6 @@ export function addEndpoints(app, conn) {
 
              // verificamos si el usuario accediendo es ejecutivo o nacional
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
-            console.log("ss", coordinador)
             if(coordinador == null || coordinador.rol == 'Aula') return res.status(403).json({error: "No tienes permiso de Acceder."})
 
         
@@ -42,7 +41,6 @@ export function addEndpoints(app, conn) {
                  // si el rol es nacional, buscar las aulas asociadas a este coordinador
                  let aulasCoordinadorNacional = await dbFig.db.collection('coordinadores').aggregate(aulasNacionalPipeline).toArray()
                  let aulasId = aulasCoordinadorNacional[0].aulas // arreglo con los ids de las aulas
-                 console.log(aulasId)
 
                  // buscar todas las aulas que gestiona este coordinador
                  data = await db.find({
