@@ -185,7 +185,7 @@ const ReporteArchivadoCard = (props:ReporteProps & { disableColors: boolean }) =
             elevation={10}
         >
               {/* container */}
-              <Grid container direction='column'>
+              <Grid container item direction='column' justifyContent='center' alignItems='center'>
 
                 {/* sección de titulo de reporte archivado */}
                 <StyledGrid categoria={props.categoria} disableColors={props.disableColors} container item direction='row'>
@@ -215,14 +215,12 @@ const ReporteArchivadoCard = (props:ReporteProps & { disableColors: boolean }) =
                 <Divider />
 
                 {/* sección de informacion del reporte archivado */}
-                <Grid container item direction='row' sx={{p:2}}>
-                   
+                <StyledBackgroundGrid container item justifyContent='center' alignItems='center' direction='row' sx={{p:1, marginTop:1, width:365, textAlign:'center', justifyContent:'center', alignItems:'center'}}>
                     <ShowInfo label='Categoria' data={props.categoria} />
                     <ShowInfo label='Subcategoria' data={props.subcategoria} />
                     <ShowInfo label='Prioridad' data={props.prioridad} />
                     <ShowInfo label='Estatus' data={props.estatus} />
-
-                </Grid>
+                </StyledBackgroundGrid>
 
                 <Divider />
 
@@ -319,10 +317,10 @@ const IntermediariosTable = (props:{data:Array<any>}) => {
 // compontente para mostrar información que se repite
 const ShowInfo = ({label,data}:{label:string, data:string}) => {
     return(
-        <StyledBackgroundGrid container item xs={6} justifyContent='center' alignItems='center' direction='column' sx={{p:1}}>
+        <Grid container item xs={6} justifyContent='center' alignItems='center' direction='column' sx={{p:1}}>
             <Typography variant="subtitle1" sx={{fontWeight:800}}>{label}</Typography>
             <Typography variant="body2" sx={{color:''}}>{data}</Typography>
-        </StyledBackgroundGrid>
+        </Grid>
     )
 }
 

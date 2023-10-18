@@ -19,16 +19,12 @@ import { DisableColorsProvider } from './theme/DisableColorContext';
 import Aula from "./components/Aulas/Aula"
 import CoordinadorCreate from "./components/Registro";
 import { Registro } from "./components/Registro";
+import SchoolIcon from '@mui/icons-material/School';
+import PersonIcon from '@mui/icons-material/Person';
+import { CoordinadoresList } from './components/List/coordinadoresList';
 
 export const App = () => {
   const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
-
-        
-  const [disableColors, setDisableColors] = useState(false);
-
-  const handleDisableColorsToggle = () => {
-    setDisableColors(!disableColors);
-  };
 
   return (
     <DisableColorsProvider>
@@ -47,8 +43,9 @@ export const App = () => {
                   {permissions === 'Ejecutivo'
                       ? (<Resource
                           name="coordinadores"
-                          list={ListGuesser}
+                          list={CoordinadoresList}
                           create={CoordinadorCreate}
+                          icon={PersonIcon}
                        />)
                       : null}
 
@@ -56,6 +53,7 @@ export const App = () => {
                       ? (<Resource
                           name="aulas"
                           list={Aula.AulaList}
+                          icon={SchoolIcon}
                        />)
                       : null}
 

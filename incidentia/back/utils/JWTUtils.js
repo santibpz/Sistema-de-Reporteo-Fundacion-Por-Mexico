@@ -28,7 +28,6 @@ export function verifyToken(token) {
 export function verifyTokenFromReq(req) {
     const { authorization:token } = req.headers
     let decoded = verifyToken(token);
-    console.log("this is decoded ", decoded)
     return decoded
 }
 
