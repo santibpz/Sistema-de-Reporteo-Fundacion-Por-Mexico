@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useLogin, useNotify } from 'react-admin';
 import { Box, Grid, Paper, Avatar, TextField, Button, Typography, Link} from "@mui/material"
 import image from '../images/FXM_B_sinFondo.png'
+import {ThemeProvider} from '@mui/material/styles'
+import {theme} from '../theme/themes'
 
 // import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 
@@ -30,7 +32,8 @@ const LoginPage = () => {
         })
     }
     return(
-        <div style={{height: "100%", display:'flex', backgroundColor:'#69B035'}}>
+        <ThemeProvider theme={theme}>
+        <div style={{height: "100vh", display:'flex', backgroundColor:'#69B035'}}>
         <Grid container alignItems="center" justifyContent="center">
         <Grid item>
             <img src={image} alt="logo" style={{marginTop:10}}/>
@@ -69,7 +72,7 @@ const LoginPage = () => {
                         fullWidth></TextField>
                         <Button 
                         onClick={handleSubmit}
-                        sx = {{backgroundColor: '#69B035'}} 
+                        sx = {{backgroundColor: '#69B035', color:"white"}} 
                         variant = 'contained' 
                         fullWidth>Entrar</Button>
                     </Grid>
@@ -78,6 +81,7 @@ const LoginPage = () => {
             </Grid>
         </Grid>
     </div>    
+    </ThemeProvider>
     )
 }
 

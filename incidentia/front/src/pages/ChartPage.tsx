@@ -36,7 +36,6 @@ const ChartPage = (props: any) => {
   const [chartWidth, setChartWidth] = useState(600);
   const [chartHeight, setChartHeight] = useState(300);
 
-  //responsive, sacado con ChatGPT
   useEffect(() => {
     const handleResize = () => {
       if (chartContainerRef.current) {
@@ -64,8 +63,6 @@ const ChartPage = (props: any) => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-//Termina código de ChatGPT
 
 //devuelve la gráfica dentro del contenedor
   return (

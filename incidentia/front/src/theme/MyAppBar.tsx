@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppBar, TitlePortal } from 'react-admin';
 import image from '../images/FXM_AB_SF.png';
-import { Box, FormControl, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, FormControl, FormGroup, FormControlLabel, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import Tooltip from '@mui/material/Tooltip';
 import PaletteIcon from '@mui/icons-material/Palette';
@@ -18,7 +18,8 @@ export const MyAppBar = () => {
 
     return (
         <StyledAppBar>
-            <img src={image} alt="logo" style={{ height: 35, padding: '0.5 rem', marginRight: '10rem'}} />
+            <img src={image} alt="logo" style={{ height: 35, padding: '0.5 rem', marginRight: '0.5rem'}} />
+            <Typography variant='h6'>Incidentia</Typography>
             <Box flex="1" />
             <FormControl component="fieldset">
                 <FormGroup aria-label="position" row>

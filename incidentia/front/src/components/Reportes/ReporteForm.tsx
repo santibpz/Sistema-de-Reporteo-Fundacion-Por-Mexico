@@ -13,6 +13,13 @@ import { Categoria, Subcategoria } from "../../types";
 import { Paper, Typography } from "@mui/material";
 import { StyledTypography, StyledLogo } from "../../theme/themes";
 
+const validateOficio = (value) => {
+  if (!/^\d+$/.test(value)) {
+    return "Oficio debe contener solo números";
+  }
+  return undefined; // Validation passed
+};
+
 const SaveToolbar = () => (
   <Toolbar style={{width:500, display: 'flex', justifyContent: 'center'}} >
       <SaveButton type="button" style={{width:160, color:"white", borderRadius:10}}/>
@@ -92,8 +99,9 @@ const ReporteForm = () => {
           optionText="nombre"
           optionValue="id"
           required
+          disabled={!categoriaId}
         />
-        <TextInput source="oficio" style={{width:300}}/>
+        <TextInput source="oficio" style={{width:300}} validate={validateOficio}/>
       </SimpleForm>
     </Paper>
     </div>
