@@ -95,6 +95,8 @@ export function addEndpoints(app, conn) {
 
         let data = await db.aggregate(getReportesPipeline).toArray();
 
+        console.log('aa', data)
+
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
           { $match: filterQuery }, // filtra
@@ -138,20 +140,48 @@ export function addEndpoints(app, conn) {
 
       // cosas del endpoint
       try {
-        console.log(req.params.id);
 
+        //  // verificar que solo oordinador ejecutivo pueda acceder a este recurso
+         const decodedToken = verifyTokenFromReq(req);
+
+        //  // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
+         if (!decodedToken.id)
+         return res
+         .status(401)
+         .json({
+             error:
+             "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+         });
+
+        //  // verificamos si el usuario accediendo a este recurso el la persona que creó el reporte
+         const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
+         if(coordinador == null ) return res.status(403).json({error: "Este recurso no existe"})
+
+        //  // verificar si el reporte lo creo el usuario que solicita
+         const reporte = await dbFig.db.collection('reportes').findOne({_id: new ObjectId(req.params.id)})
+
+        // si el id del coordinador no es el mismo que el id del creador del reporte, entonces, no se podrá visualizar el reporte
+         if(reporte.coordinador != decodedToken.id) {
+          return res.status(403).json({error: "Este recurso no existe"})
+
+         } 
+        // creamos el pipeline para encontrar el reporte
         const pipeline = findOnePipeline(new ObjectId(req.params.id));
 
         const queryCursor = await db.aggregate(pipeline);
         let data = await queryCursor.toArray();
 
-        data.length > 1
-          ? res
+        if(data.length > 1)
+         { 
+          return res
               .status(404)
               .json({
                 error: "Hubo un problema con la visualización del reporte",
               })
-          : res.json(data[0]);
+        } else {
+          return res.json(data[0]);
+
+        }
       } catch (error) {
         console.log("Error:", error);
         res.status(500).json({ error: "Internal server error" });
