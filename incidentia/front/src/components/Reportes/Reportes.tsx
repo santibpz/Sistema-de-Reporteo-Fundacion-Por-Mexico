@@ -42,12 +42,7 @@ const Reportes = () => {
         filterValues, // a dictionary of filter values, e.g. { title: 'lorem', nationality: 'fr' }
         displayedFilters
       } = useListContext();
-
-      console.log("dksd", data)
-      console.log("fV", filterValues)
-      console.log("dF", displayedFilters)
        
-
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
     const [searchType, setSearchType] = useState("titulo");
     const [selectedCategory, setSelectedCategory] = useState("");
