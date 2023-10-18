@@ -17,6 +17,7 @@ const Aulas = () => {
          columnSpacing={2}
          rowSpacing={2}
          style={{padding: 15}}
+         justifyContent="center"
          >
             {data.map(aula => <AulaCard key={aula.id} {...aula} />)}
       </Grid>
@@ -44,7 +45,10 @@ const AulaCard = (props:AulaProps) => {
             elevation={10}
         >
               {/* container de la tarjeta de aula */}
-              <Grid container direction='column' sx={{p:1, height:'100%'}}>
+              <Grid container direction='column' sx={{p:1, height:'100%', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.25)',
+              '&:hover': {
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.45)',
+              }, }}>
 
                 {/* container de nombre y direccion de aula */}
                 <Grid container item justifyContent='space-between' alignItems ='center' sx={{ p:0.5, height:'35%'}}>
