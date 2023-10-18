@@ -135,7 +135,7 @@ export function addEndpoints(app, conn) {
             let dbFig = await conn();    
             let db = dbFig.db.collection(dbCollection);   
 
-            // verificar que solo oordinador ejecutivo pueda acceder a este recurso
+            // verificar tokens
             const decodedToken = verifyTokenFromReq(req);
 
             // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
@@ -149,7 +149,6 @@ export function addEndpoints(app, conn) {
 
             // verificamos si el usuario accediendo es coordinador aula
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
-            console.log("ss", coordinador)
             if(coordinador == null || coordinador.rol != 'Aula') return response.status(403).json({error: "No es posible completar esta acción"})
             
             // extraemos el id del reporte a archivar y la información de la actualización del reporte

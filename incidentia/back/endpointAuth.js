@@ -71,7 +71,6 @@ export function addEndpoints(app, conn) {
 
             // verificamos si el usuario accediendo es ejecutivo
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
-            console.log("ss", coordinador)
             if(coordinador == null || coordinador.rol != 'Ejecutivo') return response.status(403).json({error: "No tienes permiso de Acceder."})
     
             // Checks para la generación del nuevo usuario
@@ -92,8 +91,8 @@ export function addEndpoints(app, conn) {
             }
     
             // Checar si el password tiene mas de 8 caracteres, tiene al menos una mayuscula, un numero y un caracter especial
-            if (password.length < 8 || !password.match(/[A-Z]/) || !password.match(/[0-9]/) || !password.match(/[!@#$%^&*.]/)) {
-                return response.status(400).json({error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial (!@#$%^&*.)."})
+            if (password.length < 8 || !password.match(/[A-Z]/) || !password.match(/[0-9]/) || !password.match(/[!@#$%^&*._-]/)) {
+                return response.status(400).json({error: "La contraseña debe tener al menos 8 caracteres, una mayúscula, un numero y un carácter especial (!@#$%^&*._-)."})
             }
        
             try{

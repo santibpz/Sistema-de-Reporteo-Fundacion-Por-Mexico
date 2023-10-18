@@ -4,8 +4,8 @@ import image from '../images/FXM_AB_SF.png';
 import { Box, FormControl, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { styled } from '@mui/system';
 import Tooltip from '@mui/material/Tooltip';
-import InvertColorsIcon from '@mui/icons-material/InvertColors';
-import InvertColorsOffIcon from '@mui/icons-material/InvertColorsOff';
+import PaletteIcon from '@mui/icons-material/Palette';
+import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import { useDisableColors } from './DisableColorContext';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -26,7 +26,7 @@ export const MyAppBar = () => {
                         <FormControlLabel
                             value="start"
                             control={
-                                disableColors ? <InvertColorsOffIcon /> : <InvertColorsIcon />
+                                disableColors ? <PaletteIcon /> : <PaletteOutlinedIcon />
                             }
                             onClick={toggleDisableColors}
                             labelPlacement="start"

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
-import {Grid} from '@mui/material';
+import {Grid, Chip} from '@mui/material';
 
 const lightPalette = {
     primary: {
@@ -96,6 +96,9 @@ export const StyledGrid = styled(Grid)(({ theme, categoria, disableColors }) => 
     };
 });
 
+export const StyledChip= styled(Chip)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'light' ? '#69B035' : '#1C8D41',
+}));
 
 export const StyledBackgroundGrid = styled(Grid)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'light' ? '#EEE' : '#888',
