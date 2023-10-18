@@ -27,10 +27,10 @@ export function addEndpoints(app, conn) {
       const skip = start;
 
       try {
-          // filterQuerying
-          const filterQuery = filter ? JSON.parse(filter) : {};
-          if (filterQuery.categoria){ 
-            filterQuery.categoria = new ObjectId(filterQuery.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
+        // filterQuerying
+        const filterQuery = filter ? JSON.parse(filter) : {};
+        if (filterQuery.categoria){ 
+          filterQuery.categoria = new ObjectId(filterQuery.categoria) // si hay un filtro de categoria, lo convierte a ObjectId
         }
         if (filterQuery.titulo) { 
           filterQuery.titulo = { $regex: filterQuery.titulo, $options: 'i' }; // Búsqueda difusa (ignorando mayúsculas/minúsculas)
@@ -65,6 +65,17 @@ export function addEndpoints(app, conn) {
 
          // El pipeline a la base de datos que obtiene la información a enviar al cliente
 
+
+         // mostrar solo los reportes creados por el coordinador de aula
+        if (coordinador.rol == "Aula") {
+          // Se agrega al filtro que sea el coordinador
+          filterQuery.coordinador = new ObjectId(decodedToken.id);
+        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
+          if(filterQuery.aula) { // si tiene id de aula, lo convierte a ObjectId
+            filterQuery.aula = new ObjectId(filterQuery.aula);
+          }
+        }
+
         const getReportesArchivadosPipeline = [
           { $match: filterQuery }, // inicia con el filtro
           ...mainPipeline, // construye todas sus madres
@@ -73,34 +84,15 @@ export function addEndpoints(app, conn) {
           { $limit: limit }, // consigue hasta cierto otro numero
         ];
 
-        let data = []
+        let data = await db.aggregate(getReportesArchivadosPipeline).toArray();
 
-         // mostrar solo los reportes creados por el coordinador de aula
-         if (coordinador.rol == "Aula") {
-          // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db
-            .aggregate([
-              { $match: { coordinador: new ObjectId(decodedToken.id) } },
-              ...getReportesArchivadosPipeline,
-            ])
-            .toArray();
-        } else if(coordinador.rol == "Nacional" || coordinador.rol == "Ejecutivo") {
-          // id del aula de la cual se buscan los reportes archivados
-          if(filterQuery.aula) {
-            filterQuery.aula = new ObjectId(filterQuery.aula)
-          // El pipeline a la base de datos que obtiene la información a enviar al cliente
-          data = await db.aggregate([{$match: filterQuery}, ...getReportesArchivadosPipeline])
-               .toArray();
-          } else data = await db.aggregate(getReportesArchivadosPipeline)
-          .toArray();
-
-        }
         
         // Pipeline secundario para obtener la cuenta total de elementos (después de filtrar)
         const totalCountPipeline = [
           { $match: filterQuery }, // filtra
           { $count: 'totalCount' } // cuenta
-      ];
+        ];
+
         let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
 
         if (!totalCount) {

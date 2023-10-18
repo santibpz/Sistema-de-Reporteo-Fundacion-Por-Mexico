@@ -8,7 +8,20 @@ export function addEndpoints(app, conn) {
     // getList 	            GET localhost/Prefix?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
     app.get(prefix, async (req, res, next) => {
         // cosas de todos los endpoints
+
+        // cosas de filtros
+        // query params
+        const { range, filter, sort } = req.query;
+
+        // Parse range parameter
+        const [start, end] = JSON.parse(range);
+        const limit = end - start + 1;
+        const skip = start;
         try {
+            const filterQuery = filter ? JSON.parse(filter) : {};
+            const [field, order] = sort;
+            const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
+
             const dbFig = await conn();
             const db = dbFig.db.collection(dbCollection);
 
@@ -26,40 +39,50 @@ export function addEndpoints(app, conn) {
 
              // verificamos si el usuario accediendo es ejecutivo o nacional
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
-            if(coordinador == null || coordinador.rol == 'Aula') return res.status(403).json({error: "No tienes permiso de Acceder."})
+            if(coordinador == null || coordinador.rol == 'Aula') 
+                return res.status(403).json({error: "No tienes permiso de Acceder."})
 
-        
-            let data = [] // informacion a enviar al cliente
-
+            // filtros adicionales
             if(coordinador.rol == 'Nacional') {
-                // hacemos un pipeline para poder obtener la información de las aulas que gestiona este coordinador
-                const aulasNacionalPipeline = [
-                    {$match: {_id: new ObjectId(decodedToken.id)}},
-                    {$project: {aulas:1, _id: 0}}
-                ]
-
-                 // si el rol es nacional, buscar las aulas asociadas a este coordinador
-                 let aulasCoordinadorNacional = await dbFig.db.collection('coordinadores').aggregate(aulasNacionalPipeline).toArray()
-                 let aulasId = aulasCoordinadorNacional[0].aulas // arreglo con los ids de las aulas
-
-                 // buscar todas las aulas que gestiona este coordinador
-                 data = await db.find({
-                    "_id": { $in: aulasId }
-                  }).project({id:"$_id", _id: 0, nombre:1, direccion:1, numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
+                // Si es nacional, solo buscar dentro de sus aulas
+                filterQuery['_id'] = { $in: coordinador.aulas };
             } 
             else if(coordinador.rol == 'Ejecutivo') {
                 // si el rol es ejecutivo, buscar todas las aulas
-                data = await db.find({}).project({id:"$_id", _id: 0, nombre:1, direccion:1,  numReportesPendientes: 1, numReportesArchivados: 1}).toArray()
             }
 
+            const projection = {id:"$_id", _id: 0, nombre:1, direccion:1, numReportesPendientes: 1, numReportesArchivados: 1};
+
+            // el pipeline que va a correr
+            const pipeline = [
+                { $match: filterQuery }, // inicia con el filtro
+                { $project: projection }, // proyecta la info
+                { $sort: sortQuery }, // hace un sort de la info
+                { $skip: skip }, // consigue solo pa partir de cierto numero
+                { $limit: limit }, // consigue hasta cierto otro numero
+            ];
+        
+            let data = await db.aggregate(pipeline).toArray();
+
+            const totalCountPipeline = [
+                { $match: filterQuery }, // filtra
+                { $count: 'totalCount' } // cuenta
+            ];
+    
+            let [totalCount] = await db.aggregate(totalCountPipeline).toArray();
+    
+            if (!totalCount) {
+                totalCount = { totalCount: 0 };
+            }
+    
             // Agrega los headers de react-admin para que sepa cuantos hay de cuantos y en donde esta
             res.set("Access-Control-Expose-Headers", "Content-Range");
             res.set(
-            "Content-Range",
-            data.length
+                "Content-Range",
+                `items ${skip + 1}-${skip + data.length}/${totalCount.totalCount}`
             );
           
-            res.status(200).json(data)
+            res.status(200).json(data);
         } catch (error) {
             console.log(error)
             res.status(500).json({error: "Ocurrió un error. Intente más tarde"})
