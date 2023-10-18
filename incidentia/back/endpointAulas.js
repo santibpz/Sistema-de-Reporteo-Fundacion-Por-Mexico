@@ -13,16 +13,16 @@ export function addEndpoints(app, conn) {
             const db = dbFig.db.collection(dbCollection);
 
              // verificar que solo coordinadores ejecutivo y nacional puedan acceder a este recurso
-             const decodedToken = verifyTokenFromReq(req);
+            const decodedToken = verifyTokenFromReq(req);
 
              // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
-             if (!decodedToken.id)
-             return res
-             .status(401)
-             .json({
-                 error:
-                 "Su sesión ha expirado, por favor inicie sesión nuevamente.",
-             });
+            if (!decodedToken.id)
+                return res
+                .status(401)
+                .json({
+                    error:
+                    "Su sesión ha expirado, por favor inicie sesión nuevamente.",
+                });
 
              // verificamos si el usuario accediendo es ejecutivo o nacional
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
