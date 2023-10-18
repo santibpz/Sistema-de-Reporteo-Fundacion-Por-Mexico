@@ -51,38 +51,11 @@ export function addEndpoints(app, conn) {
                 // si el rol es ejecutivo, buscar todas las aulas
             }
 
-            const projection = {
-                id:"$_id",
-                _id: 0, 
-                nombre:1, 
-                direccion:1, 
-                numReportesPendientes: {
-                    $size: "$reportes"
-                },
-                numReportesArchivados: {
-                    $size: "$archivados"
-                },
-            };
+            const projection = {id:"$_id", _id: 0, nombre:1, direccion:1, numReportesPendientes: 1, numReportesArchivados: 1};
 
             // el pipeline que va a correr
             const pipeline = [
                 { $match: filterQuery }, // inicia con el filtro
-                { $lookup: 
-                    {
-                        from: 'reportes',
-                        localField: '_id',
-                        foreignField: 'aula',
-                        as: 'reportes'
-                    }
-                },
-                { $lookup: 
-                    {
-                        from: 'archivados',
-                        localField: '_id',
-                        foreignField: 'aula',
-                        as: 'archivados'
-                    }
-                },
                 { $project: projection }, // proyecta la info
                 { $sort: sortQuery }, // hace un sort de la info
                 { $skip: skip }, // consigue solo pa partir de cierto numero

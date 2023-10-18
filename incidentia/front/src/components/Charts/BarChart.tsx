@@ -2,6 +2,7 @@ import { StyledTypography } from '../../theme/themes';
 import React, { useRef, useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useTheme } from '@mui/material/styles';
+import { Button } from 'react-admin';
 
 //Se define el contedor de la gráfica
 const BarChartComponent = ({ data }) => {
@@ -40,7 +41,7 @@ const BarChartComponent = ({ data }) => {
 
 //devuelve la gráfica
   return (
-    <div ref={chartContainerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={chartContainerRef} style={{ width: '100%', height: '100%', justifyContent:'center' }}>
       <StyledTypography variant="h6" align="center" gutterBottom style={{marginTop:10}}>Estado de Reportes</StyledTypography>
       <BarChart width={chartWidth} height={chartHeight} data={data}>
         <XAxis dataKey="name" />

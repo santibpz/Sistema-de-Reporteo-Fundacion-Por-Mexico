@@ -47,7 +47,7 @@ const authProvider = {
     },
     checkError: (error: any) =>{
         // Bajo status negativos se elimina el almacenamiento de navegador
-        const status = error?.status;
+        const status=error.status;
         if(status===401|| status===403){
             localStorage.removeItem("auth");
             localStorage.removeItem("username");

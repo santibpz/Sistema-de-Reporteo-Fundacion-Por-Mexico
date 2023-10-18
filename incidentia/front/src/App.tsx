@@ -8,7 +8,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import { dataProvider } from './dataProvider';
 import { i18nProvider } from './i18nProvider';
 import authProvider from './authProvider';
-import ChartPage from './pages/ChartPage';
+import ChartPage from './pages/grafica';
 import LoginPage from './pages/LoginPage';
 import { MyAppBar } from './theme/MyAppBar';
 import { darkTheme, theme } from './theme/themes';
@@ -18,10 +18,11 @@ import { DisableColorsProvider } from './theme/DisableColorContext';
 import Aula from "./components/Aulas/Aula"
 import CoordinadorCreate from "./components/Registro";
 import { Registro } from "./components/Registro";
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Tablero';
 import SchoolIcon from '@mui/icons-material/School';
 import PersonIcon from '@mui/icons-material/Person';
 import { CoordinadoresList } from './components/List/coordinadoresList';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 export const App = () => {
   const layout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
@@ -42,11 +43,21 @@ export const App = () => {
       <>
         {permissions === 'Ejecutivo'
           ? (<Resource
-              name="dashboard"
+              name="Tablero"
               list={Dashboard}
+              icon={DashboardIcon}
             />)
           : null}
             
+    {(permissions === 'Aula' || permissions === 'Nacional' ) 
+        ?( <Resource 
+        name="grafica" 
+        list={ChartPage} 
+        icon={BarChartIcon}
+          />  
+          ) : null
+        }
+        
         {permissions === 'Ejecutivo'
           ? (<Resource
               name="coordinadores"
@@ -78,13 +89,6 @@ export const App = () => {
         name="archivados"
         list={ReporteArchivado.ReporteArchivadoList} 
         icon={ArchiveIcon}
-          />  
-
-
-        <Resource 
-        name="ChartPage" 
-        list={ChartPage} 
-        icon={BarChartIcon}
           />  
 
         <CustomRoutes>
