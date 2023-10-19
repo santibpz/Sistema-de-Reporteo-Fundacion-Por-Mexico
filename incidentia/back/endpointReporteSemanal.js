@@ -70,7 +70,7 @@ export function addEndpoints(app, conn) {
                     $match: {
                         fecha: { $gte: new Date(new Date().setDate(new Date().getDate() - 7)) }
                     }
-                },
+                },        
                 {
                     $group: {
                         _id: null,

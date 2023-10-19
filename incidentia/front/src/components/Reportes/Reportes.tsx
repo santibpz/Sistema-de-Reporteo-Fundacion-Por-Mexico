@@ -144,6 +144,8 @@ const Reportes = () => {
 
     const handleClick = () => setFilters({},[])
 
+    console.log(data)
+
     if (isLoading) {
     return <div>loading...</div>
     }

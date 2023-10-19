@@ -111,8 +111,7 @@ const ComentarioForm = ({reporteId="", comentarioId="", edit=false, comentarioDa
             <Button
             size="small"
             onClick={handleOpen}
-          //  disabled={isLoading}
-            sx={{ padding: '7px', color: 'black',  backgroundColor: '#F0FFF0', '&:hover': {
+            sx={{ padding: '7px', color: 'black',  backgroundColor: 'lightblue', '&:hover': {
             transform: 'scale(1.1)',
             backgroundColor: '#F0FFF0'
             }}}>

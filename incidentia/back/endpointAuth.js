@@ -5,7 +5,7 @@ import { makeNewToken, verifyTokenFromReq } from './utils/JWTUtils.js';
 import logger from './utils/logger.js';
 const dbCollection = "coordinadores";
 
-export function addEndpoints(app, conn) {
+export function addEndpoints(app, conn) {       
 
     app.use(bodyParser.json());
 
@@ -13,7 +13,7 @@ export function addEndpoints(app, conn) {
     app.post("/login", async function(request, response){
         try{
             const dbFig = await conn();
-            let dbConn = dbFig.conn;
+            let dbConn = dbFig.conn;    
             const db = dbFig.db.collection(dbCollection);
             const { matricula, password } = request.body;
             try {
