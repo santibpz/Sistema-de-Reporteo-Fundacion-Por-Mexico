@@ -93,8 +93,9 @@ echo "PORT = 8081" >> $DIR/incidentia/back/.env
 echo "MONGODB_URI=$MONGOURI" >> $DIR/incidentia/back/.env
 echo "CONSOLE_LOG_LEVEL = 3" >> $DIR/incidentia/back/.env # Log everything to console
 echo "DB_LOG_LEVEL = 3" >> $DIR/incidentia/back/.env # Log everything to db
+echo "SECRET = $(openssl rand -hex 24)" >> $DIR/incidentia/back/.env
 
-echo "Visual confirmation:"
+echo "Visual confirmation for the generation of .env files:"
 echo "front-end .env file:"
 cat $DIR/incidentia/front/.env
 echo "back-end .env file:"

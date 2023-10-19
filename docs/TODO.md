@@ -8,4 +8,4 @@
 - [x] SRS
 - [x] Manual de usuario
   - [ ] falta agregar sección de charts
-- [ ] SAR (software architecture report)
+- [x] SAR (software architecture report)
