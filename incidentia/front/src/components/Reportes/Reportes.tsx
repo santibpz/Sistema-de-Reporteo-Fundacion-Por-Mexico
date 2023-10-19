@@ -7,13 +7,11 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import {Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
-import { lightColorCategoria, darkColorCategoria, handleThemeChange } from "../../theme/themes"
 import { StyledGrid } from "../../theme/themes"
 import ConfirmacionDialog from "../ConfirmacionDialog"
-import { useDisableColors } from '../../theme/DisableColorContext'; 
-
-import { Empty } from "react-admin";
+import { useDisableColors } from '../../theme/DisableColorContext';  
 import EmptyView from "../EmptyView"
+import { useTheme } from '@mui/material/styles';
 
 
 const categorias = [
@@ -44,12 +42,7 @@ const Reportes = () => {
         filterValues, // a dictionary of filter values, e.g. { title: 'lorem', nationality: 'fr' }
         displayedFilters
       } = useListContext();
-
-      console.log("dksd", data)
-      console.log("fV", filterValues)
-      console.log("dF", displayedFilters)
        
-
     const [searchTerm, setSearchTerm] = useState(""); //Se inicializa la variable que actualiza el valor del input de búsqueda, se declara vacía para que al inicio no se muestre ningún reporte
     const [searchType, setSearchType] = useState("titulo");
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -97,7 +90,7 @@ const Reportes = () => {
           fullWidth
           value={searchTerm}
           onChange={handleSearchTermChange}
-          style={{ height: 56, marginTop:2}}
+          style={{ height: 54, marginTop:2}}
         />
       );
     } else if (searchType === "categoria") {
@@ -297,6 +290,7 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
   const notify = useNotify();
   const refresh = useRefresh();
   const redirect = useRedirect();
+  const theme = useTheme();
  
   const [flag, setFlag] = useState(false)
 
@@ -323,8 +317,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 400,
-        bgcolor: '#1A1110 ',
-        color: 'white',
+        backgroundColor: theme.palette.mode === 'light' ? '#FFFFFF' : '#000000 ',
+        color: theme.palette.mode === 'light' ? '#000000' : '#FFFFFF ',
         border: '2px solid #000',
         boxShadow: 24,
         p:2
@@ -446,7 +440,7 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
           {/* Sección para la selección del estatus */}
           <Grid container item direction='column' xs = {12} sx={{height:'80%'}}>
             <FormControl>
-              <FormLabel id="controlled-radio-buttons-group" sx ={{color: 'white', ml:1.5}}>Actualiza el estatus del Reporte {`"${titulo}":`}</FormLabel>
+              <FormLabel id="controlled-radio-buttons-group" sx ={{color: theme.palette.mode === 'light' ? '#000000' : '#FFFFFF ', ml:1.5}}>Actualiza el estatus del Reporte {`"${titulo}":`}</FormLabel>
               
               <RadioGroup
                 aria-labelledby="controlled-radio-buttons-group"
@@ -455,8 +449,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                 onChange={(e) => handleChange(e, 'isCompleted')}
               >
                 <Grid container justifyContent='space-around' sx ={{mt:1}} >
-                  <FormControlLabel value="pendiente" control={<Radio sx={{color: 'white'}}/>} label="pendiente" />
-                  <FormControlLabel value="completado" control={<Radio sx={{color: 'white'}} />} label="completado" />
+                  <FormControlLabel value="pendiente" control={<Radio sx={{color: theme.palette.mode === 'light' ? '#000000' : '#FFFFFF '}}/>} label="Pendiente" />
+                  <FormControlLabel value="completado" control={<Radio sx={{color: theme.palette.mode === 'light' ? '#000000' : '#FFFFFF '}} />} label="Completado" />
                 </Grid>
               </RadioGroup>
             </FormControl>
@@ -469,7 +463,7 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
             <Grid container item justifyContent='space-between' alignItems = 'center'>
             <FormControl>  
               <Grid container item direction='row' justifyContent='space-between' alignItems = 'center'>
-                <FormLabel id="controlled-radio-buttons-group" sx ={{color: 'white', ml:1.5 }}>¿Se le dió solución al incidente?</FormLabel>
+                <FormLabel id="controlled-radio-buttons-group" sx ={{color: theme.palette.mode === 'light' ? '#000000' : '#FFFFFF ', ml:1.5 }}>¿Se le dió solución al incidente?</FormLabel>
                 <RadioGroup
                 value={resolucionValue}
                 onChange={(e) => handleChange(e, 'isResolved')}
@@ -491,7 +485,7 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                 <>
                   <Divider sx ={{backgroundColor:'lightgrey', mt:2, mb:2}} />
                   <Grid container item>
-                    <Typography variant = "subtitle1" sx = {{ml: 2}}>Indica como se resolvió el Incidente:</Typography>
+                    <Typography variant = "subtitle1" sx = {{ml: 2, marginBottom: 2}}>Indica como se resolvió el Incidente:</Typography>
                     <Grid container item justifyContent='center'>
                       <TextField
                         required
@@ -501,8 +495,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
                         variant="outlined"
                         multiline
                         rows={5}
-                        sx = {{width: '80%', bgcolor: 'white'}}
-                        placeholder="razón"
+                        sx = {{width: '80%', bgcolor: 'white', marginBottom: 5}}
+                        placeholder="Razón de solución del incidente"
                         error = {markError}
                         />
                     </Grid>
@@ -533,8 +527,8 @@ export const ModalWindow = ({titulo, estatus, id}:ModalProps) => {
 
                         />
                     </Grid>
-                    
                     <ConfirmacionDialog message={"Esta acción archivará el reporte con el estatus actualizado.\n Una vez archivado, el reporte ya no se puede editar. ¿Desea Continuar?"} onContinue={handleSave} validateData={validateData} />
+                    
 
                   </Grid>
                 </>

@@ -35,7 +35,7 @@ const ReporteList = () => (
 );
 
 // componente para crear nuevos reportes
-const ReporteCreate = () => {
+export const ReporteCreate = () => {
   const notify = useNotify()
   const onError = () => { 
      notify('Todos los campos deben llenarse', {type: 'error'});

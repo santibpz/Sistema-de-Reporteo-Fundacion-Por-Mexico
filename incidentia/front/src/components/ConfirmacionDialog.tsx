@@ -38,7 +38,9 @@ const ConfirmacionDialog = (props:ConfirmacionProps, ref?:any) => {
         fullWidth
         onClick={handleClickOpen}
         variant="contained"
-        color="secondary" 
+        color="secondary"
+        style={{color:"white", width:'80%', margin:'auto', marginTop:-20, borderRadius:10}} 
+
         >
           Guardar
         </Button>

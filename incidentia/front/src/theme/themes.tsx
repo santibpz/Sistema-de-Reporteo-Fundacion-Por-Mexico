@@ -4,6 +4,7 @@ import {Grid, Chip, Typography} from '@mui/material';
 import logo from '../images/FXM_sinFondo.png'
 import whitelogo from '../images/FXM_B_PNG.png'
 
+
 const lightPalette = {
     primary: {
         main: "#69B035",
@@ -118,4 +119,4 @@ export const StyledTypography= styled(Typography)(({ theme }) => ({
 export const StyledBackgroundGrid = styled(Grid)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'light' ? '#EEE' : '#888',
         borderRadius: "20px"
-    }));
+}));

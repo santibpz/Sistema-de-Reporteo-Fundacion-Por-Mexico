@@ -161,8 +161,10 @@ export function addEndpoints(app, conn) {
          const reporte = await dbFig.db.collection('reportes').findOne({_id: new ObjectId(req.params.id)})
 
         // si el id del coordinador no es el mismo que el id del creador del reporte, entonces, no se podrá visualizar el reporte
+
         if(reporte.coordinador != decodedToken.id && coordinador.rol == 'Aula') {
           console.log('eee')
+
           return res.status(403).json({error: "Este recurso no existe"})
 
          } 

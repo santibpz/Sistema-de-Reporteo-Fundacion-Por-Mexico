@@ -62,7 +62,7 @@ const AulaCard = (props:AulaProps) => {
                 <Divider />
 
                 {/* Informacion de reportes pendientes y archivados */}
-                <Grid container item direction='row' justifyContent='space-between' sx ={{ height:'40%', mb:0.3}}>
+                <Grid container item direction='row' justifyContent='space-between' sx ={{ height:'60%', mb:0.3}}>
                     <Grid container item direction='column' justifyContent='space-between' xs ={6} sx ={{bgcolor:''}}>
                         <Chip sx ={{ bgcolor: '#AAA', width:170, margin:'auto', color:'white'}} label={`Reportes pendientes: ${props.numReportesPendientes ?? 0}`}/>
                         <Button onClick={() => redirect( `/reportes?filter={"aula":"${props.id}"}`)} sx ={{mt:0.1}}>Ver Reportes</Button>
@@ -74,12 +74,12 @@ const AulaCard = (props:AulaProps) => {
                     </Grid>
                 </Grid>
 
-                <Divider />
+                {/*<Divider />*/}
 
-                {/* Boton para ver coordinadores nacionales del aula */}
-                <Grid container item justifyContent='center' alignItems='center' sx={{p:1.2, height:'20%'}}>
+                 {/*Boton para ver coordinadores nacionales del aula */}
+                {/*<Grid container item justifyContent='center' alignItems='center' sx={{p:1.2, height:'20%'}}>
                     <Button fullWidth variant='contained' style={{color:'white'}} >Ver Coordinadores de {props.nombre}</Button>
-                </Grid>
+                </Grid>*/}
               </Grid>
 
             </Paper>
