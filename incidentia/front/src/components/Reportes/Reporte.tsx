@@ -4,13 +4,14 @@ import {
   RecordContextProvider,
   useDataProvider,
   useDelete,
+  useGetIdentity,
   useGetOne,
   useNotify,
   useRedirect,
 } from "react-admin";
 import Reportes from "./Reportes";
 import ReporteForm from "./ReporteForm";
-import {Grid, Paper, Typography, Divider, Card, IconButton} from "@mui/material";
+import {Grid, Paper, Typography, Divider, Card, IconButton, Chip} from "@mui/material";
 import "@fontsource/roboto/300.css";
 import ArticleSharpIcon from "@mui/icons-material/ArticleSharp";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -48,6 +49,7 @@ export const ReporteCreate = () => {
 
 // componente para mostrar los reportes completos
 export const ReporteShow = () => {
+  const { data:identity } = useGetIdentity();
   const notify = useNotify();
   const redirect = useRedirect();
   const dataProvider = useDataProvider();
@@ -105,8 +107,8 @@ export const ReporteShow = () => {
     ) :
     null
   }
-  const handleEdit= () => {}
         
+  console.log('aaa', data)
   if (isLoading) return <Bars />;
 
   return (
@@ -142,7 +144,7 @@ export const ReporteShow = () => {
                 >
                   <Typography variant="h4">{data.titulo}</Typography>
                   <Typography variant="subtitle2">
-                    Creado por usuario
+                    Creado por {data.coordinador}
                   </Typography>
                 </Grid>
               </Grid>
@@ -195,7 +197,7 @@ export const ReporteShow = () => {
                   justifyContent="flex-end"
                   style={{ padding: 10 }}
                 >
-                  <Typography>Creado el {data.fecha}</Typography>
+                  <Typography>Creado el {new Intl.DateTimeFormat('es-MX').format(new Date(data.fecha))}</Typography>
                 </Grid>
                 <Grid
                   container
@@ -205,12 +207,13 @@ export const ReporteShow = () => {
                   xs={6}
                 >
                  
+                  {identity.fullName === data.coordinador ? (
                   <IconButton onClick={handleDelete} color="primary">
                     <DeleteIcon sx = {{color:'red'}} />
-                  </IconButton>
-                  <IconButton onClick={handleEdit} color="primary">
-                    <EditIcon sx = {{color:'green'}} />
-                  </IconButton>
+                  </IconButton>):null}
+
+                  <Chip sx ={{m:1}} label ={`Número de Oficio: ${data.oficio ?? 'Inexistente'}`} />
+                
                 </Grid>
               </Grid>
             </Grid>
@@ -248,19 +251,19 @@ export const ReporteShow = () => {
                 <Typography variant="h3">Descripción del Reporte</Typography>
               </Grid>
 
-              <Divider light />
               {/* descripción */}
               <Grid
                 container
                 item
                 direction="column"
+               
                 xs
                 style={{ backgroundColor: "", height: "" }}
               >
                 <Grid
                   container
                   item
-                  xs={9}
+                  xs={12}
                   style={{ backgroundColor: "", padding: 5 }}
                 >
                   <Grid
@@ -269,7 +272,7 @@ export const ReporteShow = () => {
                     justifyContent="center"
                     alignItems="center"
                     xs
-                    style={{ backgroundColor: "#002D62" }}
+                    style={{ backgroundColor: "#eee" }}
                   >
                     <Card style={{ width: "50%", height: "80%", padding: 8 }}>
                       <Typography variant="subtitle1">
@@ -277,22 +280,7 @@ export const ReporteShow = () => {
                       </Typography>
                     </Card>
                   </Grid>
-                </Grid>
-
-                {/* botón para agregar seguimiento/comentario al reporte */}
-                <Grid
-                  container
-                  item
-                  justifyContent="center"
-                  xs={3}
-                  style={{ backgroundColor: "", padding: 8 }}
-                >
-
-                  {/* <Button onClick={addFollowUp} variant = 'contained' sx={{backgroundColor:'#002D62'}}>Agregar Seguimiento</Button>
-                   */}
-                  <ComentarioForm reporteId={data.id} refetchComentarios = {refetchComentarios} />
-
-                </Grid>
+                </Grid>                
               </Grid>
             </Grid>
           </Paper>
@@ -307,26 +295,43 @@ export const ReporteShow = () => {
         >
 
           {/* comentarios */}
-          <Grid xs={12} style={{ backgroundColor: "", padding: 5, height:'50%' }}>
+          <Grid xs={12} style={{ backgroundColor: "", padding: 5, height:'100%' }}>
             <Paper
               elevation={10}
               style={{ backgroundColor: "", height: "100%", width: "100%" }}>
+              <Grid container direction='column' justifyContent='center' alignItems='center'>
+                <Grid container item xs ={10}>
               {comentarios.length != 0 ? (
                 <Comentarios comentarios={comentarios} refetchComentarios={refetchComentarios} />
               ) : (
-                <>No hay comentarios</>
+                <Card sx ={{p:2, margin:'auto'}}>
+                  No Hay comentarios
+                </Card>
               )}
+              </Grid>
+              
+
+              <Grid
+                  container
+                  item
+                  justifyContent="center"
+                  xs={2}
+                  style={{ backgroundColor: "", padding: 7 }}
+                >
+                  <ComentarioForm reporteId={data.id} refetchComentarios = {refetchComentarios} />
+                </Grid>
+                </Grid>
             </Paper>
           </Grid>
 
-          {/* imagenes */}
+          {/* imagenes
           <Grid xs={12} style={{ backgroundColor: "pink", padding: 5, height:'50%' }}>
             <Paper
                 elevation={10}
                 style={{ backgroundColor: "", height: "100%", width: "100%" }}>
                 
               </Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </RecordContextProvider>

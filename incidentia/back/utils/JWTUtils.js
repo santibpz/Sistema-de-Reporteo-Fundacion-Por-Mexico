@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-
-let password = "PasswordMUYSEGURO123!";
+import config from './config.js';
 
 // creation
 
@@ -14,14 +13,14 @@ export function makeNewToken(userData) {
         exp: Date.now() + 1000 * 60 * 60,
     };
 
-    let token = jwt.sign(payload, password, { algorithm: 'HS256' });
+    let token = jwt.sign(payload, config.SECRET, { algorithm: 'HS256' });
     return token;
 }
 
 // Verification shit
 
 export function verifyToken(token) {
-    let decoded = jwt.verify(token, password);
+    let decoded = jwt.verify(token, config.SECRET);
     return decoded;
 }
 

@@ -47,6 +47,7 @@ export const mainPipeline = [
         fechaArchivado:1,
         resolucion: 1,
         razon:1,
+        oficio:1,
         intermediarios: 1,
         tiempoResolucionDias:1
     }}

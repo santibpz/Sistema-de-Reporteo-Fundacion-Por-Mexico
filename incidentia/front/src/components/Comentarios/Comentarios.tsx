@@ -1,7 +1,7 @@
 import { ComentarioProps } from "../../types";
 import { Grid, Card, Typography, Avatar, Box, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDelete, useNotify } from "react-admin";
+import { useDelete, useGetIdentity, useNotify } from "react-admin";
 import { Bars } from "react-loading-icons";
 import ComentarioForm from "./ComentarioForm";
 
@@ -67,6 +67,7 @@ const ComentarioBox = ({
   fecha,
   refetchComentarios,
 }: ComentarioProps) => {
+  const { data:{fullName} } = useGetIdentity();
   const notify = useNotify();
   const [deleteOne, { isLoading }] = useDelete();
 
@@ -153,16 +154,22 @@ const ComentarioBox = ({
               alignItems="center"
               sx={{ backgroundColor: "" }}
             >
-              <IconButton onClick={deleteComment} color="primary">
-                <DeleteIcon sx={{ color: "red" }} />
-              </IconButton>
-              {/* Edit Icon */}
-              <ComentarioForm
+              {fullName === publicadoPor ? (
+              <>
+                <IconButton onClick={deleteComment} color="primary">
+                  <DeleteIcon sx={{ color: "red" }} />
+                </IconButton>
+                 {/* Edit Icon */}
+                <ComentarioForm
                 edit={true}
                 comentarioId={id}
                 comentarioData={comentario}
                 refetchComentarios={refetchComentarios}
               />
+            </>): null}
+              
+             
+              
             </Grid>
           </Grid>
 
@@ -199,7 +206,7 @@ const ComentarioBox = ({
               variant="subtitle2"
               sx={{ ml: 2.5, fontSize: "11px", color: "white" }}
             >
-              Creado el {fecha}
+              Creado el {new Intl.DateTimeFormat('es-MX').format(new Date(fecha))}
             </Typography>
           </Grid>
         </Grid>

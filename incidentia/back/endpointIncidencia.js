@@ -161,7 +161,10 @@ export function addEndpoints(app, conn) {
          const reporte = await dbFig.db.collection('reportes').findOne({_id: new ObjectId(req.params.id)})
 
         // si el id del coordinador no es el mismo que el id del creador del reporte, entonces, no se podrá visualizar el reporte
-         if(reporte.coordinador != decodedToken.id) {
+
+        if(reporte.coordinador != decodedToken.id && coordinador.rol == 'Aula') {
+          console.log('eee')
+
           return res.status(403).json({error: "Este recurso no existe"})
 
          } 
@@ -361,21 +364,17 @@ export function addEndpoints(app, conn) {
       // extraemos el id del reporte a borrar 
       const { id } = req.params
 
-      console.log('QQ')
-
         // borrar reporte
         const result = await db.deleteOne({_id: new ObjectId(id)})
 
         console.log(result)
 
         if (result.deletedCount == 1) {
-          console.log('herter')
           // borrar comentarios asociados al reporte
           await dbFig.db.collection('comentarios').deleteMany({reporte: new ObjectId(id)})
 
           // hacemos update del numero de reportes pendientes en la coleccion de aulas
           const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesPendientes: -1 } })
-          console.log('qA',queryAula)
           if(queryAula.modifiedCount == 1) return res.status(204).json({id})
         } else {
             res.status(500).json({error: 'No se ha podido borrar el reporte. Se recomienda intentar más tarde'})
