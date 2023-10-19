@@ -132,7 +132,7 @@ export function addEndpoints(app, conn) {
 
             // si el objeto decodedToken no tiene un campo id, el token no ha podido ser verificado porque expiró y se necesita volver a iniciar sesión
             if (!decodedToken.id)
-            return response
+            return res
             .status(401)
             .json({
                 error:
@@ -141,7 +141,7 @@ export function addEndpoints(app, conn) {
 
             // verificamos si el usuario accediendo es coordinador aula
             const coordinador = await dbFig.db.collection('coordinadores').findOne({_id: new ObjectId(decodedToken.id)})
-            if(coordinador == null || coordinador.rol != 'Aula') return response.status(403).json({error: "No es posible completar esta acción"})
+            if(coordinador == null) return res.status(403).json({error: "No es posible completar esta acción"})
             
             // extraemos el id del reporte a archivar y la información de la actualización del reporte
             const {reporteId, estatus, resolucion, razon } = req.body
@@ -200,7 +200,7 @@ export function addEndpoints(app, conn) {
             if(result.insertedId) { // verificamos que el archivo se haya archivado correctamente
 
               // agregamos a la cuenta de numero de reportes archivados en la coleccion aulas
-              const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(coordinador.aula) }, { $inc: { numReportesArchivados: 1 } })
+              const queryAula = await dbFig.db.collection('aulas').updateOne({ _id: new ObjectId(reporte.aula) }, { $inc: { numReportesArchivados: 1 } })
 
               if(queryAula.modifiedCount == 1)  { // si se modificó adecuadamente, borramos el reporte de la coleccion de reportes
 
