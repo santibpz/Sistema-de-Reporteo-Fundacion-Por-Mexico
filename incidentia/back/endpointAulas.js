@@ -19,7 +19,7 @@ export function addEndpoints(app, conn) {
         const skip = start;
         try {
             const filterQuery = filter ? JSON.parse(filter) : {};
-            const [field, order] = sort;
+            const [field, order] = sort ? sort : ["nombre", "ASC"];
             const sortQuery = { [field]: order === "ASC" ? 1 : -1 };
 
             const dbFig = await conn();
