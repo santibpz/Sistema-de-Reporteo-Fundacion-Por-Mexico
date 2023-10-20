@@ -305,7 +305,7 @@ export const ReporteShow = () => {
                 <Comentarios comentarios={comentarios} refetchComentarios={refetchComentarios} />
               ) : (
                 <Card sx ={{p:2, margin:'auto'}}>
-                  No Hay comentarios
+                  No Hay Seguimientos
                 </Card>
               )}
               </Grid>

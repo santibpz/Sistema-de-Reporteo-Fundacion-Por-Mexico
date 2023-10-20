@@ -19,7 +19,7 @@ const Comentarios = ({ comentarios, refetchComentarios }: ComentariosType) => {
         backgroundColor: "",
         height: "100%",
         width: "100%",
-        maxHeight: "250px",
+        maxHeight: "370px",
         paddingBottom: 2,
       }}
       container
@@ -39,7 +39,7 @@ const Comentarios = ({ comentarios, refetchComentarios }: ComentariosType) => {
         justifyContent="center"
         alignItems="center"
         xs={12}
-        sx={{ backgroundColor: "", height: "90%", p: 1 }}
+        sx={{ height: "90%", p: 1 }}
       >
         {
           // iteramos por todos los comentarios que se reciben como props y por cada uno desplegamos un componente que se encarga de darle estilo y mostrar la informacion
@@ -113,10 +113,11 @@ const ComentarioBox = ({
     >
       <Card
         sx={{
-          height: "200px",
+          // height: "200px",
           width: "100%",
           backgroundColor: "#101010",
           border: "1px solid #E8E8E8 ",
+          borderRadius: "16px",
         }}
       >
         <Grid
@@ -130,14 +131,15 @@ const ComentarioBox = ({
             justifyContent="space-between"
             alignItems="center"
             xs={12}
-            sx={{ backgroundColor: "", height: "20%" }}
+            sx={{ backgroundColor: "", height: "20%", pt:1, pb:1 }}
           >
             <Grid
               container
               item
               justifyContent="flex-start"
               alignItems="center"
-              xs={9}
+              direction='row'
+              xs={8}
             >
               <Avatar alt="avatar" sx={{ width: 24, height: 24, ml: 1.5 }} />
               <Typography sx={{ color: "white", ml: 1 }}>
@@ -145,17 +147,17 @@ const ComentarioBox = ({
               </Typography>
             </Grid>
 
-            {/* sección de botones */}
+           {/* seccion de comentarios */}
+              {fullName === publicadoPor ? (
             <Grid
               container
               item
-              xs={3}
-              justifyContent="center"
+              xs={4}
+              justifyContent="center"    
               alignItems="center"
-              sx={{ backgroundColor: "" }}
+              direction='row'
+              sx={{ backgroundColor: "red" }}
             >
-              {fullName === publicadoPor ? (
-              <>
                 <IconButton onClick={deleteComment} color="primary">
                   <DeleteIcon sx={{ color: "red" }} />
                 </IconButton>
@@ -166,11 +168,10 @@ const ComentarioBox = ({
                 comentarioData={comentario}
                 refetchComentarios={refetchComentarios}
               />
-            </>): null}
+           </Grid>): null}
               
-             
               
-            </Grid>
+
           </Grid>
 
           {/* comentario */}
@@ -200,13 +201,13 @@ const ComentarioBox = ({
             item
             alignItems="center"
             xs={12}
-            sx={{ backgroundColor: "", height: "15%" }}
+            sx={{ backgroundColor: "", height: "15%", pt:1, pb:1 }}
           >
             <Typography
               variant="subtitle2"
               sx={{ ml: 2.5, fontSize: "11px", color: "white" }}
             >
-              Creado el {new Intl.DateTimeFormat('es-MX').format(new Date(fecha))}
+              Publicado el {new Intl.DateTimeFormat('es-MX').format(new Date(fecha))}
             </Typography>
           </Grid>
         </Grid>
