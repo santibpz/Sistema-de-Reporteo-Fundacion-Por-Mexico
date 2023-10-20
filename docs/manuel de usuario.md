@@ -7,17 +7,20 @@
 - [3. Introducción](#3-introducción)
 - [4. Login](#4-login)
 - [5. Registro](#5-registro)
-- [6. Dashboard](#6-dashboard)
+- [6. Navegación](#6-navegación)
   - [6.1. Página](#61-página)
   - [6.2. Vistas/items](#62-vistasitems)
   - [6.3. Menú de usuario](#63-menú-de-usuario)
     - [6.3.1. Logout/Cerrar sesión](#631-logoutcerrar-sesión)
-- [7. Reportes](#7-reportes)
-  - [7.1. Actualizar estatus](#71-actualizar-estatus)
-  - [7.2. Detalles](#72-detalles)
-    - [7.2.1. Comentarios](#721-comentarios)
-- [8. reportes Archivados](#8-reportes-archivados)
-- [9. Chartpages/resumen semanal](#9-chartpagesresumen-semanal)
+- [7. Tableros](#7-tableros)
+- [8. Reportes](#8-reportes)
+  - [8.1. Actualizar estatus](#81-actualizar-estatus)
+  - [8.2. Detalles](#82-detalles)
+    - [8.2.1. Comentarios](#821-comentarios)
+- [9. reportes Archivados](#9-reportes-archivados)
+- [10. Chartpages/resumen semanal](#10-chartpagesresumen-semanal)
+- [11. Aulas](#11-aulas)
+- [12. Exportar la información](#12-exportar-la-información)
 
 # 3. Introducción
 
@@ -36,11 +39,9 @@ Al entrar al sistema, vas a ver una pagina de login:
 
 Si cuentas con un usuario, puedes ingresar tus credenciales y presionar en Entrar. (Por accesibilidad, Enter no sirve).
 
-![Alt text](<img/capturas/login llenado.png>)
-
 Si no cuentas con un usuario, debes de pedir a un administrador que cree un usuario por ti.
 
-Contacta a un administrador para que te genere tus credenciales.
+> Contacta a un administrador para que te genere tus credenciales.
 
 # 5. Registro
 
@@ -54,23 +55,20 @@ Para registrarte como un nuevo usuario, vas a tener que llenar los siguientes da
 
 > NOTA 2: La contraseña tiene que contar con un mínimo de 8 caracteres, Mínimo una mayúscula, mínimo un numero, y mínimo un carácter especial (`!@#$%^&*.-_`). 
 
+> NOTA 3: una vez asignada la contraseña no la vas a poder volver a ver. Asegúrate de anotarla en algún lado. 
+
 Dependiendo del Rol que elijas van a ser las opciones que tienes disponibles. 
 
-Después de llenarlo, debe de verse asi:
+para ver a los usuarios registrados puedes como administrador verlos en la pantalla de Coordinadores:
 
-![Alt text](<img/capturas/registrarse llenado.png>)
+![Alt text](img/capturas/usuarios.png)
 
-Al dar click en el botón de REGISTRARSE, te va a regresar a la pagina de login. Agrega la matrícula y contraseña que acabas
 
-# 6. Dashboard
+# 6. Navegación
 
-Después de hacer login, vas a ser redireccionado al Dashboard. En muchas casos no es necesario hacer login si ya habías hecho login previamente. 
+Para poder navegar por la aplicación, necesitas conocer sus componentes. 
 
-El Dashboard se ve de la siguiente manera:
-
-![Alt text](img/capturas/homescreen.png)
-
-En la parte central puedes ver la pantalla actual, este ligar es donde vas a pasar la mayor parte del tiempo. Si no cuentas con tickets, puedes generar uno presionando el botón verde. 
+La parte central de la pantalla siempre va  a mostrar el contenido actual. Si necesitas cambiar el contenido, puedes cambiar la pantalla con el navegador encontrado a la izquierda.
 
 ## 6.1. Página
 
@@ -83,6 +81,10 @@ En la parte superior izquierda puedes visualizar en la página que te encentras 
 ![Alt text](img/capturas/items.png)
 
 En esta sección puedes cambiar entre las páginas.
+
+El menu de los coordinadores se ve de esta forma:
+
+![Alt text](img/capturas/items2.png)
 
 ## 6.3. Menú de usuario
 
@@ -98,7 +100,19 @@ Puedes también hacer logout presionando en tu nombre:
 
 y luego presionando en Cerrar sesión
 
-# 7. Reportes
+# 7. Tableros
+
+> Nota: tableros solo esta disponible para coordinadores **Nacionales** o **Ejecutivos**
+
+Después de hacer login, vas a ser redireccionado al Dashboard. En muchas casos no es necesario hacer login si ya habías hecho login previamente. 
+
+El tablero se ve de la siguiente manera:
+
+![Alt text](img/capturas/dashboard.png)
+
+En esta vista, puedes ver un resumen gráfico del estado de los tickets. 
+
+# 8. Reportes
 
 ![Alt text](<img/capturas/reporte 2.png>)
 
@@ -110,7 +124,7 @@ De igual forma, en caso de que hayan muchos reportes, puedes cambiar la cantidad
 
 Los reportes te van a dar la opción de adicionalmente actualizar el estatus y ver el reporte.
 
-## 7.1. Actualizar estatus
+## 8.1. Actualizar estatus
 
 ![Alt text](<img/capturas/cambiar estatus.png>)
 
@@ -129,7 +143,7 @@ Al presionar guardar, te va a preguntar si deseas continuar. Puedes presionar co
 > ATENCIÓN: Al completar un reporte, se pierde la funcionalidad de edición. 
 > Si quieres modificar el reporte, hazlo antes de cambiar el estatus. 
 
-## 7.2. Detalles
+## 8.2. Detalles
 
 ![Alt text](<img/capturas/info reporte.png>)
 
@@ -139,7 +153,7 @@ en esta sección puedes ver los datos del reporte, asi como los comentarios que 
 
 para agregar un comentario al reporte, presiona en AGREGAR SEGUIMIENTO
 
-### 7.2.1. Comentarios
+### 8.2.1. Comentarios
 
 ![Alt text](img/capturas/comentario.png)
 
@@ -149,7 +163,7 @@ Al terminar, puedes presionar GUARDAR COMENTARIO. El comentario se agregara al r
 
 Si te equivocaste puedes editar tu comentario presionando el lápiz de tu comentario. 
 
-# 8. reportes Archivados
+# 9. reportes Archivados
 
 ![Alt text](img/capturas/archivados.png)
 
@@ -161,6 +175,30 @@ en la parte superior derecha puedes exportar a excel todos los datos.
 
 La información que se muestra por reporte es todo el resumen que ocurrió. No hay una vista expandida.
 
-# 9. Chartpages/resumen semanal
+# 10. Chartpages/resumen semanal
 
 En esta sección puedes ver los datos y reportes sobre los tickets que has generado.
+
+# 11. Aulas
+
+> ATENCIÓN: esta funcionalidad es solo para coordinadores
+
+Para ver el estado de las aulas, puedes entrar a la pagina de aulas. 
+
+![Alt text](img/capturas/aulas.png)
+
+En esta pagina encontraras todas las aulas, con un resumen de cantidad de reportes y reportes archivados. 
+
+Al presionar ver, se va a agregar un filtro por aula. 
+
+# 12. Exportar la información
+
+Todas las paginas cuentan con un botón de exportar
+
+![Alt text](img/capturas/exportar.png)
+
+al precionar el boton, se va a descargar un archivo csv, que lo puedes abrir con software como LibreOffice o Excel. 
+
+CSV incluye formas fácil de abrirlo con código, por lo que fue elegido encima .xlsx. 
+
+para conocer mas sobre csv y sus multiples usos, puedes [precionar aqui](https://es.wikipedia.org/wiki/Valores_separados_por_comas)

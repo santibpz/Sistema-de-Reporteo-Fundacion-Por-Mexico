@@ -46,8 +46,8 @@ const app=express();
 // middleware
 app.use(bodyParser.json());
 app.use(cors());
+app.use(middleware.globalTryCatch);
 app.use(middleware.requestLogger);
-
 
 // manejadores de todos los endpoints de la API
 Usuarios.addEndpoints(app, connDB);

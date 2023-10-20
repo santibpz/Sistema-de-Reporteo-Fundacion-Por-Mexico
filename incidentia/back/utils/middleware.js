@@ -1,7 +1,17 @@
 import logger from "./logger.js"
 import { getUsernameFromJWT } from "./JWTUtils.js"
+import { response } from "express";
 
 // params["req"], params["message"], "info", params["route"]
+const globalTryCatch = (request, response, next) => {
+    try {
+        next()
+    } catch (error) {
+        logger.error("Global error handler", error.message, request.path)
+        response.status(500).json({ error: 'Internal server error' })
+    }
+}
+
 const requestLogger = (request, response, next) => {
     logger.info(getUsernameFromJWT(request), `Usando ${request.method} para ${request.path}`, request.path);
     next()
@@ -39,5 +49,6 @@ const errorHandler = (error, request, response, next) => {
 export default {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    globalTryCatch
 }
