@@ -161,5 +161,7 @@ Sin embargo, creemos que como es un servicio publico, mucha gente va a querer ha
 
 A su vez, creemos que puede ser buena idea integrarlo con la pagina web ya existente. Lo que esto se refiere, es que para tener una mejor accesibilidad agregar in botón que redirection a incidencias es conveniente.
 
+Un cambio que es conveniente es tener un token para refrescar el login del usuario. Permitiendo que no tengan que ingresar sus credenciales cada hora. Es conveniente que este token utilize la ip, navegador, y otros elementos para que la autenticación no pueda ser robada. 
+
 La ultima consideración importante es el hecho de que el prototipo fue hecho para computadora, no no se escala bien al teléfono móvil. Es muy probable que mucha gente termine usando desde su cell el app, por lo que va a ser necesario adaptar la interfaz. 
 
