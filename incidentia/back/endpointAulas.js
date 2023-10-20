@@ -14,7 +14,7 @@ export function addEndpoints(app, conn) {
         const { range, filter, sort } = req.query;
 
         // Parse range parameter
-        const [start, end] = JSON.parse(range);
+        const [start, end] = range ? JSON.parse(range) : [0, 9];
         const limit = end - start + 1;
         const skip = start;
         try {

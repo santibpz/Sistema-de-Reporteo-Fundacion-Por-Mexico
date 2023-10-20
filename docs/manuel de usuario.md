@@ -38,9 +38,13 @@ Si cuentas con un usuario, puedes ingresar tus credenciales y presionar en Entra
 
 ![Alt text](<img/capturas/login llenado.png>)
 
-Si no cuentas con un usuario, puedes presionar en Registrarse. Esto te redirigirá a otra pagina donde puedes crear un nuevo usuario. 
+Si no cuentas con un usuario, debes de pedir a un administrador que cree un usuario por ti.
+
+Contacta a un administrador para que te genere tus credenciales.
 
 # 5. Registro
+
+> ATENCIÓN: Solo los usuarios con roles avanzados van a poder crear o remover usuarios.
 
 Para registrarte como un nuevo usuario, vas a tener que llenar los siguientes datos:
 
@@ -48,7 +52,7 @@ Para registrarte como un nuevo usuario, vas a tener que llenar los siguientes da
 
 > NOTA: La matricula es algo que debe de ser único en el sistema, y vas a usar como login. 
 
-> NOTA 2: La contraseña tiene que contar con un mínimo de 8 caracteres, Mínimo una mayúscula, mínimo un numero, y mínimo un carácter especial (`!@#$%^&*.`). 
+> NOTA 2: La contraseña tiene que contar con un mínimo de 8 caracteres, Mínimo una mayúscula, mínimo un numero, y mínimo un carácter especial (`!@#$%^&*.-_`). 
 
 Dependiendo del Rol que elijas van a ser las opciones que tienes disponibles. 
 
