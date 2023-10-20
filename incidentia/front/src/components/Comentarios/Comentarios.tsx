@@ -156,7 +156,7 @@ const ComentarioBox = ({
               justifyContent="center"    
               alignItems="center"
               direction='row'
-              sx={{ backgroundColor: "red" }}
+              sx={{ backgroundColor: "" }}
             >
                 <IconButton onClick={deleteComment} color="primary">
                   <DeleteIcon sx={{ color: "red" }} />
